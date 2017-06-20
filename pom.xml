@@ -60,6 +60,14 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- 数据库连接池 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.0.5</version>
+		</dependency>
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -79,6 +87,18 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+
+		<!--<resources>-->
+			<!--<resource>-->
+				<!--<directory>src/main/resources/static/bootstrap3/fonts</directory>-->
+				<!--<filtering>false</filtering>-->
+				<!--<includes>-->
+					<!--<include>**</include>-->
+				<!--</includes>-->
+			<!--</resource>-->
+		<!--</resources>-->
+
+
 	</build>
 
 

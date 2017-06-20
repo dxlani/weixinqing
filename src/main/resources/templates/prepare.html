@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!--<#include "import_file.html" parse=false encoding="utf-8"/>-->
+    <title>freemarker study</title>
+
+</head>
+
+
+<body>
+
+<h1>freemarker study</h1>
+
+
+
+
+
+
+
+Default value : ${ x ! 'hello world-x default value'}
+<br>
+<#assign x = 'new value for x'/>
+
+    x new value: ${x}
+<br>
+
+<#assign a = [1, 2, 3]/>
+
+    access array a:
+    <#list a as value>
+       a[ ${value?index} ] = ${value}
+    </#list>
+
+    <br>
+
+ 3 / 2 = ${3/2}
+<br>
+
+    use method:
+
+
+<br>
+number: ${vo.number}
+<br>
+
+
+<#if vo.number &lt; 100 >
+    number < 100
+</#if>
+<br>
+
+<#if vo.number == 10 >
+number is equals 10
+</#if>
+<br>
+
+
+
+<#macro test>
+    Test text
+</#macro>
+<#-- call the macro: -->
+    <@test/>
+
+
+    <#macro test foo bar="Bar" baaz=-1>
+        Test text, and the params: ${foo}, ${bar}, ${baaz}
+    </#macro>
+
+    <@test foo="a" bar="b" baaz=5*5-2/><br>
+    <@test foo="a" bar="b"/><br>
+    <@test foo="a" baaz=5*5-2/><br>
+    <@test foo="a"/><br>
+
+</body>
