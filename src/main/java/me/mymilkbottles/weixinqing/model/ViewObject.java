@@ -1,14 +1,23 @@
 package me.mymilkbottles.weixinqing.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by Administrator on 2017/06/19 18:39.
  */
-public class ViewObject {
+public class ViewObject implements Serializable{
 
     private Map<String, Object> vo = new HashMap<>();
+
+    public Map<String, Object> getVo() {
+        return vo;
+    }
+
+    public void setVo(Map<String, Object> vo) {
+        this.vo = vo;
+    }
 
     public Object get(String key) {
         return vo.get(key);

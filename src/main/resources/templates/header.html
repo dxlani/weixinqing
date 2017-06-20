@@ -1,7 +1,7 @@
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default" style="display: block; position: fixed;width:850px;">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header" style="margin-left: 30px;">
+        <div class="navbar-header" style="margin-left: 8px;">
             <button type="button" class="navbar-toggle collapsed"
                     data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -17,7 +17,7 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1"
-             style="margin-left:30px;">
+             style="margin-left:8px;">
 
             <!--<ul class="nav navbar-nav">-->
             <!--<li class="dropdown">-->
@@ -33,7 +33,7 @@
             <!--</ul>-->
             <!--</li>-->
             <!--</ul>-->
-            <form class="navbar-form navbar-left" style="margin-left: 19px;">
+            <form class="navbar-form navbar-left" style="margin-left: 9px;">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="大家都在搜：五斤小龙虾被人生吃"
                            style="width: 300px;font-size: 16px">
@@ -44,78 +44,89 @@
                   class="glyphicon glyphicon-search search-submit" aria-hidden="true">
                     </span>
 
-            <!--<span style="font-size: 21px;margin-left:255px; margin-top: 15px;float: left;"-->
+            <!--<span style="font-size: 21px;margin-left:75px; margin-top: 15px;float: left;"-->
             <!--class="glyphicon glyphicon-user user-center" aria-hidden="true">-->
             <!--</span>-->
 
 
-            <ul class="nav ulnav" style="margin-left: 245px;float: left;margin-top: 6px;">
+            <ul class="nav ulnav" style="margin-left: 190px;float: left;margin-top: 6px;">
                 <li>
-                    <a href="#"
+                    <a href="javascript:;" class="get-msg"
                        data-toggle="dropdown"
                        role="button"
                        aria-haspopup="true">
                         <!--<span>hello</span>-->
                         <span class="glyphicon glyphicon-envelope noMsg"
                               aria-hidden="true" style="font-size: 21px;">
-                                </span>
+                        </span>
                     </a>
 
-                    <!--<ul class="dropdown-menu msg-ul1">-->
-                        <!--<li style="float: left;width: 175px;">-->
-                            <!--<span style="margin-left: 15px;">请您</span>-->
-                                <!--<a style="color: #DF7E8D;cursor: pointer;">登录</a>-->
-                            <!--<span>后再查看信息</span>-->
-                        <!--</li>-->
-                    <!--</ul>-->
-
-
-                    <ul class="dropdown-menu msg-ul">
+                    <ul class="dropdown-menu msg-ul1 unlogin-msg" style="display: none;">
                         <li style="float: left;width: 175px;">
                             <span style="margin-left: 15px;">请您</span>
-                            <a style="color: #DF7E8D;cursor: pointer;">登录</a>
+                                <a style="color: #DF7E8D;cursor: pointer;">登录</a>
                             <span>后再查看信息</span>
                         </li>
                     </ul>
 
 
+                    <ul class="dropdown-menu msg-ul2 msg-loading" style="display: none;">
+                        <li style="float: left;width: 185px;">
+                            <span class="glyphicon glyphicon-refresh" id="msg-loading-icon"
+                                  style="margin-left: 15px;font-size: 17px;margin-top: 6px;"
+                                  aria-hidden="true"></span>
+                            消息加载中，请稍候...
+                        </li>
+                    </ul>
 
-                    <!--<ul class="dropdown-menu msg-ul3">-->
-                        <!--<li><a href="#" class="dropdown-menu-a">@我的-->
-                            <!--<span class="label label-default msg-number" style="margin-left: 55px;">999+</span></a></li>-->
-                        <!--<li><a href="#" class="dropdown-menu-a">评论-->
-                            <!--<span class="label label-default msg-number" style="margin-left: 69px;">8</span></a></li>-->
-                        <!--<li><a href="#" class="dropdown-menu-a">赞-->
-                            <!--<span class="label label-default msg-number" style="margin-left: 84px;">7</span></a></li>-->
-                        <!--<li role="separator" class="divider"></li>-->
-                        <!--<li><a href="#" class="dropdown-menu-a">私信-->
-                            <!--<span class="label label-default msg-number" style="margin-left: 69px;">6</span></a></li>-->
-                        <!--<li><a href="#" class="dropdown-menu-a">未关注私信-->
-                            <!--<span class="label label-default msg-number" style="margin-left: 25px;">19</span></a></li>-->
-                    <!--</ul>-->
+
+                    <ul class="dropdown-menu msg-failed" style="display: none;">
+                        <li style="float: left;width: 245px;">
+                            <span class="glyphicon glyphicon-exclamation-sign" style="margin-left: 15px;"
+                                  aria-hidden="true"></span>
+                            消息加载失败，请稍候重试！
+                        </li>
+                    </ul>
+
+
+
+                    <ul class="dropdown-menu msg-ul3 msg-ul" style="display: none;">
+                        <li><a href="#" class="dropdown-menu-a">@我的
+                            <span class="label label-default msg-number" id="atmeNumber" style="margin-left: 55px;">999+</span></a></li>
+                        <li><a href="#" class="dropdown-menu-a">评论
+                            <span class="label label-default msg-number" id="commentNumber"style="margin-left: 69px;">8</span></a></li>
+                        <li><a href="#" class="dropdown-menu-a">赞
+                            <span class="label label-default msg-number" id="assistNumber"style="margin-left: 84px;">7</span></a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#" class="dropdown-menu-a">私信
+                            <span class="label label-default msg-number" id="privatemsgNumber"style="margin-left: 69px;">6</span></a></li>
+                        <li><a href="#" class="dropdown-menu-a">未关注私信
+                            <span class="label label-default msg-number" id="unfocusNumber"style="margin-left: 25px;">19</span></a></li>
+                    </ul>
                 </li>
             </ul>
 
 
+
             <ul class="nav navbar-nav navbar-right">
-                <!--<li><a href="#">Link</a></li>-->
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                       role="button" aria-haspopup="true"
-                       aria-expanded="false">登录 / 注册<span class="caret"></span></a>
+                <li><a href="/login">登录 / 注册</a></li>
+                <!--<li class="dropdown">-->
                     <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown"-->
-                    <!--role="button" aria-haspopup="true"-->
-                    <!--aria-expanded="false">mymilkbottles<span class="caret"></span></a>-->
-                    <ul class="dropdown-menu" style="">
-                        <li><a href="#">个人中心</a></li>
-                        <!--<li><a href="#">Something else here</a></li>-->
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">帐号设置</a></li>
-                        <li><a href="#">帐号安全</a></li>
+                       <!--role="button" aria-haspopup="true"-->
+                       <!--aria-expanded="false">登录 / 注册<span class="caret"></span></a>-->
+                    <!--&lt;!&ndash;<a href="#" class="dropdown-toggle" data-toggle="dropdown"&ndash;&gt;-->
+                    <!--&lt;!&ndash;role="button" aria-haspopup="true"&ndash;&gt;-->
+                    <!--&lt;!&ndash;aria-expanded="false">mymilkbottles<span class="caret"></span></a>&ndash;&gt;-->
+                    <!--<ul class="dropdown-menu" style="">-->
+                        <!--<li><a href="#">个人中心</a></li>-->
+                        <!--&lt;!&ndash;<li><a href="#">Something else here</a></li>&ndash;&gt;-->
                         <!--<li role="separator" class="divider"></li>-->
-                        <!--<li><a href="#"></a></li>-->
-                    </ul>
-                </li>
+                        <!--<li><a href="#">帐号设置</a></li>-->
+                        <!--<li><a href="#">帐号安全</a></li>-->
+                        <!--&lt;!&ndash;<li role="separator" class="divider"></li>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<li><a href="#"></a></li>&ndash;&gt;-->
+                    <!--</ul>-->
+                <!--</li>-->
             </ul>
         </div><!-- /.navbar-collapse -->
 
