@@ -54,7 +54,7 @@
     border-color: #f2f2f5;
     border-top-width: 1px;
     border-top-style: solid;
-    height:38px;
+    height: 38px;
 }
 
 .op-ul li {
@@ -70,9 +70,9 @@
 
 .op-ul li span {
     color: #696e78;
-    cursor:pointer;
+    cursor: pointer;
 }
 
-.glyphicon{
+.glyphicon {
     position: static;
 }

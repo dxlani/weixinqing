@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Created by Administrator on 2017/06/19 18:39.
  */
-public class ViewObject implements Serializable{
+public class ViewObject implements Serializable {
 
     private Map<String, Object> vo = new HashMap<>();
 

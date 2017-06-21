@@ -1,66 +1,63 @@
-body{
+body {
     background-color: #b4daf0;
     background-image: url("../images/body_background.png");
     background-repeat: repeat-x;
     background-position: center 0;
 }
 
-.body-background{
+.body-background {
     background: url("../images/body_bg_img.jpg") no-repeat top center;
 }
 
-
-.search-submit,.user-center,.glyphicon-envelope,.glyphicon-refresh{
-    cursor:pointer;
-    color: rgba(16,38,23,0.67);
+.search-submit, .user-center, .glyphicon-envelope, .glyphicon-refresh {
+    cursor: pointer;
+    color: rgba(16, 38, 23, 0.67);
 }
 
-.nav > li > a:focus, .nav > li > a:hover{
+.nav > li > a:focus, .nav > li > a:hover {
     background-color: #fbfbfb;
 }
 
-.nav .open > a, .nav .open > a:focus, .nav .open > a:hover{
+.nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
     background-color: #fbfbfb;
 }
 
-.hasMsg{
+.hasMsg {
     color: #fa7d3c;
 }
 
-.search-submit:hover,.user-center:hover,.glyphicon-envelope:hover{
+.search-submit:hover, .user-center:hover, .glyphicon-envelope:hover {
     color: black;
 }
 
-.label-default{
+.label-default {
     /*float:left;*/
 
 }
 
-.msg-number{
+.msg-number {
     padding-top: -2px;
     padding-bottom: 2px;
 }
 
-.msg-ul1 > li > a,.msg-ul1 > li > span {
+.msg-ul1 > li > a, .msg-ul1 > li > span {
 
-    float:left;
+    float: left;
     padding-right: 0px;
     padding-left: 0px;
     padding-top: 0px;
     padding-bottom: 0px;
-    clear:none;
+    clear: none;
 
 }
 
 .msg-ul > li {
-    margin-top:5px;
+    margin-top: 5px;
     margin-bottom: 5px;
 }
 
-
-
 /* css3 让一个图片不断翻转示例代码 */
-#msg-loading-icon{
+#msg-loading-icon {
     /* background:color url x y repeat 图片来自百度图片，按需要更换 */
     /*background:red url("https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2406548182,3889596045&fm=80") center no-repeat;*/
     /* background-size:auto auto || cover 代表以宽或高填满元素背景 */
@@ -73,19 +70,20 @@ body{
     /*-moz-transform:translate3d(0,0,0);*/
     /*transform:translate3d(0,0,0);*/
 
-    transform-origin:  50% 38%;
+    transform-origin: 50% 38%;
     /* 设置动画，animation:动画名称
     动画播放时长单位秒或微秒
     动画播放的速度曲线linear为匀速
     动画播放次数infinite为循环播放; */
-    -webkit-animation:play 2s linear infinite;
-    -moz-animation:play 3s linear infinite;
-    animation:play 1s linear infinite;
+    -webkit-animation: play 2s linear infinite;
+    -moz-animation: play 3s linear infinite;
+    animation: play 1s linear infinite;
 }
 
-@-webkit-keyframes play{
-    0%  {
-        /*-webkit-transform:rotateY(0deg);*/-webkit-transform:rotate(0deg);
+@-webkit-keyframes play {
+    0% {
+        /*-webkit-transform:rotateY(0deg);*/
+        -webkit-transform: rotate(0deg);
         /*
         水平翻转
 
@@ -100,7 +98,7 @@ body{
         */
     }
     100% {
-        -webkit-transform:rotate(360deg);
+        -webkit-transform: rotate(360deg);
         /*-webkit-transform:rotate(360deg);*/
         /* 水平翻转
         -webkit-transform:rotateY(360deg);
@@ -114,9 +112,9 @@ body{
     }
 }
 
-
-@-moz-keyframes play{
-    0%  { -moz-transform:rotate(0deg);
+@-moz-keyframes play {
+    0% {
+        -moz-transform: rotate(0deg);
         /*-moz-transform:rotate(0deg);*/
         /*
         -moz-transform:rotateY(0deg);
@@ -126,7 +124,8 @@ body{
         -moz-transform:rotate(0deg);
         */
     }
-    100% {-moz-transform:rotate(360deg);
+    100% {
+        -moz-transform: rotate(360deg);
         /*-moz-transform:rotate(360deg);*/
         /*
         -moz-transform:rotateY(360deg);
@@ -138,9 +137,9 @@ body{
     }
 }
 
-
-@keyframes play{
-    0%  {transform:rotate(0deg);
+@keyframes play {
+    0% {
+        transform: rotate(0deg);
         /*transform:rotateY(0deg);
         transform:rotateX(0deg);
         transform:rotate(0deg);
@@ -149,7 +148,7 @@ body{
     }
     100% {
         /*transform:rotate(360deg);*/
-        transform:rotate(360deg);
+        transform: rotate(360deg);
         /*transform:rotateY(360deg);
         transform:rotateX(360deg);
         transform:rotate(360deg);
