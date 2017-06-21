@@ -4,11 +4,12 @@ package me.mymilkbottles.weixinqing.model;
  * Created by Administrator on 2017/06/21 17:17.
  */
 public class User {
+
     private Integer id;
 
     private String username;
 
-    private String password;
+    private String pwd;
 
     private String salt;
 
@@ -32,12 +33,12 @@ public class User {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPwd() {
+        return pwd;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 
     public String getSalt() {

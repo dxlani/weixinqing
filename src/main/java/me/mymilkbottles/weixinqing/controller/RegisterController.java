@@ -1,6 +1,9 @@
 package me.mymilkbottles.weixinqing.controller;
 
+import me.mymilkbottles.weixinqing.dao.UserMapper;
+import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.service.RegisterService;
+import me.mymilkbottles.weixinqing.service.UserService;
 import me.mymilkbottles.weixinqing.util.JedisAdapter;
 import me.mymilkbottles.weixinqing.util.LogUtil;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
@@ -22,6 +25,12 @@ public class RegisterController {
     @Autowired
     RegisterService registerService;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    HostHolder hostHolder;
+
     @RequestMapping("/register")
     public String register(HttpSession session, Model model) {
         Object result = session.getAttribute("result");
@@ -37,10 +46,13 @@ public class RegisterController {
                                   @CookieValue("JSESSIONID") String sessionId,
                                   HttpSession session) {
         String result = registerService.checkRegisterInfo(mail, pwd, name, code, sessionId);
-        System.out.println(result);
         if (result == null) {
-            registerService.registerNewUser(mail, pwd, name);
-            return "redirect:/index";
+            if (registerService.registerNewUser(mail, pwd, name) > 0) {
+                hostHolder.setUser(userService.getUserByUsername(name));
+                return "redirect:/index";
+            } else {
+                result = "注册失败，请您联系客服！";
+            }
         }
         session.setAttribute("result", result);
         return "redirect:/register";

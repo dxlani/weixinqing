@@ -1,5 +1,7 @@
 package me.mymilkbottles.weixinqing.util;
 
+import sun.applet.Main;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -19,7 +21,7 @@ public class Md5Util {
         try {
             md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            LogUtil.error("没有MD5算法" + e.getMessage());
         }
         // 计算md5函数
         md.update(str.getBytes());
@@ -27,5 +29,9 @@ public class Md5Util {
         // BigInteger函数则将8位的字符串转换成16位hex值，用字符串来表示；得到字符串形式的hash值
         return new BigInteger(1, md.digest()).toString(16);
     }
+
+//    public static void main(String[] args) {
+//        System.out.println(getMD5("abcsj11111111111111jsss"));
+//    }
 
 }

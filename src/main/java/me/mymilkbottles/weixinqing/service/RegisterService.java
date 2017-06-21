@@ -1,8 +1,10 @@
 package me.mymilkbottles.weixinqing.service;
 
 
-import me.mymilkbottles.weixinqing.mapper.UserMapper;
+import me.mymilkbottles.weixinqing.dao.UserMapper;
+import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.util.JedisAdapter;
+import me.mymilkbottles.weixinqing.util.LogUtil;
 import me.mymilkbottles.weixinqing.util.Md5Util;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +48,27 @@ public class RegisterService {
         if (!assertCode.equals(code)) {
             return "您的验证码输入错误，请您重新输入！";
         }
+
+        if (userMapper.isUsernameExist(name) > 0) {
+            return "用户名已存在！";
+        }
+
+        if (userMapper.isMailExist(mail) > 0) {
+            return "邮箱已经注册，请您直接登录！";
+        }
+
         return null;
     }
 
-    public void registerNewUser(String mail, String pwd, String name) {
+    public int registerNewUser(String mail, String pwd, String name) {
         String salt = UUID.randomUUID().toString().substring(0, 6);
         pwd = Md5Util.getMD5(pwd + salt);
-        userMapper.registerNewUser(name, pwd, salt, mail);
+        LogUtil.debug(name + " " + pwd + " " + salt + " " + mail);
+        User user = new User();
+        user.setMail(mail);
+        user.setPwd(pwd);
+        user.setSalt(salt);
+        user.setUsername(name);
+        return userMapper.registerNewUser(user);
     }
 }
