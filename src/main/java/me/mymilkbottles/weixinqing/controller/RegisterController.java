@@ -1,12 +1,13 @@
 package me.mymilkbottles.weixinqing.controller;
 
+import me.mymilkbottles.weixinqing.service.RegisterService;
 import me.mymilkbottles.weixinqing.util.JedisAdapter;
+import me.mymilkbottles.weixinqing.util.LogUtil;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -18,48 +19,30 @@ import java.util.UUID;
 @Controller
 public class RegisterController {
 
+    @Autowired
+    RegisterService registerService;
+
     @RequestMapping("/register")
-    public String register() {
+    public String register(HttpSession session, Model model) {
+        Object result = session.getAttribute("result");
+        if (result != null) {
+            model.addAttribute("result", result);
+            session.removeAttribute("result");
+        }
         return "register";
     }
 
-    @RequestMapping(value = "/getSendTelMsgKey", method = RequestMethod.POST)
-    @ResponseBody
-    public String getSendTelMsgKey(HttpSession session, HttpServletResponse response,
-                                   @RequestParam(value = "code", defaultValue = "", required = false) String code) {
-        if (code == null || "".equals(code)) {
-            return "";
+    @RequestMapping(value = "/registeraccount", method = RequestMethod.POST)
+    public String registerAccount(String mail, String pwd, String name, String code,
+                                  @CookieValue("JSESSIONID") String sessionId,
+                                  HttpSession session) {
+        String result = registerService.checkRegisterInfo(mail, pwd, name, code, sessionId);
+        System.out.println(result);
+        if (result == null) {
+            registerService.registerNewUser(mail, pwd, name);
+            return "redirect:/index";
         }
-        code = code.toLowerCase();
-        String sessionId = session.getId();
-        String redisVerifyCodeKey = RedisKeyUtil.getVerifyCodeKey(sessionId);
-        String assertVerifyCode = JedisAdapter.get(redisVerifyCodeKey);
-        if (code.equals(assertVerifyCode)) {
-            String redisSendTelMsgKey = RedisKeyUtil.getSendTelMsgKey(sessionId);
-            String key = UUID.randomUUID().toString().substring(0, 8);
-            JedisAdapter.set(redisSendTelMsgKey, key, 5 * 60 * 1000);
-            return key;
-        }
-        return "";
+        session.setAttribute("result", result);
+        return "redirect:/register";
     }
-
-
-    @RequestMapping(value = "/validateTelMsgKey", method = RequestMethod.POST)
-    @ResponseBody
-    public String validateTelMsgKey(HttpSession session,
-                                    HttpServletResponse response,
-                                    @RequestParam(defaultValue = "", required = false) String key) {
-        if (key == null || "".equals(key)) {
-            return "-1";
-        }
-        String sessionId = session.getId();
-        String redisSendTelMsgKey = RedisKeyUtil.getSendTelMsgKey(sessionId);
-        String assertKey = JedisAdapter.get(redisSendTelMsgKey);
-        if (key.equals(assertKey)) {
-            return "1";
-        }
-        return "-1";
-    }
-
-
 }

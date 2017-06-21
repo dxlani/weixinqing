@@ -71,6 +71,10 @@ public class JedisAdapter {
         }
     }
 
+    public static void llpush() {
+
+    }
+
     public static void main(String[] args) {
         JedisAdapter.set("redis-key", "redis-value", 3000L);
         String value = JedisAdapter.get("redis-key");

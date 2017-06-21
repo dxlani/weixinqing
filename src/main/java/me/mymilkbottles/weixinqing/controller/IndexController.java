@@ -11,7 +11,7 @@ import javax.xml.ws.RequestWrapper;
 @Controller
 public class IndexController {
 
-    @RequestMapping("/")
+    @RequestMapping(value = {"/", "/index"})
     public String index() {
         System.out.println("index");
         return "index";
