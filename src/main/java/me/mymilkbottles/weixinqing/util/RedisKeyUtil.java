@@ -6,9 +6,17 @@ package me.mymilkbottles.weixinqing.util;
 public class RedisKeyUtil {
 
     private static final String SPLIT = ":";
+
     private static final String VERIFY_CODE_KEY = "VC";
 
-    public static String getCerifyCodeKey(String ticket) {
-        return VERIFY_CODE_KEY + SPLIT + ticket;
+    private static final String SEND_TEL_MSG_KEY = "STMK";
+
+    public static String getVerifyCodeKey(String id) {
+        return VERIFY_CODE_KEY + SPLIT + id;
     }
+
+    public static String getSendTelMsgKey(String id) {
+        return SEND_TEL_MSG_KEY + SPLIT + id;
+    }
+
 }

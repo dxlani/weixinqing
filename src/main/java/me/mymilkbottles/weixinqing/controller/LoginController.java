@@ -32,7 +32,9 @@ public class LoginController {
 
     @RequestMapping(value = "/verifycode")
     public void getVerifyCode(HttpServletResponse response,
-                              @CookieValue("JSESSIONID") String sessionId) {
+                              HttpSession session) {
+
+        String sessionId = session.getId();
 
         //设置响应的类型格式为图片格式
         response.setContentType("image/jpeg");
@@ -50,7 +52,7 @@ public class LoginController {
             LogUtil.error("验证码输出流失败" + e.getMessage());
         }
 
-        JedisAdapter.set(RedisKeyUtil.getCerifyCodeKey(sessionId), vCode.getCode(), 5 * 60 * 1000);
+        JedisAdapter.set(RedisKeyUtil.getVerifyCodeKey(sessionId), vCode.getCode(), 5 * 60 * 1000);
     }
 
 }

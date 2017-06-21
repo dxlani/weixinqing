@@ -10,6 +10,7 @@
     <link type="text/css" rel="stylesheet" href="../css/head-index.css"/>
     <script src="scripts/register.js"></script>
 
+
 </head>
 
 
@@ -30,12 +31,22 @@
                 </ul>
             </div>
 
-
             <div class="alert alert-danger alert-dismissible" role="alert"
-                 style="margin-top: 8px;margin-left: 18px;margin-right: 10px;margin-bottom: 5px;">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <strong>Warning!</strong> Better check yourself, you're not looking too good.
+                 style="display: none;margin-top: 8px;margin-left: 18px;margin-right: 10px;margin-bottom: 5px;">
+                <span id="alert-danger-span"></span>
+
+            </div>
+
+
+            <div class="alert alert-success alert-dismissible" role="alert"
+                 style="display: none;margin-top: 8px;margin-left: 18px;margin-right: 10px;margin-bottom: 5px;">
+                <span id="alert-success-span"></span>
+            </div>
+
+
+            <div class="alert alert-info alert-dismissible" role="alert"
+                 style="display: none;margin-top: 8px;margin-left: 18px;margin-right: 10px;margin-bottom: 5px;">
+                <span id="alert-info-span"></span>
             </div>
 
 
@@ -67,6 +78,7 @@
                            placeholder="请再次输入您的密码" aria-describedby="basic-addon1">
                 </div>
 
+
                 <div class="input-group" style="margin-top: 15px;">
 
                     <span class="input-group-addon" id="basic-addon1">
@@ -77,6 +89,7 @@
                     <input type="text" class="form-control" style="width:55%;" maxlength="11"
                            placeholder="请输入您的手机号码" aria-describedby="basic-addon1">
 
+                    <input type="hidden" id="sendTelMsgKey" value="">
 
                     <input type="button" id="getVerifyCode"
                            style="float: left;
@@ -102,34 +115,43 @@ margin-left: 10px;
                 </div>
 
 
-                <div class="input-group" style="margin-top: 15px;">
-                    <input type="text" class="form-control" style="width:155px;float: left;" maxlength="4"
-                           placeholder="请输入右方的验证码"
-                           value=''
-                           aria-describedby="basic-addon1">
-
-                    <div style="width:155px;float: left;height:30px;
-                    background-color: green;padding-left: 45px;cursor: pointer;
-                    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
-                    border: 1px solid green;
-                    border-radius: 4px;
-                    padding-top: 5px;display: none;">
-                        <label style="color:#fff">验证成功</label>
-                        <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"
-
-                              style="margin-top:3px;color:#fff"></span>
-                    </div>
+                <div class="input-group" id="msgVerifyCodeValidate" style="margin-top: 15px;display: none;">
 
                     <img src="/verifycode" id="verifyCodeImages" title="验证码" alt="点击重新获取"
                          onclick="this.src='/verifycode?'+Math.random()"
                          style="width:100px;height:30px;font-size: 12px;
                          float: left;margin-left: 10px;
                          cursor:pointer;">
+
+                    <div class="input-group" style="margin-left: 8px;float: left;">
+
+                        <input type="text" class="form-control" placeholder="请输入验证码"
+                               style="width:112px;float: left;" id="verifyCode" maxlength="4"
+                               aria-describedby="basic-addon1">
+                        <span class="input-group-addon validateVerifyCode"
+                              id="basic-addon1" style="cursor: pointer;">
+                            <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                        </span>
+                    </div>
+
+
+                    <!--<div style="width:155px;float: left;height:30px;-->
+                    <!--background-color: green;padding-left: 45px;cursor: pointer;-->
+                    <!--box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);-->
+                    <!--border: 1px solid green;-->
+                    <!--border-radius: 4px;-->
+                    <!--padding-top: 5px;display: none;">-->
+                    <!--<label style="color:#fff">验证成功</label>-->
+                    <!--<span class="glyphicon glyphicon-ok-sign" aria-hidden="true"-->
+
+                    <!--style="margin-top:3px;color:#fff"></span>-->
+                    <!--</div>-->
+
                 </div>
 
 
                 <input type="submit"
-                       style="margin-top: 10px;
+                       style="margin-top: 15px;
                        width:100%;height: 30px;
                        background-color: #A2CEE7;
 
