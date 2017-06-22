@@ -1,18 +1,19 @@
 package me.mymilkbottles.weixinqing.controller;
 
-import me.mymilkbottles.weixinqing.util.JedisAdapter;
+import me.mymilkbottles.weixinqing.service.LoginService;
+import me.mymilkbottles.weixinqing.service.UserService;
+import me.mymilkbottles.weixinqing.dao.JedisAdapter;
 import me.mymilkbottles.weixinqing.util.LogUtil;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import me.mymilkbottles.weixinqing.util.VerifyCodeUtil;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -23,10 +24,45 @@ import java.io.IOException;
 @Controller
 public class LoginController {
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login() {
+    @Autowired
+    UserService userService;
 
+    @Autowired
+    LoginService loginService;
+
+    @Autowired
+    JedisAdapter jedisAdapter;
+
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login(@RequestParam(value = "from", defaultValue = "", required = false) String from,
+                        Model model, HttpSession session) {
+        model.addAttribute("from", from);
+        Object message = session.getAttribute("errorMsg");
+        if (message != null) {
+            model.addAttribute("errorMsg", message);
+            session.removeAttribute("errorMsg");
+        }
         return "login";
+    }
+
+    @RequestMapping(value = "/loginin", method = RequestMethod.GET)
+    public String loginIn(@RequestParam(value = "from", defaultValue = "", required = false) String from,
+                          String username, String password, String code, HttpSession session, Model model,
+                          HttpServletRequest request) {
+        String sessionId = session.getId();
+        String message = userService.validateLogin(username, password, code, sessionId);
+
+        if (message != null) {
+            session.setAttribute("errorMsg", message);
+            return "redirect:/login";
+        }
+        int userId = userService.getUserByMailOrTel(username).getId();
+        loginService.insertLoginInfo(sessionId, userId, request);
+        if (from != null && !"".equals(from)) {
+            //检查from是否为本站合法地址
+            return "redirect:/" + from;
+        }
+        return "redirect:/index";
     }
 
 
@@ -52,7 +88,7 @@ public class LoginController {
             LogUtil.error("验证码输出流失败" + e.getMessage());
         }
 
-        JedisAdapter.set(RedisKeyUtil.getVerifyCodeKey(sessionId), vCode.getCode(), 5 * 60 * 1000);
+        jedisAdapter.set(RedisKeyUtil.getVerifyCodeKey(sessionId), vCode.getCode(), 5 * 60 * 1000);
     }
 
 }

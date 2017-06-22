@@ -1,6 +1,7 @@
-package me.mymilkbottles.weixinqing.util;
+package me.mymilkbottles.weixinqing.dao;
 
 
+import me.mymilkbottles.weixinqing.util.LogUtil;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -33,7 +34,7 @@ public class JedisAdapter {
     }
 
 
-    public synchronized static Jedis getJedis() {
+    public synchronized Jedis getJedis() {
 
         try {
             if (jedisPool != null) {
@@ -46,21 +47,21 @@ public class JedisAdapter {
         return null;
     }
 
-    public static void set(String key, String value) {
-        Jedis jedis = JedisAdapter.getJedis();
+    public void set(String key, String value) {
+        Jedis jedis = getJedis();
         if (jedis != null) {
             jedis.set(key, value);
             jedis.close();
         }
     }
 
-    public static String get(String key) {
-        Jedis jedis = JedisAdapter.getJedis();
+    public String get(String key) {
+        Jedis jedis = getJedis();
         return jedis.get(key);
     }
 
-    public static void set(String key, String value, long time) {
-        Jedis jedis = JedisAdapter.getJedis();
+    public void set(String key, String value, long time) {
+        Jedis jedis = getJedis();
         if (jedis != null) {
             if (jedis.get(key) == null) {
                 jedis.set(key, value, "NX", "PX", time);
@@ -71,21 +72,21 @@ public class JedisAdapter {
         }
     }
 
-    public static void llpush() {
+    public void llpush() {
 
     }
 
-    public static void main(String[] args) {
-        JedisAdapter.set("redis-key", "redis-value", 3000L);
-        String value = JedisAdapter.get("redis-key");
-        System.out.println(value);
-
-        try {
-            Thread.sleep(2500);
-        } catch (InterruptedException e) {
-        }
-        System.out.println(JedisAdapter.get("redis-key"));
-    }
+//    public static void main(String[] args) {
+//        set("redis-key", "redis-value", 3000L);
+//        String value = get("redis-key");
+//        System.out.println(value);
+//
+//        try {
+//            Thread.sleep(2500);
+//        } catch (InterruptedException e) {
+//        }
+//        System.out.println(JedisAdapter.get("redis-key"));
+//    }
 
 
 }

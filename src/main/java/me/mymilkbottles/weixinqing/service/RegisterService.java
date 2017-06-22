@@ -3,7 +3,7 @@ package me.mymilkbottles.weixinqing.service;
 
 import me.mymilkbottles.weixinqing.dao.UserMapper;
 import me.mymilkbottles.weixinqing.model.User;
-import me.mymilkbottles.weixinqing.util.JedisAdapter;
+import me.mymilkbottles.weixinqing.dao.JedisAdapter;
 import me.mymilkbottles.weixinqing.util.LogUtil;
 import me.mymilkbottles.weixinqing.util.Md5Util;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;

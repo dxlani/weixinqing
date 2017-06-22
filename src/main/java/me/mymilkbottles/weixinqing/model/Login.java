@@ -19,6 +19,16 @@ public class Login {
 
     private Integer isDelete;
 
+    private Integer userId;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
     public Date getExpireDate() {
         return expireDate;
     }

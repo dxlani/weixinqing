@@ -21,6 +21,9 @@ public interface UserMapper {
     @Select({"select * from " + ALL_FIELD + " where username = #{username}"})
     public User getUserByUsername(String username);
 
+    @Select({"select * from " + ALL_FIELD + " where mail = #{mt} or tel = #{mt}"})
+    public User getUserByMailOrTel(String mt);
+
     @Select({"select * from " + ALL_FIELD + " where id = #{id}"})
     public User getUserById(Integer id);
 

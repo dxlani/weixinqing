@@ -20,7 +20,11 @@ public class AuthorityIntercepter implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        return false;
+        if (hostHolder.getUser() == null) {
+            response.sendRedirect("/login?from=" + request.getRequestURI());
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -18,4 +18,7 @@ public class HostHolder {
         userThreadLocal.set(user);
     }
 
+    public void clear() {
+        userThreadLocal.remove();
+    }
 }
