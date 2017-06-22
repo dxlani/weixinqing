@@ -21,6 +21,9 @@ public class RegisterService {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    JedisAdapter jedisAdapter;
+
     public String checkRegisterInfo(String mail, String pwd, String name, String code, String id) {
         if (mail.indexOf('@') == -1) {
             return "请输入合法的邮箱账户！";
@@ -41,7 +44,7 @@ public class RegisterService {
             return "请输入验证码！";
         }
         String codeKey = RedisKeyUtil.getVerifyCodeKey(id);
-        String assertCode = JedisAdapter.get(codeKey);
+        String assertCode = jedisAdapter.get(codeKey);
         if (assertCode == null) {
             return "您的验证码已过期，请您刷新验证码后重新输入！";
         }
@@ -63,7 +66,6 @@ public class RegisterService {
     public int registerNewUser(String mail, String pwd, String name) {
         String salt = UUID.randomUUID().toString().substring(0, 6);
         pwd = Md5Util.getMD5(pwd + salt);
-        LogUtil.debug(name + " " + pwd + " " + salt + " " + mail);
         User user = new User();
         user.setMail(mail);
         user.setPwd(pwd);

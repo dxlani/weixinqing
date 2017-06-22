@@ -20,7 +20,7 @@ public interface LoginMapper {
 
     public static final String ALL_FIELD = " id, ticket, expire_date, login_date, detail, is_delete, user_id ";
 
-    @Insert({"insert into" + TABLE_NAME + "(" + FIELDS + ")values(#{ticket}, #{expire_date}, #{login_date}, #{detail},#{userId})"})
+    @Insert({"insert into" + TABLE_NAME + "(" + FIELDS + ")values(#{ticket}, #{expireDate}, #{loginDate}, #{detail},#{userId})"})
     public int insertLoginInfo(Login login);
 
     @Update({"update " + TABLE_NAME + " set is_delete = 1 where ticket = #{id}"})

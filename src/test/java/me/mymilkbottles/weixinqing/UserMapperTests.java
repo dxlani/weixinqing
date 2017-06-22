@@ -21,6 +21,6 @@ public class UserMapperTests {
 
     @Test
     public void testIsPasswordCorrect() {
-        userMapper.isPasswordCorrect("javaxz@", null, "e60d0c3b444a64131fbfd7243747ef8d");
+        userMapper.isPasswordCorrect(20, "e60d0c3b444a64131fbfd7243747ef8d");
     }
 }

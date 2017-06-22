@@ -5,7 +5,7 @@
 
     <sql id="table_name">user_table</sql>
 
-    <select id="isPasswordCorrect" resultType="Boolean">
+    <select id="isPasswordCorrect" resultType="boolean">
         select count(temp.result) != 0
         from
         (
@@ -13,12 +13,7 @@
         from
         <include refid="table_name"/>
         <where>
-            <if test="mail != null">
-                and #{mail} =<include refid="table_name"/>.mail
-            </if>
-            <if test="tel != null">
-                and #{tel} =<include refid="table_name"/>.tel
-            </if>
+            and #{id} =<include refid="table_name"/>.id
         </where>
         ) temp
         where temp.result = 1;

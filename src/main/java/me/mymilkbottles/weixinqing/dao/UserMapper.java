@@ -15,19 +15,19 @@ public interface UserMapper {
 
     public static final String ALL_FIELD = " id, username, pwd, salt, mail, tel ";
 
-    @Insert({"insert into " + TABLE_NAME + "(" + FIELD + ") values(#{username}, #{password}, #{salt}, #{mail})"})
+    @Insert({"insert into " + TABLE_NAME + "(" + FIELD + ") values(#{username}, #{pwd}, #{salt}, #{mail})"})
     public int registerNewUser(User user);
 
-    @Select({"select * from " + ALL_FIELD + " where username = #{username}"})
+    @Select({"select * from " + TABLE_NAME + " where username = #{username}"})
     public User getUserByUsername(String username);
 
-    @Select({"select * from " + ALL_FIELD + " where mail = #{mt} or tel = #{mt}"})
+    @Select({"select * from " + TABLE_NAME + " where mail = #{mt} or tel = #{mt}"})
     public User getUserByMailOrTel(String mt);
 
-    @Select({"select * from " + ALL_FIELD + " where id = #{id}"})
+    @Select({"select * from " + TABLE_NAME + " where id = #{id}"})
     public User getUserById(Integer id);
 
-    @Select({"select * from " + ALL_FIELD + " where tel = #{tel}"})
+    @Select({"select * from " + TABLE_NAME + " where tel = #{tel}"})
     public User getUserByTel(String tel);
 
     @Select({"select count(username) from " + TABLE_NAME + " where username = #{username}"})
@@ -39,6 +39,7 @@ public interface UserMapper {
     @Select({"select count(mail) from " + TABLE_NAME + " where mail = #{mail}"})
     public int isMailExist(String mail);
 
-    public Boolean isPasswordCorrect(@Param("mail") String mail, @Param("tel") String tel, @Param("password") String password);
+    public Boolean isPasswordCorrect(
+            @Param("id") int id, @Param("pwd") String password);
 
 }

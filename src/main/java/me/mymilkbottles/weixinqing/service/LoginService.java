@@ -8,13 +8,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import me.mymilkbottles.weixinqing.dao.LoginMapper;
 import me.mymilkbottles.weixinqing.model.Login;
+import me.mymilkbottles.weixinqing.util.LogUtil;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class LoginService {
@@ -38,9 +44,9 @@ public class LoginService {
         return loginMapper.getLoginUser(id);
     }
 
-    public int insertLoginInfo(String sessionId, Integer id, HttpServletRequest request) {
+    public int insertLoginInfo(String ticket, Integer id, HttpServletRequest request) {
         Login login = new Login();
-        login.setTicket(sessionId);
+        login.setTicket(ticket);
         login.setIsDelete(0);
         login.setUserId(id);
 
@@ -48,7 +54,15 @@ public class LoginService {
         login.setLoginDate(nowDate);
         login.setExpireDate(new Date(nowDate.getTime() + 20 * 60 * 1000));
 
-        login.setDetail(JSON.toJSONString(request));
+        Map<String, Object> map = new HashMap<>();
+
+        final Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String element = headerNames.nextElement();
+            map.put(element, request.getHeader(element));
+        }
+
+        login.setDetail(JSON.toJSONString(map));
 
         return loginMapper.insertLoginInfo(login);
     }

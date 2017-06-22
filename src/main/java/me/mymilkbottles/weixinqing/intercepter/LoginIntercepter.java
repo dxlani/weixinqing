@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
@@ -32,15 +33,21 @@ public class LoginIntercepter implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
 
-        String sessionId = request.getSession().getId();
+        String ticket = null;
+        for (Cookie cookie : request.getCookies()) {
+            if ("weixinqing_ticket".equals(cookie.getName())) {
+                ticket = cookie.getValue();
+                break;
+            }
+        }
 
-        Date expireDate = loginService.getExpireDate(sessionId);
+        Date expireDate = loginService.getExpireDate(ticket);
 
-        if (expireDate == null || new Date().before(expireDate) || loginService.getStatus(sessionId) != 0) {
-            response.sendRedirect("/login?from=" + request.getRequestURI());
+        if (expireDate == null || new Date().before(expireDate) || loginService.getStatus(ticket) != 0) {
             return true;
         }
-        int userId = loginService.getLoginUser(sessionId);
+
+        int userId = loginService.getLoginUser(ticket);
         User user = userService.getUserById(userId);
         hostHolder.setUser(user);
         return true;

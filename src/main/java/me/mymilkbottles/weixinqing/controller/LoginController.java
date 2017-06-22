@@ -13,10 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.chrono.IsoEra;
+import java.util.Enumeration;
+import java.util.UUID;
 
 /**
  * Created by Administrator on 2017/06/20 21:07.
@@ -35,32 +40,46 @@ public class LoginController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(@RequestParam(value = "from", defaultValue = "", required = false) String from,
-                        Model model, HttpSession session) {
+                        Model model, HttpSession session, HttpServletRequest request) {
+
         model.addAttribute("from", from);
         Object message = session.getAttribute("errorMsg");
         if (message != null) {
             model.addAttribute("errorMsg", message);
             session.removeAttribute("errorMsg");
         }
+        Object username = session.getAttribute("username");
+        if (username != null) {
+            model.addAttribute("username", username);
+            session.removeAttribute("username");
+        }
         return "login";
     }
 
-    @RequestMapping(value = "/loginin", method = RequestMethod.GET)
+    @RequestMapping(value = "/loginin", method = RequestMethod.POST)
     public String loginIn(@RequestParam(value = "from", defaultValue = "", required = false) String from,
-                          String username, String password, String code, HttpSession session, Model model,
+                          String username, String password, String code, HttpSession session,
+                          HttpServletResponse response, Model model,
                           HttpServletRequest request) {
         String sessionId = session.getId();
         String message = userService.validateLogin(username, password, code, sessionId);
 
         if (message != null) {
             session.setAttribute("errorMsg", message);
+            session.setAttribute("username", username);
             return "redirect:/login";
         }
+
         int userId = userService.getUserByMailOrTel(username).getId();
-        loginService.insertLoginInfo(sessionId, userId, request);
+
+        Cookie cookie = new Cookie("weixinqing_ticket", UUID.randomUUID().toString().replaceAll("-", ""));
+        response.addCookie(cookie);
+
+        loginService.insertLoginInfo(cookie.getValue(), userId, request);
+
         if (from != null && !"".equals(from)) {
             //检查from是否为本站合法地址
-            return "redirect:/" + from;
+            return "redirect:" + from;
         }
         return "redirect:/index";
     }
@@ -79,7 +98,6 @@ public class LoginController {
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
-
 
         VerifyCodeUtil vCode = new VerifyCodeUtil(80, 30, 4, 20);
         try {

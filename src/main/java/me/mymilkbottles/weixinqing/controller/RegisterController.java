@@ -10,8 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.UUID;
 
 /**
  * Created by Administrator on 2017/06/21 11:20.
@@ -44,13 +47,17 @@ public class RegisterController {
     @RequestMapping(value = "/registeraccount", method = RequestMethod.POST)
     public String registerAccount(String mail, String pwd, String name, String code,
                                   @CookieValue("JSESSIONID") String sessionId,
-                                  HttpSession session, HttpServletRequest request) {
+                                  HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         String result = registerService.checkRegisterInfo(mail, pwd, name, code, sessionId);
         if (result == null) {
             if (registerService.registerNewUser(mail, pwd, name) > 0) {
                 User user = userService.getUserByUsername(name);
                 hostHolder.setUser(user);
-                loginService.insertLoginInfo(sessionId, user.getId(), request);
+
+                Cookie cookie = new Cookie("weixinqing_ticket", UUID.randomUUID().toString().replaceAll("-", ""));
+                response.addCookie(cookie);
+
+                loginService.insertLoginInfo(cookie.getValue(), user.getId(), request);
                 return "redirect:/index";
             } else {
                 result = "注册失败，请您联系客服！";
