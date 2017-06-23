@@ -9,9 +9,6 @@ public interface EventHandler {
 
     public EntityType getSupportEventType();
 
-    public EventStatus getEventStatus();
-
-    public void setEventStatus();
-
+    public void doHandler();
 
 }

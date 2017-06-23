@@ -5,4 +5,17 @@ package me.mymilkbottles.weixinqing.util;
  */
 public enum EntityType {
 
+    LOGIN(1),
+    REGISTER(2);
+
+    private int value;
+
+    EntityType() {
+
+    }
+
+    EntityType(int value) {
+        this.value = value;
+    }
+
 }

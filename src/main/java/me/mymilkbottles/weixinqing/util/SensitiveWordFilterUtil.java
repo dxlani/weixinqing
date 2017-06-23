@@ -10,11 +10,11 @@ import java.util.Map;
  */
 public class SensitiveWordFilterUtil {
 
-    private WordTree wordTree = new WordTree();
+    private static WordTree wordTree = new WordTree();
 
     private static final String SENSITIVE_WORD_REPLACE = "***";
 
-    private class WordTree {
+    private static class WordTree {
 
         private Map<Character, WordTree> tree = new HashMap<Character, WordTree>();
 
@@ -40,7 +40,7 @@ public class SensitiveWordFilterUtil {
         }
     }
 
-    public SensitiveWordFilterUtil addSensitiveWord(String sensitiveWord) {
+    public static void addSensitiveWord(String sensitiveWord) {
 
         WordTree wordTreeNode = wordTree;
 
@@ -54,10 +54,9 @@ public class SensitiveWordFilterUtil {
 
             wordTreeNode = tempWordTreeNode;
         }
-        return this;
     }
 
-    public String sensitiveFilter(String filterText) {
+    public static String filter(String filterText) {
 
         StringBuilder afterFilterText = new StringBuilder();
 
@@ -120,7 +119,7 @@ public class SensitiveWordFilterUtil {
 //                    "等你下次上网的时候我把你的单车轮胎气都放光，让你回不去只能在网吧通宵，实在不行我就使用暴= 力。" +
 //                    "打死你这个s*b东西，骂我？那你就是在拿自己的生命做赌博！！！！（我不色&情的）";
 //
-//            String normalText = sensitiveWordFilter.sensitiveFilter(needFilterText);
+//            String normalText = sensitiveWordFilter.filter(needFilterText);
 //
 //            System.out.println(normalText);
 //
