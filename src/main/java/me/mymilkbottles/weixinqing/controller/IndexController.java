@@ -1,6 +1,7 @@
 package me.mymilkbottles.weixinqing.controller;
 
 import me.mymilkbottles.weixinqing.model.HostHolder;
+import me.mymilkbottles.weixinqing.util.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,7 @@ public class IndexController {
 
     @RequestMapping(value = {"/", "/index"})
     public String index() {
-
+        LogUtil.info("index");
         return "index";
     }
 }

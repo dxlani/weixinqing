@@ -1,17 +1,21 @@
 package me.mymilkbottles.weixinqing.controller;
 
+import me.mymilkbottles.weixinqing.model.HostHolder;
+import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.service.LoginService;
 import me.mymilkbottles.weixinqing.service.UserService;
 import me.mymilkbottles.weixinqing.dao.JedisAdapter;
 import me.mymilkbottles.weixinqing.util.LogUtil;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import me.mymilkbottles.weixinqing.util.VerifyCodeUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -38,46 +42,55 @@ public class LoginController {
     @Autowired
     JedisAdapter jedisAdapter;
 
+    @Autowired
+    HostHolder hostHolder;
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(@RequestParam(value = "from", defaultValue = "", required = false) String from,
+                        @RequestParam(value = "username", defaultValue = "", required = false) String username,
+                        @RequestParam(value = "message", defaultValue = "", required = false) String message,
                         Model model, HttpSession session, HttpServletRequest request) {
-
-        model.addAttribute("from", from);
-        Object message = session.getAttribute("errorMsg");
-        if (message != null) {
-            model.addAttribute("errorMsg", message);
-            session.removeAttribute("errorMsg");
+        if (StringUtils.isNotBlank(from)) {
+            model.addAttribute("from", from);
         }
-        Object username = session.getAttribute("username");
-        if (username != null) {
+        if (StringUtils.isNotBlank(username)) {
             model.addAttribute("username", username);
-            session.removeAttribute("username");
+        }
+        if (StringUtils.isNotBlank(message)) {
+            model.addAttribute("errorMsg", message);
         }
         return "login";
     }
 
-    @RequestMapping(value = "/loginin", method = RequestMethod.POST)
+    @RequestMapping(value = "/login/", method = RequestMethod.POST)
     public String loginIn(@RequestParam(value = "from", defaultValue = "", required = false) String from,
                           String username, String password, String code, HttpSession session,
                           HttpServletResponse response, Model model,
                           HttpServletRequest request) {
+
+        LogUtil.info("/login/" + "user=" + hostHolder.getUser());
+
         String sessionId = session.getId();
         String message = userService.validateLogin(username, password, code, sessionId);
 
         if (message != null) {
-            session.setAttribute("errorMsg", message);
-            session.setAttribute("username", username);
-            return "redirect:/login";
+            model.addAttribute("username", username);
+            model.addAttribute("errorMsg", message);
+            return "login";
         }
 
-        int userId = userService.getUserByMailOrTel(username).getId();
+        User user = userService.getUserByMailOrTel(username);
 
         Cookie cookie = new Cookie("weixinqing_ticket", UUID.randomUUID().toString().replaceAll("-", ""));
+        cookie.setPath("/");
         response.addCookie(cookie);
 
-        loginService.insertLoginInfo(cookie.getValue(), userId, request);
+        LogUtil.info("/login/" + "addCookie=" + cookie.getValue() + "cookie path=" + cookie.getPath());
+        hostHolder.setUser(user);
 
-        if (from != null && !"".equals(from)) {
+        loginService.insertLoginInfo(cookie.getValue(), user.getId(), request);
+
+        if (StringUtils.isNotBlank(from)) {
             //检查from是否为本站合法地址
             return "redirect:" + from;
         }

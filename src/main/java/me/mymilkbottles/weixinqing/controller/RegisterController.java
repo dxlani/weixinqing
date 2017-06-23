@@ -36,18 +36,15 @@ public class RegisterController {
 
     @RequestMapping("/register")
     public String register(HttpSession session, Model model) {
-        Object result = session.getAttribute("result");
-        if (result != null) {
-            model.addAttribute("result", result);
-            session.removeAttribute("result");
-        }
         return "register";
     }
 
-    @RequestMapping(value = "/registeraccount", method = RequestMethod.POST)
+    @RequestMapping(value = "/register/", method = RequestMethod.POST)
     public String registerAccount(String mail, String pwd, String name, String code,
-                                  @CookieValue("JSESSIONID") String sessionId,
-                                  HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+                                  @CookieValue("JSESSIONID") String sessionId, Model model,
+                                  HttpSession session,
+                                  HttpServletRequest request,
+                                  HttpServletResponse response) {
         String result = registerService.checkRegisterInfo(mail, pwd, name, code, sessionId);
         if (result == null) {
             if (registerService.registerNewUser(mail, pwd, name) > 0) {
@@ -55,15 +52,17 @@ public class RegisterController {
                 hostHolder.setUser(user);
 
                 Cookie cookie = new Cookie("weixinqing_ticket", UUID.randomUUID().toString().replaceAll("-", ""));
+                cookie.setPath("/");
                 response.addCookie(cookie);
 
                 loginService.insertLoginInfo(cookie.getValue(), user.getId(), request);
+                model.addAttribute("user", user);
                 return "redirect:/index";
             } else {
                 result = "注册失败，请您联系客服！";
             }
         }
-        session.setAttribute("result", result);
-        return "redirect:/register";
+        model.addAttribute("result", result);
+        return "register";
     }
 }

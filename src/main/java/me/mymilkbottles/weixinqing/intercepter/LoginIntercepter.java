@@ -4,6 +4,8 @@ import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.service.LoginService;
 import me.mymilkbottles.weixinqing.service.UserService;
+import me.mymilkbottles.weixinqing.util.LogUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -32,29 +34,36 @@ public class LoginIntercepter implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-
+        LogUtil.info("preHandle" + request.getRequestURI());
         String ticket = null;
-        for (Cookie cookie : request.getCookies()) {
-            if ("weixinqing_ticket".equals(cookie.getName())) {
-                ticket = cookie.getValue();
-                break;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("weixinqing_ticket".equals(cookie.getName())) {
+                    ticket = cookie.getValue();
+                    LogUtil.info("preHandle " + "ticket=" + ticket);
+                    break;
+                }
+            }
+            if (StringUtils.isNotBlank(ticket)) {
+                Date expireDate = loginService.getExpireDate(ticket);
+                if (expireDate == null || new Date().after(expireDate) || loginService.getStatus(ticket) != 0) {
+                    return true;
+                }
+                LogUtil.info("preHandle " + "ticket not expire");
+                int userId = loginService.getLoginUser(ticket);
+                User user = userService.getUserById(userId);
+                LogUtil.info("preHandle " + "set user=" + user.getUsername());
+                hostHolder.setUser(user);
             }
         }
-
-        Date expireDate = loginService.getExpireDate(ticket);
-
-        if (expireDate == null || new Date().before(expireDate) || loginService.getStatus(ticket) != 0) {
-            return true;
-        }
-
-        int userId = loginService.getLoginUser(ticket);
-        User user = userService.getUserById(userId);
-        hostHolder.setUser(user);
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        LogUtil.info("postHandle" + modelAndView + hostHolder.getUser());
+        LogUtil.info("postHandle" + " add cookie");
         if (modelAndView != null && hostHolder.getUser() != null) {
             modelAndView.addObject("user", hostHolder.getUser());
         }
@@ -62,6 +71,7 @@ public class LoginIntercepter implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        LogUtil.info("afterCompletion" + hostHolder.getUser());
         hostHolder.clear();
     }
 }
