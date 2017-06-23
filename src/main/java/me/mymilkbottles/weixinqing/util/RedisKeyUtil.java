@@ -11,12 +11,18 @@ public class RedisKeyUtil {
 
     private static final String SEND_TEL_MSG_KEY = "STMK";
 
+    private static final String HANDLER_KEY = "HK";
+
     public static String getVerifyCodeKey(String id) {
         return VERIFY_CODE_KEY + SPLIT + id;
     }
 
     public static String getSendTelMsgKey(String id) {
         return SEND_TEL_MSG_KEY + SPLIT + id;
+    }
+
+    public static String getHandlerKey() {
+        return HANDLER_KEY;
     }
 
 }

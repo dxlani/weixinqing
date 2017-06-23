@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,9 +23,7 @@ public class JedisAdapter {
     //Redis的端口号
     private static int PORT = 6379;
 
-
     private static JedisPool jedisPool = null;
-
 
     static {
         try {
@@ -74,6 +74,21 @@ public class JedisAdapter {
 
     public void llpush() {
 
+    }
+
+    public void lpush(String key, String json) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            jedis.lpush(key, json);
+        }
+    }
+
+    public List<String> brpop(String key) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            return jedis.brpop(0, key);
+        }
+        return new ArrayList<String>();
     }
 
 //    public static void main(String[] args) {
