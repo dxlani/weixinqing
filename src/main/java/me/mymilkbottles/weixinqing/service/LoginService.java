@@ -11,6 +11,7 @@ import me.mymilkbottles.weixinqing.dao.LoginMapper;
 import me.mymilkbottles.weixinqing.model.EventType;
 import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.Login;
+import me.mymilkbottles.weixinqing.model.User;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,9 +76,11 @@ public class LoginService {
 
         Map<String, Object> exts = new HashMap<String, Object>();
 
-        exts.put("username", hostHolder.getUser().getUsername());
+        User user = hostHolder.getUser();
+        exts.put("username", user.getUsername());
 
-        asyncEventService.sendEvent(new EventModel(1, EventType.LOGIN, 1, 1, exts));
+        log.info("异步信息发送成功");
+        asyncEventService.sendEvent(new EventModel(1, EventType.LOGIN, 1, user.getId(), exts));
 
         return loginMapper.insertLoginInfo(login);
     }

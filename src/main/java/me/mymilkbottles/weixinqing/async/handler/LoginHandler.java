@@ -2,10 +2,15 @@ package me.mymilkbottles.weixinqing.async.handler;
 
 import me.mymilkbottles.weixinqing.async.Event;
 import me.mymilkbottles.weixinqing.async.EventModel;
+import me.mymilkbottles.weixinqing.async.HandlerCustomer;
 import me.mymilkbottles.weixinqing.model.EventType;
 import me.mymilkbottles.weixinqing.model.HostHolder;
+import me.mymilkbottles.weixinqing.model.Login;
+import me.mymilkbottles.weixinqing.model.User;
+import me.mymilkbottles.weixinqing.service.UserService;
 import me.mymilkbottles.weixinqing.util.MailTemplateType;
 import me.mymilkbottles.weixinqing.util.MailUtil;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +26,13 @@ import java.util.Map;
 @Component
 public class LoginHandler implements Event {
 
+    private static final Logger log = Logger.getLogger(LoginHandler.class);
+
     @Autowired
     MailUtil mailUtil;
 
     @Autowired
-    HostHolder hostHolder;
+    UserService userService;
 
     @Override
     public void doHandler(EventModel eventModel) {
@@ -37,9 +44,11 @@ public class LoginHandler implements Event {
 
         int advicer = eventModel.getAdvicer();
 
-        Map<String, Object> exts = eventModel.getExts();
+        log.info("mail send");
 
-        mailUtil.sendMail("3028089952@qq.com", "登录", MailTemplateType.LOGIN_MAIL, exts);
+        mailUtil.sendMail("javaxz@163.com", "登录", MailTemplateType.LOGIN_MAIL, eventModel.getExts());
+
+        mailUtil.sendMail("3028089952@qq.com", "登录", MailTemplateType.LOGIN_MAIL, eventModel.getExts());
     }
 
     @Override

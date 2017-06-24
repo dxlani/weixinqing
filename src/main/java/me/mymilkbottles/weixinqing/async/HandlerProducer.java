@@ -31,13 +31,19 @@ public class HandlerProducer {
         } catch (Exception e) {
             jedis.lrem(key, 0, json);
             return false;
+        } finally {
+            jedis.close();
         }
+        jedis = jedisAdapter.getJedis();
+        long res = jedis.llen(key);
         int len = jedis.llen(key).intValue();
         for (int i = 0; i < len; ++i) {
             if (json.equals(jedis.lindex(key, i))) {
+                jedis.close();
                 return true;
             }
         }
+        jedis.close();
         return false;
     }
 }

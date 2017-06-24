@@ -54,27 +54,39 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
             }
         }
 
-        while (true) {
-            EventModel eventModel = null;
-            for (String jsonObject : jedisAdapter.brpop(RedisKeyUtil.getHandlerKey())) {
-                if (RedisKeyUtil.getHandlerKey().equals(jsonObject) == false) {
-                    eventModel = JSON.parseObject(jsonObject, EventModel.class);
-                    break;
-                }
-            }
-
-            EventModel finalEventModel = eventModel;
-            Future<Event> future = executors.submit(new Callable<Event>() {
-                @Override
-                public Event call() throws Exception {
-                    for (Event event : eventHandlerSolver.get(finalEventModel.getEventType())) {
-                        event.doHandler(finalEventModel);
-                    }
-                    return null;
-                }
-            });
+        for (Map.Entry<EventType, List<Event>> entry : eventHandlerSolver.entrySet()) {
+            log.info("异步时间类型 " + entry.getKey() + " " + entry.getValue());
         }
 
+        log.info("异步事件消费者启动");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    EventModel eventModel = null;
+                    for (String jsonObject : jedisAdapter.brpop(RedisKeyUtil.getHandlerKey())) {
+                        log.info("异步事件消费者brpop=" + jsonObject);
+                        if (RedisKeyUtil.getHandlerKey().equals(jsonObject) == false) {
+                            eventModel = JSON.parseObject(jsonObject, EventModel.class);
+                            break;
+                        }
+                    }
+
+                    EventModel finalEventModel = eventModel;
+                    Future<Event> future = executors.submit(new Callable<Event>() {
+                        @Override
+                        public Event call() throws Exception {
+                            for (Event event : eventHandlerSolver.get(finalEventModel.getEventType())) {
+                                event.doHandler(finalEventModel);
+                                log.info("dohandler" + event + " " + finalEventModel);
+                            }
+                            return null;
+                        }
+                    });
+                }
+            }
+        }).start();
+        log.info("异步事件消费者结束");
     }
 
     @Override

@@ -5,7 +5,7 @@ package me.mymilkbottles.weixinqing.util;
  */
 public enum MailTemplateType {
 
-    LOGIN_MAIL("login_mail.html");
+    LOGIN_MAIL("loginMail.ftl");
 
     private String type;
 

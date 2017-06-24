@@ -77,7 +77,7 @@ public class LoginController {
             return "login";
         }
 
-        User user = userService.getUserByMailOrTel(username);
+        User user = userService.getUserByMail(username);
 
         Cookie cookie = new Cookie("weixinqing_ticket", UUID.randomUUID().toString().replaceAll("-", ""));
         cookie.setPath("/");

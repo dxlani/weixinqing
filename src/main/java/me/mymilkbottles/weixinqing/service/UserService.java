@@ -44,8 +44,8 @@ public class UserService {
         return userMapper.isMailExist(mail);
     }
 
-    public User getUserByMailOrTel(String mt) {
-        return userMapper.getUserByMailOrTel(mt);
+    public User getUserByMail(String tel) {
+        return userMapper.getUserByMail(tel);
     }
 
     public Boolean isPasswordCorrect(int id, String password) {
@@ -56,7 +56,7 @@ public class UserService {
         String verifyKey = RedisKeyUtil.getVerifyCodeKey(sessionId);
         String assertCode = jedisAdapter.get(verifyKey);
         if (assertCode != null && assertCode.equals(code)) {
-            User user = userMapper.getUserByMailOrTel(username);
+            User user = userMapper.getUserByMail(username);
             if (user == null) {
                 return "帐号不存在！";
             }
