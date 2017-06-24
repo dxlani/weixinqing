@@ -21,20 +21,38 @@ public class EventModel {
 
     private Map<String, Object> exts = new HashMap<String, Object>();
 
+    public EventModel() {
+    }
+
+    public EventModel(int eventId, EventType eventType, int producer, int advicer, Map<String, Object> exts) {
+        this.eventId = eventId;
+        this.eventType = eventType;
+        this.producer = producer;
+        this.advicer = advicer;
+        this.exts = exts;
+    }
+
+    public EventModel(int eventId, EventType eventType, int producer, int advicer) {
+        this.eventId = eventId;
+        this.eventType = eventType;
+        this.producer = producer;
+        this.advicer = advicer;
+    }
+
+    public int getProducer() {
+        return producer;
+    }
+
+    public void setProducer(int producer) {
+        this.producer = producer;
+    }
+
     public int getEventId() {
         return eventId;
     }
 
     public void setEventId(int eventId) {
         this.eventId = eventId;
-    }
-
-    public int getEventProducer() {
-        return producer;
-    }
-
-    public void setEventProducer(int producer) {
-        this.producer = producer;
     }
 
     public int getAdvicer() {

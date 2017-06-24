@@ -31,7 +31,7 @@ $('document').ready(function () {
 
 
     $('#submit').click(function () {
-        var mail = $('#mail').val();
+        var mail = $('#mails').val();
         if (mail.indexOf('@') == -1) {
             insertDanger('请输入合法的邮箱账户！');
             return false;

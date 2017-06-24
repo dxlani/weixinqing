@@ -11,17 +11,17 @@ public interface UserMapper {
 
     public static final String TABLE_NAME = "user_table";
 
-    public static final String FIELD = " username, pwd, salt, mail ";
+    public static final String FIELD = " username, pwd, salt, mails ";
 
-    public static final String ALL_FIELD = " id, username, pwd, salt, mail, tel ";
+    public static final String ALL_FIELD = " id, username, pwd, salt, mails, tel ";
 
-    @Insert({"insert into " + TABLE_NAME + "(" + FIELD + ") values(#{username}, #{pwd}, #{salt}, #{mail})"})
+    @Insert({"insert into " + TABLE_NAME + "(" + FIELD + ") values(#{username}, #{pwd}, #{salt}, #{mails})"})
     public int registerNewUser(User user);
 
     @Select({"select * from " + TABLE_NAME + " where username = #{username}"})
     public User getUserByUsername(String username);
 
-    @Select({"select * from " + TABLE_NAME + " where mail = #{mt} or tel = #{mt}"})
+    @Select({"select * from " + TABLE_NAME + " where mails = #{mt} or tel = #{mt}"})
     public User getUserByMailOrTel(String mt);
 
     @Select({"select * from " + TABLE_NAME + " where id = #{id}"})
@@ -36,7 +36,7 @@ public interface UserMapper {
     @Select({"select count(tel) from " + TABLE_NAME + " where tel = #{tel}"})
     public int isTelExist(String tel);
 
-    @Select({"select count(mail) from " + TABLE_NAME + " where mail = #{mail}"})
+    @Select({"select count(mails) from " + TABLE_NAME + " where mails = #{mails}"})
     public int isMailExist(String mail);
 
     public Boolean isPasswordCorrect(

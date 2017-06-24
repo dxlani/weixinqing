@@ -1,5 +1,7 @@
 package me.mymilkbottles.weixinqing.util;
 
+import me.mymilkbottles.weixinqing.async.HandlerCustomer;
+import org.apache.log4j.Logger;
 import sun.applet.Main;
 
 import java.math.BigInteger;
@@ -11,6 +13,9 @@ import java.security.NoSuchAlgorithmException;
  */
 public class Md5Util {
 
+
+    private static final Logger log = Logger.getLogger(Md5Util.class);
+
     /**
      * 对字符串md5加密
      */
@@ -21,7 +26,7 @@ public class Md5Util {
         try {
             md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            LogUtil.error("没有MD5算法" + e.getMessage());
+            log.error("没有MD5算法" + e.getMessage());
         }
         // 计算md5函数
         md.update(str.getBytes());

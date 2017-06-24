@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import me.mymilkbottles.weixinqing.dao.JedisAdapter;
 import me.mymilkbottles.weixinqing.model.EventType;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
+import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * Created by Administrator on 2017/06/13 13:31.
@@ -22,10 +27,14 @@ import java.util.Map;
 @Component
 public class HandlerCustomer implements InitializingBean, ApplicationContextAware {
 
+    private static final Logger log = Logger.getLogger(HandlerCustomer.class);
+
     @Autowired
     JedisAdapter jedisAdapter;
 
     private Map<EventType, List<Event>> eventHandlerSolver = new HashMap<>();
+
+    private static ExecutorService executors = Executors.newFixedThreadPool(8);
 
     private ApplicationContext applicationContext;
 
@@ -44,20 +53,28 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
                 }
             }
         }
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (String json : jedisAdapter.brpop(RedisKeyUtil.getHandlerKey())) {
-                    if (RedisKeyUtil.getHandlerKey().equals(json) == false) {
-                        EventModel eventModel = JSON.parseObject(json, EventModel.class);
-                        for (Event event : eventHandlerSolver.get(eventModel.getEventType())) {
-                            event.doHandler(eventModel);
-                        }
-                    }
+
+        while (true) {
+            EventModel eventModel = null;
+            for (String jsonObject : jedisAdapter.brpop(RedisKeyUtil.getHandlerKey())) {
+                if (RedisKeyUtil.getHandlerKey().equals(jsonObject) == false) {
+                    eventModel = JSON.parseObject(jsonObject, EventModel.class);
+                    break;
                 }
             }
-        });
-        thread.start();
+
+            EventModel finalEventModel = eventModel;
+            Future<Event> future = executors.submit(new Callable<Event>() {
+                @Override
+                public Event call() throws Exception {
+                    for (Event event : eventHandlerSolver.get(finalEventModel.getEventType())) {
+                        event.doHandler(finalEventModel);
+                    }
+                    return null;
+                }
+            });
+        }
+
     }
 
     @Override

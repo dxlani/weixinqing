@@ -5,18 +5,17 @@ package me.mymilkbottles.weixinqing.service;
  */
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import me.mymilkbottles.weixinqing.async.EventModel;
+import me.mymilkbottles.weixinqing.async.HandlerCustomer;
 import me.mymilkbottles.weixinqing.dao.LoginMapper;
+import me.mymilkbottles.weixinqing.model.EventType;
+import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.Login;
-import me.mymilkbottles.weixinqing.util.LogUtil;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -25,8 +24,18 @@ import java.util.Map;
 @Service
 public class LoginService {
 
+    private static final Logger log = Logger.getLogger(LoginService.class);
+
     @Autowired
     LoginMapper loginMapper;
+
+    @Autowired
+    AsyncEventService asyncEventService;
+
+    @Autowired
+    HostHolder hostHolder;
+
+
 
     public int deleteLoginInfo(String id) {
         return loginMapper.deleteLoginInfo(id);
@@ -63,6 +72,12 @@ public class LoginService {
         }
 
         login.setDetail(JSON.toJSONString(map));
+
+        Map<String, Object> exts = new HashMap<String, Object>();
+
+        exts.put("username", hostHolder.getUser().getUsername());
+
+        asyncEventService.sendEvent(new EventModel(1, EventType.LOGIN, 1, 1, exts));
 
         return loginMapper.insertLoginInfo(login);
     }

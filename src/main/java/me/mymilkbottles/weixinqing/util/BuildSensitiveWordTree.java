@@ -1,8 +1,8 @@
 package me.mymilkbottles.weixinqing.util;
 
-import me.mymilkbottles.weixinqing.util.LogUtil;
-import me.mymilkbottles.weixinqing.util.SensitiveWordFilterUtil;
+import me.mymilkbottles.weixinqing.async.HandlerCustomer;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -21,6 +21,8 @@ import java.util.Set;
 public class BuildSensitiveWordTree implements InitializingBean, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
+
+    private static final Logger log = Logger.getLogger(BuildSensitiveWordTree.class);
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -42,15 +44,15 @@ public class BuildSensitiveWordTree implements InitializingBean, ApplicationCont
                     if (StringUtils.isNotBlank(sensitiveWord)) {
                         sensitiveWordSet.add(sensitiveWord);
                         SensitiveWordFilterUtil.addSensitiveWord(sensitiveWord);
-                        LogUtil.info("add sensitiveword " + sensitiveWord);
+                        log.info("add sensitiveword " + sensitiveWord);
                         ++sensitiveWordCount;
                     }
                 }
             }
         }
         long endTime = System.nanoTime();
-        LogUtil.info("addSensitiveWord cost:" + (endTime - startTime) / 1e9 + "s");
-        LogUtil.info("sensitiveWordCount=" + sensitiveWordCount);
+        log.info("addSensitiveWord cost:" + (endTime - startTime) / 1e9 + "s");
+        log.info("sensitiveWordCount=" + sensitiveWordCount);
     }
 
     @Override

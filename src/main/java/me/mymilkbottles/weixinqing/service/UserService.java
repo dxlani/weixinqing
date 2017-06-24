@@ -1,10 +1,12 @@
 package me.mymilkbottles.weixinqing.service;
 
+import me.mymilkbottles.weixinqing.async.HandlerCustomer;
 import me.mymilkbottles.weixinqing.dao.UserMapper;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.dao.JedisAdapter;
 import me.mymilkbottles.weixinqing.util.Md5Util;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class UserService {
 
     @Autowired
     JedisAdapter jedisAdapter;
+
+    private static final Logger log = Logger.getLogger(UserService.class);
 
     public int registerNewUser(User user) {
         return userMapper.registerNewUser(user);

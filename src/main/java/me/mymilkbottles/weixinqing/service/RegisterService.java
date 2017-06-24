@@ -1,12 +1,13 @@
 package me.mymilkbottles.weixinqing.service;
 
 
+import me.mymilkbottles.weixinqing.async.HandlerCustomer;
 import me.mymilkbottles.weixinqing.dao.UserMapper;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.dao.JedisAdapter;
-import me.mymilkbottles.weixinqing.util.LogUtil;
 import me.mymilkbottles.weixinqing.util.Md5Util;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,8 @@ public class RegisterService {
 
     @Autowired
     JedisAdapter jedisAdapter;
+
+    private static final Logger log = Logger.getLogger(RegisterService.class);
 
     public String checkRegisterInfo(String mail, String pwd, String name, String code, String id) {
         if (mail.indexOf('@') == -1) {

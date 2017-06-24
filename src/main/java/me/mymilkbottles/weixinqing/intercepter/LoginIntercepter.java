@@ -4,7 +4,6 @@ import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.service.LoginService;
 import me.mymilkbottles.weixinqing.service.UserService;
-import me.mymilkbottles.weixinqing.util.LogUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

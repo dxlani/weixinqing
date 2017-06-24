@@ -1,15 +1,14 @@
 package me.mymilkbottles.weixinqing.dao;
 
 
-import me.mymilkbottles.weixinqing.util.LogUtil;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2017/06/20 22:31.
@@ -25,27 +24,43 @@ public class JedisAdapter {
 
     private static JedisPool jedisPool = null;
 
+    private static final Logger log = Logger.getLogger(JedisAdapter.class);
+
     static {
         try {
             jedisPool = new JedisPool(ADDRESS, PORT);
         } catch (Exception e) {
-            LogUtil.error("初始化jedisPool失败" + e.getMessage());
+            log.error("初始化jedisPool失败" + e.getMessage());
         }
     }
 
 
     public synchronized Jedis getJedis() {
-
         try {
             if (jedisPool != null) {
                 return jedisPool.getResource();
             }
         } catch (Exception e) {
-            LogUtil.error("获取jedis失败" + e.getMessage());
-            return null;
+            log.error("获取jedis失败" + e.getMessage());
         }
         return null;
     }
+
+    public Transaction getTransaction() {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            return jedis.multi();
+        }
+        return null;
+    }
+
+    public List<Object> exec(Transaction tx) {
+        if (tx != null) {
+            return tx.exec();
+        }
+        return null;
+    }
+
 
     public void set(String key, String value) {
         Jedis jedis = getJedis();
@@ -57,7 +72,9 @@ public class JedisAdapter {
 
     public String get(String key) {
         Jedis jedis = getJedis();
-        return jedis.get(key);
+        String value = jedis.get(key);
+        jedis.close();
+        return value;
     }
 
     public void set(String key, String value, long time) {
@@ -72,21 +89,29 @@ public class JedisAdapter {
         }
     }
 
-    public void llpush() {
-
-    }
 
     public void lpush(String key, String json) {
         Jedis jedis = getJedis();
         if (jedis != null) {
             jedis.lpush(key, json);
+            jedis.close();
+        }
+    }
+
+    public void lrem(int count, String listKey, String key) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            jedis.lrem(listKey, count, key);
+            jedis.close();
         }
     }
 
     public List<String> brpop(String key) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            return jedis.brpop(0, key);
+            List<String> list = jedis.brpop(0, key);
+            jedis.close();
+            return list;
         }
         return new ArrayList<String>();
     }

@@ -5,26 +5,22 @@ import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.service.LoginService;
 import me.mymilkbottles.weixinqing.service.UserService;
 import me.mymilkbottles.weixinqing.dao.JedisAdapter;
-import me.mymilkbottles.weixinqing.util.LogUtil;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import me.mymilkbottles.weixinqing.util.VerifyCodeUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.chrono.IsoEra;
-import java.util.Enumeration;
 import java.util.UUID;
 
 /**
@@ -32,6 +28,8 @@ import java.util.UUID;
  */
 @Controller
 public class LoginController {
+
+    private static final Logger log = Logger.getLogger(LoginController.class);
 
     @Autowired
     UserService userService;
@@ -68,7 +66,7 @@ public class LoginController {
                           HttpServletResponse response, Model model,
                           HttpServletRequest request) {
 
-        LogUtil.info("/login/" + "user=" + hostHolder.getUser());
+        log.info("/login/" + "user=" + hostHolder.getUser());
 
         String sessionId = session.getId();
         String message = userService.validateLogin(username, password, code, sessionId);
@@ -85,7 +83,7 @@ public class LoginController {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        LogUtil.info("/login/" + "addCookie=" + cookie.getValue() + "cookie path=" + cookie.getPath());
+        log.info("/login/" + "addCookie=" + cookie.getValue() + "cookie path=" + cookie.getPath());
         hostHolder.setUser(user);
 
         loginService.insertLoginInfo(cookie.getValue(), user.getId(), request);
@@ -116,7 +114,7 @@ public class LoginController {
         try {
             vCode.write(response.getOutputStream());
         } catch (IOException e) {
-            LogUtil.error("验证码输出流失败" + e.getMessage());
+            log.error("验证码输出流失败" + e.getMessage());
         }
 
         jedisAdapter.set(RedisKeyUtil.getVerifyCodeKey(sessionId), vCode.getCode(), 5 * 60 * 1000);
