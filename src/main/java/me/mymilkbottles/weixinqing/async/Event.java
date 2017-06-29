@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
  */
 public interface Event {
 
-    public void doHandler(EventModel eventModel);
+    public Boolean doHandler(EventModel eventModel);
 
     public List<EventType> getSupportEventType();
 }

@@ -32,11 +32,20 @@ public class EventModel {
         this.exts = exts;
     }
 
-    public EventModel(int eventId, EventType eventType, int producer, int advicer) {
-        this.eventId = eventId;
+    public EventModel(EventType eventType, int producer, Map<String, Object> exts) {
         this.eventType = eventType;
         this.producer = producer;
-        this.advicer = advicer;
+        this.exts = exts;
+    }
+
+    public EventModel(EventType eventType, int producer) {
+        this.eventType = eventType;
+        this.producer = producer;
+    }
+
+    public EventModel putExt(String key, Object obj) {
+        this.getExts().put(key, obj);
+        return this;
     }
 
     public int getProducer() {

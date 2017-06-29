@@ -68,4 +68,8 @@ public class UserService {
         }
         return "您输入的验证码错误，请您刷新后重新输入";
     }
+
+    public int active(int id) {
+        return userMapper.active(id);
+    }
 }

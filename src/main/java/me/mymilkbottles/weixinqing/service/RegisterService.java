@@ -67,6 +67,7 @@ public class RegisterService {
     }
 
     public int registerNewUser(String mail, String pwd, String name) {
+
         String salt = UUID.randomUUID().toString().substring(0, 6);
         pwd = Md5Util.getMD5(pwd + salt);
         User user = new User();
@@ -74,6 +75,10 @@ public class RegisterService {
         user.setPwd(pwd);
         user.setSalt(salt);
         user.setUsername(name);
-        return userMapper.registerNewUser(user);
+
+        if (userMapper.registerNewUser(user) > 0) {
+            return user.getId();
+        }
+        return -1;
     }
 }

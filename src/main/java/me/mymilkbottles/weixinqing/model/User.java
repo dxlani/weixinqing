@@ -17,6 +17,17 @@ public class User {
 
     private String tel;
 
+    private int active;
+
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
+
     public Integer getId() {
         return id;
     }

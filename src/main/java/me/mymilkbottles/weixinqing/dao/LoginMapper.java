@@ -23,7 +23,7 @@ public interface LoginMapper {
     @Insert({"insert into" + TABLE_NAME + "(" + FIELDS + ")values(#{ticket}, #{expireDate}, #{loginDate}, #{detail},#{userId})"})
     public int insertLoginInfo(Login login);
 
-    @Update({"update " + TABLE_NAME + " set is_delete = 1 where ticket = #{id}"})
+    @Update({"update " + TABLE_NAME + " set is_delete = 1 where  ticket = #{id}"})
     public int deleteLoginInfo(String id);
 
     @Select({"select expire_date from " + TABLE_NAME + " where ticket = #{id}"})

@@ -7,6 +7,8 @@ import me.mymilkbottles.weixinqing.configuration.InterceptorConfiguration;
  */
 public class WeixinqingUtil {
 
+    public static final int ADMIN_ID = 0;
+
     public static int parseUserId(String userIdS) {
         int userId = -1;
         try {

@@ -34,9 +34,9 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
 
     private Map<EventType, List<Event>> eventHandlerSolver = new HashMap<>();
 
-    private static ExecutorService executors = Executors.newFixedThreadPool(8);
+    private static ExecutorService executors = Executors.newFixedThreadPool(3);
 
-    private ApplicationContext applicationContext;
+    private static ApplicationContext applicationContext;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -73,9 +73,10 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
                     }
 
                     EventModel finalEventModel = eventModel;
-                    Future<Event> future = executors.submit(new Callable<Event>() {
+                    Future<Boolean> future = executors.submit(new Callable<Boolean>() {
                         @Override
-                        public Event call() throws Exception {
+                        public Boolean call() throws Exception {
+
                             for (Event event : eventHandlerSolver.get(finalEventModel.getEventType())) {
                                 event.doHandler(finalEventModel);
                                 log.info("dohandler" + event + " " + finalEventModel);
@@ -91,6 +92,6 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+        HandlerCustomer.applicationContext = applicationContext;
     }
 }

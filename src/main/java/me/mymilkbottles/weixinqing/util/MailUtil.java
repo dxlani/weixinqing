@@ -42,7 +42,7 @@ public class MailUtil {
     @Autowired
     private FreeMarkerConfigurer freeMarkerConfigurer;
 
-    public void sendMail(String to, String subject, MailTemplateType type, Map<String, Object> exts) {
+    public boolean sendMail(String to, String subject, MailTemplateType type, Map<String, Object> exts) {
 
         log.info(javaMailSender);
 
@@ -70,11 +70,11 @@ public class MailUtil {
 
         } catch (Exception e) {
             log.error("邮件发送失败" + e.getMessage());
+            return false;
         }
 
         log.info("javaMailSender send a mail");
-
-
+        return true;
     }
 
 

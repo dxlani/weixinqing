@@ -12,9 +12,7 @@
         select (<include refid="table_name"/>.pwd = #{pwd}) result
         from
         <include refid="table_name"/>
-        <where>
-            and #{id} =<include refid="table_name"/>.id
-        </where>
+        where #{id} =<include refid="table_name"/>.id and active = 1
         ) temp
         where temp.result = 1;
     </select>

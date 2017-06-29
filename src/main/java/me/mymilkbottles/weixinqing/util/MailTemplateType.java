@@ -5,12 +5,12 @@ package me.mymilkbottles.weixinqing.util;
  */
 public enum MailTemplateType {
 
-    LOGIN_MAIL("loginMail.ftl");
+    LOGIN_MAIL("loginMail.ftl"),
+    REGISTER_MAIL("activationMail.ftl");
 
     private String type;
 
     MailTemplateType() {
-
     }
 
     MailTemplateType(String type) {

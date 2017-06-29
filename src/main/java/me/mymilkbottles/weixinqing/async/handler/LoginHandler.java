@@ -35,7 +35,7 @@ public class LoginHandler implements Event {
     UserService userService;
 
     @Override
-    public void doHandler(EventModel eventModel) {
+    public Boolean doHandler(EventModel eventModel) {
         int eventId = eventModel.getEventId();
 
         EventType eventType = eventModel.getEventType();
@@ -46,9 +46,11 @@ public class LoginHandler implements Event {
 
         log.info("mail send");
 
-        mailUtil.sendMail("javaxz@163.com", "登录", MailTemplateType.LOGIN_MAIL, eventModel.getExts());
+        return Boolean.TRUE;
 
-        mailUtil.sendMail("3028089952@qq.com", "登录", MailTemplateType.LOGIN_MAIL, eventModel.getExts());
+//        mailUtil.sendMail("javaxz@163.com", "登录", MailTemplateType.LOGIN_MAIL, eventModel.getExts());
+
+//        mailUtil.sendMail("3028089952@qq.com", "登录", MailTemplateType.LOGIN_MAIL, eventModel.getExts());
     }
 
     @Override
