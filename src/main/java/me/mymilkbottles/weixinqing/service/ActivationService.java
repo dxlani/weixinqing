@@ -23,9 +23,10 @@ public class ActivationService {
         Activation activation = new Activation();
         Date expireTime = new Date(new Date().getTime() + 24L * 60 * 60 * 1000);
         activation.setExpireTime(expireTime);
-        activation.setKey(key);
+        activation.setActivationKey(key);
         activation.setMail(mail);
         activation.setUserId(userId);
+        activation.setActive(0);
         return activationMapper.insertActivationInfo(activation);
     }
 

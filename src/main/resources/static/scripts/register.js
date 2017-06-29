@@ -67,6 +67,14 @@ $('document').ready(function () {
         return true;
     });
 
+    var url = $('#url').val();
+    if (url != '') {
+        if ($('#urlActive').val() == '0') {
+            $('#urlActive').val('1');
+            $('#activationModal').modal('show');
+        }
+    }
+
     // $('#getVerifyCode').click(function () {
     //     var key = $('#sendTelMsgKey').val();
     //     if (key != null && key != undefined && key.length == 8) {

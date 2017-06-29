@@ -3,6 +3,7 @@ package me.mymilkbottles.weixinqing.controller;
 import com.alibaba.fastjson.JSONObject;
 import me.mymilkbottles.weixinqing.async.EventModel;
 import me.mymilkbottles.weixinqing.async.HandlerProducer;
+import me.mymilkbottles.weixinqing.async.handler.LoginHandler;
 import me.mymilkbottles.weixinqing.model.Activation;
 import me.mymilkbottles.weixinqing.model.EventType;
 import me.mymilkbottles.weixinqing.model.HostHolder;
@@ -12,6 +13,7 @@ import me.mymilkbottles.weixinqing.service.LoginService;
 import me.mymilkbottles.weixinqing.service.RegisterService;
 import me.mymilkbottles.weixinqing.service.UserService;
 import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +30,8 @@ import java.util.*;
  */
 @Controller
 public class RegisterController {
+
+    private static final Logger log = Logger.getLogger(RegisterController.class);
 
     @Autowired
     RegisterService registerService;
@@ -49,10 +53,21 @@ public class RegisterController {
 
     @RequestMapping("/register")
     public String register(HttpSession session, Model model) {
+        log.info("/register");
+        Object result = session.getAttribute("result");
+        if (result != null) {
+            model.addAttribute("result", result);
+            session.removeAttribute("result");
+        }
+        Object url = session.getAttribute("url");
+        if (url != null) {
+            model.addAttribute("url", url);
+            session.removeAttribute("url");
+        }
         return "register";
     }
 
-    @RequestMapping(value = "/register/", method = RequestMethod.POST)
+    @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
     public String registerAccount(String mail, String pwd, String name, String code,
                                   @CookieValue("JSESSIONID") String sessionId, Model model,
                                   HttpSession session,
@@ -77,15 +92,16 @@ public class RegisterController {
                         .putExt("userId", returnUserId).putExt("url", activationLink);
 
                 handlerProducer.produceHandler(eventModel);
-                model.addAttribute("url", "/activation/" + activationKey);
+                session.setAttribute("url", activationLink);
+
             } else {
-                model.addAttribute("result", "系统出现故障，请您稍后重试！");
+                session.setAttribute("result", "系统出现故障，请您稍后重试！");
             }
         } else {
-            model.addAttribute("result", result);
+            session.setAttribute("result", result);
         }
-
-        return "register";
+        log.info("redirect:/register");
+        return "redirect:/register";
     }
 
     @RequestMapping("/resend/{key}")
@@ -100,13 +116,13 @@ public class RegisterController {
 
         String servletPath = request.getServletPath();
 
-        StringBuffer url = request.getRequestURL().append("activation/").append(activation.getKey());
+        StringBuffer url = request.getRequestURL().append("activation/").append(activation.getActivationKey());
 
         String activationLink = url.toString().replace(servletPath, "/");
 
         EventModel eventModel = new EventModel(EventType.REGISTER, WeixinqingUtil.ADMIN_ID);
         eventModel.putExt("activationMail", activation.getMail())
-                .putExt("activationKey", activation.getKey()).putExt("url", activationLink);
+                .putExt("activationKey", activation.getActivationKey()).putExt("url", activationLink);
 
         handlerProducer.produceHandler(eventModel);
 
@@ -115,7 +131,8 @@ public class RegisterController {
 
     @RequestMapping("/activation/{key}")
     @ResponseBody
-    public String activation(@PathVariable("key") String key, HttpServletRequest request) {
+    public String activation(@PathVariable("key") String key, HttpServletRequest request,
+                             HttpServletResponse response) {
         Activation activation = activationService.getActivation(key);
         if (activation == null) {
             return "链接不合法！";
@@ -123,7 +140,7 @@ public class RegisterController {
 
         String servletPath = request.getServletPath();
 
-        if (activationService.getExpireTime(key).before(new Date())) {
+        if (activationService.getExpireTime(key).after(new Date())) {
             int userId = activation.getUserId();
             if (userService.active(userId) > 0) {
 
@@ -131,16 +148,25 @@ public class RegisterController {
 
                 String indexLink = url.toString().replace(servletPath, "/");
 
-                return "恭喜您！邮件激活成功！点击链接进入首页" + indexLink;
+                Cookie cookie = new Cookie("weixinqing_ticket", UUID.randomUUID().toString().replaceAll("-", ""));
+                cookie.setPath("/");
+                response.addCookie(cookie);
+
+                User user = userService.getUserById(userId);
+                hostHolder.setUser(user);
+
+                loginService.insertLoginInfo(cookie.getValue(), userId, request);
+
+                return "恭喜您！邮件激活成功！点击链接进入首页<a href=" + indexLink + ">" + indexLink + "</a>";
             } else {
-                StringBuffer url = request.getRequestURL().append("resend/").append(activation.getKey());
+                StringBuffer url = request.getRequestURL().append("resend/").append(activation.getActivationKey());
 
                 String reSendLink = url.toString().replace(servletPath, "/");
                 return "激活失败！点击链接重新发送邮件:" + "<a href='" + reSendLink + "'>" + reSendLink + "</a>";
             }
         }
 
-        StringBuffer url = request.getRequestURL().append("resend/").append(activation.getKey());
+        StringBuffer url = request.getRequestURL().append("resend/").append(activation.getActivationKey());
 
         String reSendLink = url.toString().replace(servletPath, "/");
 

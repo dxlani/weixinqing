@@ -7,7 +7,7 @@ import java.util.Date;
  */
 public class Activation {
 
-    private String key;
+    private String activationKey;
 
     private String mail;
 
@@ -16,6 +16,7 @@ public class Activation {
     private Date expireTime;
 
     private int userId;
+
 
     public Date getExpireTime() {
         return expireTime;
@@ -33,12 +34,12 @@ public class Activation {
         this.userId = userId;
     }
 
-    public String getKey() {
-        return key;
+    public String getActivationKey() {
+        return activationKey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setActivationKey(String activationKey) {
+        this.activationKey = activationKey;
     }
 
     public String getMail() {

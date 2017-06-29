@@ -30,7 +30,7 @@ public interface UserMapper {
     @Select({"select count(username) from " + TABLE_NAME + " where username = #{username}"})
     public int isUsernameExist(String username);
 
-    @Select({"select count(mails) from " + TABLE_NAME + " where mail = #{mail}"})
+    @Select({"select count(mail) from " + TABLE_NAME + " where mail = #{mail}"})
     public int isMailExist(String mail);
 
     public Boolean isPasswordCorrect(@Param("id") int id, @Param("pwd") String password);

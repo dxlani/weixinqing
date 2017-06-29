@@ -38,7 +38,12 @@ public class RegisterHandler implements Event {
         Map<String, Object> exts = new HashMap<String, Object>();
         exts.put("url", eventModelExts.get("url"));
 
-        return mailUtil.sendMail(mail, "微心情激活邮件", MailTemplateType.REGISTER_MAIL, exts);
+        if (mailUtil.sendMail(mail, "微心情激活邮件", MailTemplateType.REGISTER_MAIL, exts)) {
+            if (activationService.updateExpireTime(new Date(new Date().getTime() + 24L * 60 * 60 * 1000), key) > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
