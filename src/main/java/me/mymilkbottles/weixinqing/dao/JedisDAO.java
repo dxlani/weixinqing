@@ -1,6 +1,7 @@
 package me.mymilkbottles.weixinqing.dao;
 
 
+import me.mymilkbottles.weixinqing.model.Feed;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -9,12 +10,13 @@ import redis.clients.jedis.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Administrator on 2017/06/20 22:31.
  */
 @Component
-public class JedisAdapter {
+public class JedisDAO {
 
     //Redis服务器IP
     private static String ADDRESS = "127.0.0.1";
@@ -24,7 +26,7 @@ public class JedisAdapter {
 
     private static JedisPool jedisPool = null;
 
-    private static final Logger log = Logger.getLogger(JedisAdapter.class);
+    private static final Logger log = Logger.getLogger(JedisDAO.class);
 
     static {
         try {
@@ -92,7 +94,9 @@ public class JedisAdapter {
     public long srem(String key, String json) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            return jedis.srem(key, json);
+            long result = jedis.srem(key, json);
+            jedis.close();
+            return result;
         }
         return -1;
     }
@@ -100,11 +104,52 @@ public class JedisAdapter {
     public long sadd(String key, String json) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            return jedis.sadd(key, json);
+            long result = jedis.sadd(key, json);
+            jedis.close();
+            return result;
         }
         return -1;
     }
 
+    public boolean sismember(String key, String member) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            boolean result = jedis.sismember(key, member);
+            jedis.close();
+            return result;
+        }
+        return false;
+    }
+
+    public Set<String> smembers(String key) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            Set<String> set = jedis.smembers(key);
+            jedis.close();
+            return set;
+        }
+        return null;
+    }
+
+    public List<String> lrange(String key, int start, int end) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            List<String> list = jedis.lrange(key, start, end);
+            jedis.close();
+            return list;
+        }
+        return null;
+    }
+
+    public Set<String> sinter(String key, String member) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            Set<String> set = jedis.sinter(key, member);
+            jedis.close();
+            return set;
+        }
+        return null;
+    }
 
     public void lpush(String key, String json) {
         Jedis jedis = getJedis();

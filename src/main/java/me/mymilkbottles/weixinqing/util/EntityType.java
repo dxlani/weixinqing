@@ -7,12 +7,13 @@ public enum EntityType {
 
     LOGIN(1),
     REGISTER(2),
-    COMMENT(3);
+    COMMENT(3),
+    FORWARD(4),
+    UPVOTE(5);
 
     private int value;
 
     EntityType() {
-
     }
 
     EntityType(int value) {

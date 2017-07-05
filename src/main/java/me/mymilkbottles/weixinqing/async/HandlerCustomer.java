@@ -1,7 +1,7 @@
 package me.mymilkbottles.weixinqing.async;
 
 import com.alibaba.fastjson.JSON;
-import me.mymilkbottles.weixinqing.dao.JedisAdapter;
+import me.mymilkbottles.weixinqing.dao.JedisDAO;
 import me.mymilkbottles.weixinqing.model.EventType;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import org.apache.log4j.Logger;
@@ -30,7 +30,7 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
     private static final Logger log = Logger.getLogger(HandlerCustomer.class);
 
     @Autowired
-    JedisAdapter jedisAdapter;
+    JedisDAO jedisAdapter;
 
     private Map<EventType, List<Event>> eventHandlerSolver = new HashMap<>();
 

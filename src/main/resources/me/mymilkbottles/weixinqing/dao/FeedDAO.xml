@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.mymilkbottles.weixinqing.dao.FeedDAO">
+
+    <sql id="table_name"> feed </sql>
+
+    <select id="getFeed" resultType="me.mymilkbottles.weixinqing.model.Feed">
+        select *
+        from
+        <include refid="table_name"/>
+        where is_delete = 0
+        <if test="userIds != null and userIds.size > 0">
+            and user_id in
+            <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+                #{userId}
+            </foreach>
+        </if>
+        order by f_time desc
+        limit #{start},#{end}
+    </select>
+</mapper>

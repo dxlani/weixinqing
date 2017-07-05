@@ -10,7 +10,7 @@ import java.util.Date;
  * Created by Administrator on 2017/06/29 14:03.
  */
 @Mapper
-public interface ActivationMapper {
+public interface ActivationDAO {
 
     public static final String TABLE_NAME = " activation ";
 

@@ -1,14 +1,18 @@
 package me.mymilkbottles.weixinqing.service;
 
-import me.mymilkbottles.weixinqing.async.HandlerCustomer;
-import me.mymilkbottles.weixinqing.dao.UserMapper;
+import me.mymilkbottles.weixinqing.dao.UserDAO;
 import me.mymilkbottles.weixinqing.model.User;
-import me.mymilkbottles.weixinqing.dao.JedisAdapter;
+import me.mymilkbottles.weixinqing.dao.JedisDAO;
 import me.mymilkbottles.weixinqing.util.Md5Util;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Transaction;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by Administrator on 2017/06/21 23:13.
@@ -17,10 +21,22 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     @Autowired
-    UserMapper userMapper;
+    UserDAO userMapper;
 
     @Autowired
-    JedisAdapter jedisAdapter;
+    JedisDAO jedisAdapter;
+
+    @Autowired
+    LoginService loginService;
+
+    @Autowired
+    WeiboService weiboService;
+
+    @Autowired
+    CommentsService commentsService;
+
+    @Autowired
+    FocusService focusService;
 
     private static final Logger log = Logger.getLogger(UserService.class);
 
@@ -75,5 +91,78 @@ public class UserService {
 
     public int active(int id) {
         return userMapper.active(id);
+    }
+
+    public boolean isUserActive(int userId) {
+        String activePersonKey = RedisKeyUtil.getActivePersonKey();
+        return jedisAdapter.sismember(activePersonKey, String.valueOf(userId));
+    }
+
+    public void updateActiveUser() {
+        int sum = userCount();
+        Map<Integer, Integer> grades = new HashMap<>(sum);
+
+        User user = null;
+
+        int count = sum / 200, min = Integer.MAX_VALUE;
+        for (int i = 1; i <= sum; ++i) {
+            user = getUserById(i);
+            if (user != null) {
+                int userGrades = 0;
+                Date date = new Date(new Date().getTime() - (7 * 24 * 60 * 60 * 1000));
+                int times = loginService.getUserLoginTimesAfterDate(i, date);
+
+                if (times >= 7) {
+                    times = 7;
+                }
+
+                userGrades += times * 30;
+
+                int weiboCount = weiboService.getUserWeiboCountAfterDate(i, date);
+                userGrades += weiboCount * 10;
+
+                int commentsCount = commentsService.getUserCommentsCountAfterDate(i, date);
+                userGrades += commentsCount;
+
+                int slaveCount = focusService.slaveCount(i);
+                userGrades += slaveCount;
+
+                if (count > 0) {
+                    min = Math.min(min, userGrades);
+                    grades.put(userGrades, i);
+                    --count;
+                } else {
+                    if (min < userGrades) {
+                        grades.remove(min);
+                        min = userGrades;
+                        grades.put(userGrades, i);
+                    }
+                }
+            }
+        }
+
+        String activePersonKey = RedisKeyUtil.getActivePersonKey();
+        Set<String> oldActiveUsers = jedisAdapter.smembers(activePersonKey);
+
+        Collection<Integer> values = grades.values();
+
+        Jedis jedis = jedisAdapter.getJedis();
+        Transaction tx = jedis.multi();
+        for (String oldActiveUser : oldActiveUsers) {
+            jedis.srem(activePersonKey, oldActiveUser);
+        }
+        for (Integer userId : values) {
+            String userIdStr = String.valueOf(userId);
+            jedis.sadd(activePersonKey, userIdStr);
+        }
+        tx.exec();
+        try {
+            if (tx != null) {
+                tx.close();
+            }
+        } catch (IOException e) {
+            log.error("jedis Transaction关闭失败" + e.getMessage());
+        }
+        jedis.close();
     }
 }

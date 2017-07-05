@@ -1,10 +1,9 @@
 package me.mymilkbottles.weixinqing.service;
 
 
-import me.mymilkbottles.weixinqing.async.HandlerCustomer;
-import me.mymilkbottles.weixinqing.dao.UserMapper;
+import me.mymilkbottles.weixinqing.dao.UserDAO;
 import me.mymilkbottles.weixinqing.model.User;
-import me.mymilkbottles.weixinqing.dao.JedisAdapter;
+import me.mymilkbottles.weixinqing.dao.JedisDAO;
 import me.mymilkbottles.weixinqing.util.Md5Util;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import org.apache.log4j.Logger;
@@ -20,10 +19,10 @@ import java.util.UUID;
 public class RegisterService {
 
     @Autowired
-    UserMapper userMapper;
+    UserDAO userMapper;
 
     @Autowired
-    JedisAdapter jedisAdapter;
+    JedisDAO jedisAdapter;
 
     private static final Logger log = Logger.getLogger(RegisterService.class);
 

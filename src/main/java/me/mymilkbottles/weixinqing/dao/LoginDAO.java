@@ -1,10 +1,7 @@
 package me.mymilkbottles.weixinqing.dao;
 
 import me.mymilkbottles.weixinqing.model.Login;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
 
@@ -12,7 +9,7 @@ import java.util.Date;
  * Created by Administrator on 2017/06/21 23:42.
  */
 @Mapper
-public interface LoginMapper {
+public interface LoginDAO {
 
     public static final String TABLE_NAME = " login ";
 
@@ -36,4 +33,7 @@ public interface LoginMapper {
     @Select({"select user_id from " + TABLE_NAME + " where ticket = #{id}"})
     public int getLoginUser(String id);
 
+
+    @Select({"select count(id) from " + TABLE_NAME + " where (login_date >= date) and id = #{userId}"})
+    int getUserLoginTimesAfterDate(@Param("userId") int userId, @Param("date") Date date);
 }

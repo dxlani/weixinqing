@@ -6,8 +6,7 @@ package me.mymilkbottles.weixinqing.service;
 
 import com.alibaba.fastjson.JSON;
 import me.mymilkbottles.weixinqing.async.EventModel;
-import me.mymilkbottles.weixinqing.async.HandlerCustomer;
-import me.mymilkbottles.weixinqing.dao.LoginMapper;
+import me.mymilkbottles.weixinqing.dao.LoginDAO;
 import me.mymilkbottles.weixinqing.model.EventType;
 import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.Login;
@@ -28,7 +27,7 @@ public class LoginService {
     private static final Logger log = Logger.getLogger(LoginService.class);
 
     @Autowired
-    LoginMapper loginMapper;
+    LoginDAO loginMapper;
 
     @Autowired
     AsyncEventService asyncEventService;
@@ -37,6 +36,9 @@ public class LoginService {
     HostHolder hostHolder;
 
 
+    public int getUserLoginTimesAfterDate(int userId, Date date) {
+        return loginMapper.getUserLoginTimesAfterDate(userId, date);
+    }
 
     public int deleteLoginInfo(String id) {
         return loginMapper.deleteLoginInfo(id);

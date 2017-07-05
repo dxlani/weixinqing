@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Administrator on 2017/06/21 17:19.
  */
 @Mapper
-public interface WeiboMapper {
+public interface WeiboDAO {
 
     public static final String TABLE_NAME = " weibo ";
 
@@ -29,4 +29,7 @@ public interface WeiboMapper {
 
     @Select({"select * from " + TABLE_NAME + " where id < #{id} order by f_time desc limit #{start}, #{end}"})
     public List<Weibo> getWeiboBeforeId(@Param("start") int start, @Param("end") int end, @Param("id") int id);
+
+    @Select({"select count(id) from " + TABLE_NAME + " where f_time > #{date} and master_id = #{userId}"})
+    public int getUserWeiboCountAfterDate(@Param("userId") int userId, @Param("date") Date date);
 }

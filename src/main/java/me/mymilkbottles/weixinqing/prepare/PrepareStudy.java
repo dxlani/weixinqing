@@ -20,6 +20,7 @@ import java.util.Map;
 @Controller
 public class PrepareStudy {
 
+
     @RequestMapping("/study")
     public String prepare(Model model) {
         ViewObject viewObject = new ViewObject();

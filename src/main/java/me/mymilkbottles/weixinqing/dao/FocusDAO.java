@@ -5,12 +5,13 @@ import me.mymilkbottles.weixinqing.model.Focus;
 import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/07/05 10:50.
  */
 @Mapper
-public interface FocusMapper {
+public interface FocusDAO {
 
     public static final String TABLE_NAME = " focus ";
 
@@ -26,5 +27,17 @@ public interface FocusMapper {
 
     @Select({"select count(id) > 0 from " + TABLE_NAME + " where master_id = #{masterId} and slave_id = ${slaveId}"})
     public boolean isFocus(@Param("masterId") int masterId, @Param("slaveId") int slaveId);
+
+    @Select({"select count(id) from " + TABLE_NAME + " where slave_id = #{userId}"})
+    public int slaveCount(int userId);
+
+    @Select({"select count(id) from " + TABLE_NAME + " where master_id = #{userId}"})
+    public int masterCount(int userId);
+
+    @Select({"select * from " + TABLE_NAME + " where slave_id = #{userId}"})
+    public List<Integer> getMasterUser(int userId);
+
+    @Select({"select * from " + TABLE_NAME + " where master_id = #{userId}"})
+    public List<Integer> getSlaveUser(int userId);
 
 }

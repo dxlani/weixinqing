@@ -1,10 +1,7 @@
 package me.mymilkbottles.weixinqing.service;
 
-import me.mymilkbottles.weixinqing.dao.ActivationMapper;
+import me.mymilkbottles.weixinqing.dao.ActivationDAO;
 import me.mymilkbottles.weixinqing.model.Activation;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +14,7 @@ import java.util.Date;
 public class ActivationService {
 
     @Autowired
-    ActivationMapper activationMapper;
+    ActivationDAO activationMapper;
 
     public int insertActivationInfo(String key, String mail, int userId) {
         Activation activation = new Activation();

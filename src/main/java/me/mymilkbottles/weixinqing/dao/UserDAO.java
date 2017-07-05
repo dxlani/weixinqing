@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.*;
  * Created by Administrator on 2017/06/21 17:19.
  */
 @Mapper
-public interface UserMapper {
+public interface UserDAO {
 
     public static final String TABLE_NAME = " user_table ";
 

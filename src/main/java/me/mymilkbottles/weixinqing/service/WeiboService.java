@@ -1,14 +1,12 @@
 package me.mymilkbottles.weixinqing.service;
 
-import me.mymilkbottles.weixinqing.dao.JedisAdapter;
-import me.mymilkbottles.weixinqing.dao.WeiboMapper;
-import me.mymilkbottles.weixinqing.model.EventType;
+import me.mymilkbottles.weixinqing.dao.JedisDAO;
+import me.mymilkbottles.weixinqing.dao.WeiboDAO;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.model.ViewObject;
 import me.mymilkbottles.weixinqing.model.Weibo;
 import me.mymilkbottles.weixinqing.util.EntityType;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +21,10 @@ import java.util.List;
 public class WeiboService {
 
     @Autowired
-    WeiboMapper weiboMapper;
+    WeiboDAO weiboMapper;
 
     @Autowired
-    JedisAdapter jedisAdapter;
+    JedisDAO jedisAdapter;
 
     @Autowired
     UserService userService;
@@ -77,5 +75,9 @@ public class WeiboService {
         }
         vo.add("weibos", viewObjectList);
         return vo;
+    }
+
+    public int getUserWeiboCountAfterDate(int userId, Date date) {
+        return weiboMapper.getUserWeiboCountAfterDate(userId, date);
     }
 }

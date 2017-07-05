@@ -13,6 +13,12 @@ public class RedisKeyUtil {
 
     private static final String HANDLER_KEY = "HK";
 
+    private static final String ACTIVE_PERSON_KEY = "APK";
+
+    private static final String ACTIVE_PERSON_FEED_KEY = "APF";
+
+    private static final String ACTIVE_FRIEND_FEED_KEY = "AFF";
+
     public static String getVerifyCodeKey(String id) {
         return VERIFY_CODE_KEY + SPLIT + id;
     }
@@ -25,4 +31,15 @@ public class RedisKeyUtil {
         return HANDLER_KEY;
     }
 
+    public static String getActivePersonKey() {
+        return ACTIVE_PERSON_KEY;
+    }
+
+    public static String getActivePersonFeedKey() {
+        return ACTIVE_PERSON_FEED_KEY;
+    }
+
+    public static String getActiveFriendFeedKey() {
+        return ACTIVE_FRIEND_FEED_KEY;
+    }
 }

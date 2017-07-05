@@ -4,7 +4,7 @@ import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.service.LoginService;
 import me.mymilkbottles.weixinqing.service.UserService;
-import me.mymilkbottles.weixinqing.dao.JedisAdapter;
+import me.mymilkbottles.weixinqing.dao.JedisDAO;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import me.mymilkbottles.weixinqing.util.VerifyCodeUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +38,7 @@ public class LoginController {
     LoginService loginService;
 
     @Autowired
-    JedisAdapter jedisAdapter;
+    JedisDAO jedisAdapter;
 
     @Autowired
     HostHolder hostHolder;

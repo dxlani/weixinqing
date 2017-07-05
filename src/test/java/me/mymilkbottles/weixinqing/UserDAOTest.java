@@ -1,6 +1,6 @@
 package me.mymilkbottles.weixinqing;
 
-import me.mymilkbottles.weixinqing.dao.UserMapper;
+import me.mymilkbottles.weixinqing.dao.UserDAO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = WeixinqingApplication.class)
 @WebAppConfiguration
-public class UserMapperTests {
+public class UserDAOTest {
 
     @Autowired
-    UserMapper userMapper;
+    UserDAO userMapper;
 
     @Test
     public void testIsPasswordCorrect() {

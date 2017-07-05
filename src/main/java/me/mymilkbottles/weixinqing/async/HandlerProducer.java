@@ -1,7 +1,7 @@
 package me.mymilkbottles.weixinqing.async;
 
 import com.alibaba.fastjson.JSONObject;
-import me.mymilkbottles.weixinqing.dao.JedisAdapter;
+import me.mymilkbottles.weixinqing.dao.JedisDAO;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class HandlerProducer {
     private static final Logger log = Logger.getLogger(HandlerProducer.class);
 
     @Autowired
-    JedisAdapter jedisAdapter;
+    JedisDAO jedisAdapter;
 
     public boolean produceHandler(EventModel eventModel) {
         Jedis jedis = jedisAdapter.getJedis();
