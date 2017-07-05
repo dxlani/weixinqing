@@ -6,7 +6,8 @@ package me.mymilkbottles.weixinqing.util;
 public enum EntityType {
 
     LOGIN(1),
-    REGISTER(2);
+    REGISTER(2),
+    COMMENT(3);
 
     private int value;
 

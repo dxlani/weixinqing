@@ -52,6 +52,10 @@ public class UserService {
         return userMapper.isPasswordCorrect(id, password);
     }
 
+    public int userCount() {
+        return userMapper.userCount();
+    }
+
     public String validateLogin(String username, String password, String code, String sessionId) {
         String verifyKey = RedisKeyUtil.getVerifyCodeKey(sessionId);
         String assertCode = jedisAdapter.get(verifyKey);

@@ -20,7 +20,7 @@
 
         <#include "header.html" parse=true encoding="utf-8"/>
 
-        <div style="margin-top: 65px;width: 850px;height:0px;float: left;"/>
+        <div style="margin-top: 65px;width: 850px;height:0px;float: left;">
 
 
         <ul class="nav nav-pills nav-stacked index-left-ul"
@@ -28,10 +28,11 @@
             display: block; position: fixed;
             background-color: rgba(70,149,194,0.3);
             float: left;border-radius:5px;">
-            <li role="presentation"><a href="#">首页</a></li>
+            <li role="presentation"><a href="/index">首页</a></li>
+            <li role="presentation"><a href="/user/friend">好友圈</a></li>
             <li role="presentation"><a href="#">我的动态</a></li>
-            <li role="presentation"><a href="#">好友圈</a></li>
-            <li role="presentation"><a href="#">特别关注</a></li>
+            <li role="presentation"><a href="#">我的关注</a></li>
+            <li role="presentation"><a href="#">热门动态</a></li>
         </ul>
 
         <!--<div style="width:127.5px;height:500px;float: left;"></div>-->
@@ -54,29 +55,60 @@
         </div>
 
 
-        <#list 1..10 as index>
-            <div class="panel panel-default" style="width: 84%;height: auto;float: right;margin-left: 1%;">
+            <div class="panel panel-default" id="weixinqing_loading_front"
+                 style="width: 84%;float: right;display: none;">
+                <div class="panel-body" align="center">
+            <span class="glyphicon glyphicon-refresh" id="msg-loading-icon"
+                  style="margin-left: 15px;font-size: 17px;margin-top: 6px;"
+                  aria-hidden="true">
+            </span>
+                    <span style="margin-left: 8px;margin-bottom: 10px;"
+                          id="content-loading-advice">微心情加载中，请您稍后...</span>
+                </div>
+            </div>
+
+            <div id="addContentFlagFront" style="display: none;"></div>
+
+            <div id="weibosDiv">
+                <#list vo.weibos as weibo>
+                    <#if weibo ? is_first>
+                        <input type="hidden" value="${weibo.weibo.id ? c}" id="firstData">
+                    </#if>
+
+                    <#if weibo ? is_last>
+                        <input type="hidden" value="${weibo.weibo.id ? c}" id="lastData">
+                    </#if>
+
+                    <div class="panel panel-default weibo"
+                         style="width: 84%;height: auto;float: right;margin-left: 1%;">
                 <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;">
 
                     <div style="float: left;width: 13%;height: auto;">
-                        <img src="images/body_background.png" alt="..." class="img-circle"
+                        <img src="/headimg/${weibo.user.id?c}" alt="..." class="img-circle weiboHeadImg"
                              style="width: 70px;height: 70px;">
                     </div>
 
                     <div style="float: right;width: 87%;">
                         <div style="float: left;width: 100%;">
-                            <strong style="font-size: 15px;float: left;">猪猪爱讲冷笑话</strong>
+                            <strong style="font-size: 15px;float: left;"
+                                    class="username">${weibo.user.username}</strong>
                         </div>
                         <span style="color: #808080;float: left; margin-top: 5px;
-text-decoration: none;font-size: 12px;">今天08:12</span>
+text-decoration: none;font-size: 12px;" class="datetime">${weibo.weibo.fTime?datetime}</span>
                     </div>
 
 
-                    <p style="display:block;width:87%;max-height:150px;margin-top: 5px;float: right;
-                          overflow:hidden; text-overflow:ellipsis;">
-                        炎炎夏日，冷饮瓜果成为了消暑的首选，但多吃又会伤到脾胃，湿热才是身体不舒服的关键所在，排除体内湿气，很有必要，不妨学一些祛湿的实用小窍门哦!
-                    </p>
+                    <p style="display:block;width:87%;height:auto;margin-top: 5px;float: right;
+                          overflow:hidden; text-overflow:ellipsis;" class="weibo_content">${weibo.weibo.content}</p>
 
+                    <div style="width:87%;height:auto;margin-top: 5px;float: right;" class="weibo_imgs">
+                        <#list weibo.imgs as weiboImg>
+                            <img src="/weixinqing/img/${weiboImg}"
+                                 alt="..."
+                                 style="height:140px;width:140px;margin:2px;margin-right: 0px;margin-left: 0px;"
+                                 class="img-rounded">
+                        </#list>
+                    </div>
 
                     <ul class="op-ul"
                         style="float: left;width: 100%;margin-bottom:0px;padding-bottom:0px;padding-left: 0px;">
@@ -107,16 +139,35 @@ text-decoration: none;font-size: 12px;">今天08:12</span>
                         </li>
                     </ul>
 
-
                 </div>
             </div>
         </#list>
+                <div id="addContentFlagEnd" style="display: none;"></div>
+            </div>
 
+
+            <div class="panel panel-default" id="weixinqing_loading_end"
+                 style="width: 84%;float: right;display: none;">
+                <div class="panel-body" align="center">
+            <span class="glyphicon glyphicon-refresh" id="msg-loading-icon"
+                  style="margin-left: 15px;font-size: 17px;margin-top: 6px;"
+                  aria-hidden="true">
+            </span>
+                    <span style="margin-left: 8px;margin-bottom: 10px;"
+                          id="content-loading-advice">微心情加载中，请您稍后...</span>
+                </div>
+            </div>
+
+
+        </div>
 
     </div>
 
+</div>
 
-    <a href="javascript:scroll(0,0)" style=" background-color: #47a6d9;display: block;cursor: pointer;
+
+<a href="javascript:scroll(0,0)"
+   style=" background-color: #47a6d9;display: block;cursor: pointer;
     position: fixed;float: right;bottom: 100px;right: 200px;
     width: 40px;
 height: 35px;text-align: center;">
@@ -125,6 +176,162 @@ height: 35px;text-align: center;">
         </span>
     </a>
 
-</div>
+
+<script>
+
+    //    setTimeout(function(){
+    //        window.scrollTo(0,0);
+    //    }, 50);
+
+    var isLoadingNews = false;
+    function loading_news() {
+        isLoadingNews = true;
+        $.ajax({
+            type: "post",
+            url: '/index/news/' + $('#lastData').val(),
+            success: function (data) {
+                var weiboOrigin = $('.weibo')[0];
+                var weiboDivObj = jQuery.extend(true, {}, weiboOrigin)
+                var weiboDiv = $(weiboDivObj.outerHTML);
+
+                console.log('weiboDiv=');
+                console.log(weiboDiv);
+
+                console.log('data=');
+                console.log(data);
+
+                var weibos = data.vo.weibos
+                for (var i = 0; i < weibos.length; ++i) {
+                    var weibo_i_vo = weibos[i];
+                    console.log('weibo_i_vo=', typeof weibo_i_vo);
+                    console.log(weibo_i_vo);
+                    var weibo_i = weibo_i_vo.vo;
+                    console.log('weibo_i=');
+                    console.log(weibo_i);
+                    weiboDiv.find('.weiboHeadImg').attr('src', '/headimg/' + weibo_i.user.id);
+                    weiboDiv.find('.username').html(weibo_i.user.username);
+                    weiboDiv.find('.datetime').html(new Date(weibo_i.weibo.fTime).pattern("yyyy-MM-dd hh:mm:ss"));
+                    weiboDiv.find('.weibo_content').html(weibo_i.weibo.content)
+
+                    var imgs = weibo_i.imgs;
+
+                    imgsHtml = '';
+                    for (var j = 0; j < imgs.length; ++j) {
+                        var addImg = '<img src="/weixinqing/img/' + imgs[j] + '" ' +
+                            'style="height:140px;width:140px;margin:2px;margin-right: 0px;margin-left: 0px;" ' +
+                            'class="img-rounded">';
+                        console.log('add_img=');
+                        console.log(addImg);
+                        imgsHtml = imgsHtml + addImg;
+                    }
+                    weiboDiv.find('.weibo_imgs').html(imgsHtml);
+                    console.log('add_weiboDiv');
+                    console.log('weiboDiv=');
+                    console.log(weiboDiv);
+                    console.log(weiboDiv[0].outerHTML);
+                    $(weiboDiv[0].outerHTML).insertBefore('#addContentFlagEnd');
+                }
+                console.log('loading_news finish');
+                isLoadingNews = false;
+                $('#weixinqing_loading_end').hide();
+            },
+            error: function () {
+                $('#content-loading-advice').text('微心情加载失败，请检查您的网络！');
+                isLoadingNews = false;
+            }
+        });
+    }
+
+    var scrollFlag = 0;
+
+
+    $(window).scroll(function () {
+
+        var scrollTop = $(this).scrollTop();
+        var scrollHeight = $(document).height();
+        var windowHeight = $(this).height();
+//        var offsetHeight = $('')
+//       console.log(scrollTop + ' ' + windowHeight + ' ' + scrollHeight)
+
+        if (scrollTop + windowHeight + 100 >= scrollHeight && scrollFlag > 1) {
+//           alert('last')
+            $('#weixinqing_loading_end').show();
+            if (!isLoadingNews) {
+                loading_news();
+
+            }
+        }
+
+        ++scrollFlag;
+        if (scrollFlag >= 200000) {
+            scrollFlag = 1000;
+        }
+
+//        var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
+//        console.log(scrollTop);
+//        if(document.documentElement.scrollHeight == document.documentElement.clientHeight + scrollTop ) {
+//            $('weixinqing_loading').show();
+//        }
+
+    });
+
+    //    $('document').ready(function () {
+    ////        document.getElementsByTagName('body')[0].scrollTop = 0;
+    //        setTimeout(function(){
+    //            $(window).scrollTop(0);
+    //        }, 1000)
+    //    });
+    document.onload = function () {
+//        setTimeout(function(){
+//            window.scrollTo(0,0);
+//        }, 50);
+//        $('html, body').animate({scrollTop:0}, 'slow');
+//        document.getElementsByTagName('body')[0].scrollTop = 0 + 'px';
+    }
+    //    alert('drup');
+
+
+    /** * 对Date的扩展，将 Date 转化为指定格式的String * 月(M)、日(d)、12小时(h)、24小时(H)、分(m)、秒(s)、周(E)、季度(q)
+     可以用 1-2 个占位符 * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字) * eg: * (new
+     Date()).pattern("yyyy-MM-dd hh:mm:ss.S")==> 2006-07-02 08:09:04.423
+     * (new Date()).pattern("yyyy-MM-dd E HH:mm:ss") ==> 2009-03-10 二 20:09:04
+     * (new Date()).pattern("yyyy-MM-dd EE hh:mm:ss") ==> 2009-03-10 周二 08:09:04
+     * (new Date()).pattern("yyyy-MM-dd EEE hh:mm:ss") ==> 2009-03-10 星期二 08:09:04
+     * (new Date()).pattern("yyyy-M-d h:m:s.S") ==> 2006-7-2 8:9:4.18
+     */
+    Date.prototype.pattern = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        var week = {
+            "0": "/u65e5",
+            "1": "/u4e00",
+            "2": "/u4e8c",
+            "3": "/u4e09",
+            "4": "/u56db",
+            "5": "/u4e94",
+            "6": "/u516d"
+        };
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        if (/(E+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "/u661f/u671f" : "/u5468") : "") + week[this.getDay() + ""]);
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            }
+        }
+        return fmt;
+    }
+</script>
 </body>
 </html>

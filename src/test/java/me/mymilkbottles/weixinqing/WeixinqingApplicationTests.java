@@ -11,6 +11,7 @@ public class WeixinqingApplicationTests {
 
 	@Test
 	public void contextLoads() {
+
 	}
 
 }

@@ -89,6 +89,22 @@ public class JedisAdapter {
         }
     }
 
+    public long srem(String key, String json) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            return jedis.srem(key, json);
+        }
+        return -1;
+    }
+
+    public long sadd(String key, String json) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            return jedis.sadd(key, json);
+        }
+        return -1;
+    }
+
 
     public void lpush(String key, String json) {
         Jedis jedis = getJedis();

@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface UserMapper {
 
-    public static final String TABLE_NAME = "user_table";
+    public static final String TABLE_NAME = " user_table ";
 
     public static final String FIELD = " username, pwd, salt, mail ";
 
@@ -38,4 +38,6 @@ public interface UserMapper {
     @Update({"update " + TABLE_NAME + " set active = 1 where id = #{id}"})
     public int active(int id);
 
+    @Select({"select count(id) from " + TABLE_NAME + "where active = 1"})
+    public int userCount();
 }

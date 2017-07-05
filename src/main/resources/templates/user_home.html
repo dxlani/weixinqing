@@ -1,0 +1,152 @@
+<html lang="zh-CN">
+<head>
+
+
+    <#include "import_file.html" parse=false encoding="utf-8"/>
+
+
+    <title>欢迎您来到微心情网</title>
+
+    <link type="text/css" rel="stylesheet" href="/css/head-index.css"/>
+    <link type="text/css" rel="stylesheet" href="/css/body-index.css"/>
+
+</head>
+
+
+<body>
+
+<div class="body-background" style="height:780px;">
+    <div class="container" style="width: 880px;height:auto;">
+
+
+        <!--<div class="panel panel-default" style="width: 100%;height:200px;margin-top: 15px;"-->
+        <!--align="center">-->
+        <!---->
+        <!--</div>-->
+
+        <#include "header.html" parse=true encoding="utf-8"/>
+
+        <div style="margin-top: 65px;width: 850px;height:0px;float: left;"/>
+
+
+        <ul class="nav nav-pills nav-stacked index-left-ul"
+            style="width:127.5px;
+            display: block; position: fixed;
+            background-color: rgba(70,149,194,0.3);
+            float: left;border-radius:5px;">
+
+            <!--<li role="presentation"><a href="/index">微心情</a></li>-->
+
+            <div class="panel-body">
+                <img src="http://ww1.sinaimg.cn/default/images/default_avatar_male_uploading_180.gif"
+                     alt="${vo.username}" title="${vo.username}"
+                     class="img-circle"
+                     style="width:95px; height:95px;">
+                <!--<img src="/user/headimg/${vo.userId}" alt="..." class="img-circle">-->
+            </div>
+
+            <div style="width: 100%;padding: 8px;">
+                ${vo.username}首页首页首页首页
+            </div>
+
+            <li role="presentation"><a href="#">我的动态</a></li>
+            <li role="presentation"><a href="#">我的关注</a></li>
+            <li role="presentation"><a href="#">我的粉丝</a></li>
+            <li role="presentation"><a href="#">我的私信</a></li>
+            <li role="presentation"><a href="#">我的通知</a></li>
+        </ul>
+
+        <!--<div style="width:127.5px;height:500px;float: left;"></div>-->
+
+        <div class="panel panel-default" style="width: 84%;height:auto;float: right;padding-bottom: 0px;">
+            <div class="panel-body">
+
+                <img src="/images/fresh.png" style="float: left;">
+
+                <!--<strong style="font: 12px/1.3 'Arial','Microsoft YaHei'">已输入12字</strong>-->
+
+                <textarea class="form-control" rows="10"
+                          style="float: left;width: 100%;resize:none; margin-top: 8px;"></textarea>
+
+                <div style="width: 100%;">
+                    <a class="submit-text">发布</a>
+                </div>
+
+            </div>
+        </div>
+
+
+        <#list 1..10 as index>
+            <div class="panel panel-default" style="width: 84%;height: auto;float: right;margin-left: 1%;">
+                <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;">
+
+                    <div style="float: left;width: 13%;height: auto;">
+                        <img src="/images/body_background.png" alt="..." class="img-circle"
+                             style="width: 70px;height: 70px;">
+                    </div>
+
+                    <div style="float: right;width: 87%;">
+                        <div style="float: left;width: 100%;">
+                            <strong style="font-size: 15px;float: left;">猪猪爱讲冷笑话</strong>
+                        </div>
+                        <span style="color: #808080;float: left; margin-top: 5px;
+text-decoration: none;font-size: 12px;">今天08:12</span>
+                    </div>
+
+
+                    <p style="display:block;width:87%;max-height:150px;margin-top: 5px;float: right;
+                          overflow:hidden; text-overflow:ellipsis;">
+                        炎炎夏日，冷饮瓜果成为了消暑的首选，但多吃又会伤到脾胃，湿热才是身体不舒服的关键所在，排除体内湿气，很有必要，不妨学一些祛湿的实用小窍门哦!
+                    </p>
+
+
+                    <ul class="op-ul"
+                        style="float: left;width: 100%;margin-bottom:0px;padding-bottom:0px;padding-left: 0px;">
+                        <li>
+                            <div style="text-align:center;" class="save">
+                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span class="">收藏</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div style="text-align:center;" class="share">
+                                <span class="glyphicon glyphicon-share" aria-hidden="true"></span>
+                                <span class="">131</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div style="text-align:center;" class="comment">
+                            <span class="glyphicon glyphicon-comment" aria-hidden="true"
+                            ></span>
+                                <span class="">579</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div style="text-align:center;" class="up">
+                                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                                <span class="">188</span>
+                            </div>
+                        </li>
+                    </ul>
+
+
+                </div>
+            </div>
+        </#list>
+
+
+    </div>
+
+
+    <a href="javascript:scroll(0,0)" style=" background-color: #47a6d9;display: block;cursor: pointer;
+    position: fixed;float: right;bottom: 100px;right: 200px;
+    width: 40px;
+height: 35px;text-align: center;">
+        <span class="glyphicon glyphicon-menu-up" aria-hidden="true"
+              style="font-size: 28px;color: #fff;margin-top: 5px;">
+        </span>
+    </a>
+
+</div>
+</body>
+</html>
