@@ -9,7 +9,8 @@ public enum EntityType {
     REGISTER(2),
     COMMENT(3),
     FORWARD(4),
-    UPVOTE(5);
+    UPVOTE(5),
+    FIRE_WEIBO(6);
 
     private int value;
 
@@ -20,4 +21,11 @@ public enum EntityType {
         this.value = value;
     }
 
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
 }

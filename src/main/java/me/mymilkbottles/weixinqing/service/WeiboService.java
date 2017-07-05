@@ -33,12 +33,16 @@ public class WeiboService {
         return weiboMapper.insertWeibo(weibo);
     }
 
-    public List<Weibo> getWeibo(int start, int end) {
+    public List<Weibo> getIndexWeibo(int start, int end) {
         return weiboMapper.getWeibo(start, end);
     }
 
     public List<Weibo> getWeiboBrforeId(int start, int end, int id) {
         return weiboMapper.getWeiboBeforeId(start, end, id);
+    }
+
+    public Weibo getWeiboById(int id) {
+        return weiboMapper.getWeiboById(id);
     }
 
     public void getPiarseCount(EntityType entityType, int entityId) {
