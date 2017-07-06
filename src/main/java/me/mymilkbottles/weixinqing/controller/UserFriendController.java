@@ -1,6 +1,7 @@
 package me.mymilkbottles.weixinqing.controller;
 
 import me.mymilkbottles.weixinqing.model.*;
+import me.mymilkbottles.weixinqing.service.CommentsService;
 import me.mymilkbottles.weixinqing.service.IndexService;
 import me.mymilkbottles.weixinqing.service.UserService;
 import me.mymilkbottles.weixinqing.service.WeiboService;
@@ -31,6 +32,9 @@ public class UserFriendController {
     @Autowired
     WeiboService weiboService;
 
+    @Autowired
+    CommentsService commentsService;
+
     @RequestMapping("/user/friend")
     public String friend(Model model) {
         User localUser = hostHolder.getUser();
@@ -45,25 +49,31 @@ public class UserFriendController {
         //" id, user_id, type, weibo_id, exts_id, f_time, is_delete "
         User user = null;
         Weibo weibo = null;
+        Comments comments = null;
         for (Feed feed : feeds) {
             ViewObject vo = new ViewObject();
 
             int type = feed.getType();
             vo.add("type", type);
             if (type == EntityType.FIRE_WEIBO.getValue()) {
-                user = userService.getUserById(feed.getUserId());
-                vo.add("user", user);
 
-                weibo = weiboService.getWeiboById(feed.getUserId());
-                vo.add("weibo", weibo);
-
+            } else if (type == EntityType.COMMENT.getValue()) {
+                comments = commentsService.getCommentsById(feed.getExtsId());
+                vo.add("comments", comments);
+            } else if (type == EntityType.FORWARD.getValue()) {
+                vo.add("f_time", feed.getfTime());
+            } else if (type == EntityType.FORWARD_COMMENTS.getValue()) {
+                comments = commentsService.getCommentsById(feed.getExtsId());
+                vo.add("comments", comments);
+                vo.add("f_time", feed.getfTime());
+            } else if (type == EntityType.UPVOTE.getValue()) {
                 vo.add("f_time", feed.getfTime());
             }
-
+            weibo = weiboService.getWeiboById(feed.getUserId());
+            vo.add("weibo", weibo);
 
             vos.add(vo);
         }
-
         model.addAttribute("vos", vos);
         return "";
     }

@@ -36,4 +36,8 @@ public class CommentsService {
     public int getUserCommentsCountAfterDate(int userId, Date date) {
         return commentsMapper.getUserCommentsCountAfterDate(userId, date);
     }
+
+    public Comments getCommentsById(int id) {
+        return commentsMapper.getCommentsById(id);
+    }
 }

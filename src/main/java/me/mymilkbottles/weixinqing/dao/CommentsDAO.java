@@ -27,4 +27,6 @@ public interface CommentsDAO {
     @Select({"select count(id) from " + TABLE_NAME + " where f_time > #{date} and master_id = #{userId}"})
     public int getUserCommentsCountAfterDate(@Param("userId") int userId, @Param("date") Date date);
 
+    @Select({"select * from " + TABLE_NAME + " where id = #{id}"})
+    public Comments getCommentsById(int id);
 }
