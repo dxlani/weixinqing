@@ -11,7 +11,8 @@ public enum EntityType {
     FORWARD(4),
     UPVOTE(5),
     FIRE_WEIBO(6),
-    FORWARD_COMMENTS(7);
+    FORWARD_COMMENTS(7),
+    COLLECTION(8);
 
     private int value;
 

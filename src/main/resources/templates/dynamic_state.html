@@ -1,35 +1,3 @@
-<div class="panel panel-default" style="width: 84%;height:auto;float: right;padding-bottom: 0px;">
-    <div class="panel-body">
-
-        <img src="images/fresh.png" style="float: left;">
-
-        <!--<strong style="font: 12px/1.3 'Arial','Microsoft YaHei'">已输入12字</strong>-->
-
-        <textarea class="form-control" rows="10"
-                  style="float: left;width: 100%;resize:none; margin-top: 8px;"></textarea>
-
-        <div style="width: 100%;">
-            <a class="submit-text">发布</a>
-        </div>
-
-    </div>
-</div>
-
-
-<div class="panel panel-default" id="weixinqing_loading_front"
-     style="width: 84%;float: right;display: none;">
-    <div class="panel-body" align="center">
-            <span class="glyphicon glyphicon-refresh" id="msg-loading-icon"
-                  style="margin-left: 15px;font-size: 17px;margin-top: 6px;"
-                  aria-hidden="true">
-            </span>
-        <span style="margin-left: 8px;margin-bottom: 10px;"
-              id="content-loading-advice">微心情加载中，请您稍后...</span>
-    </div>
-</div>
-
-<div id="addContentFlagFront" style="display: none;"></div>
-
 <div id="weibosDiv">
     <#list vo.weibos as weibo>
         <#if weibo ? is_first>

@@ -19,6 +19,10 @@ public class RedisKeyUtil {
 
     private static final String ACTIVE_FRIEND_FEED_KEY = "AFF";
 
+    private static final String UP_VOTE_KEY = "UV";
+
+    private static final String COLLECTION_KEY = "CK";
+
     public static String getVerifyCodeKey(String id) {
         return VERIFY_CODE_KEY + SPLIT + id;
     }
@@ -41,5 +45,13 @@ public class RedisKeyUtil {
 
     public static String getActiveFriendFeedKey() {
         return ACTIVE_FRIEND_FEED_KEY;
+    }
+
+    public static String getUpVoteKey(int type, int id) {
+        return UP_VOTE_KEY + type + SPLIT + id;
+    }
+
+    public static String getCollectionKey(int userId) {
+        return COLLECTION_KEY + userId;
     }
 }

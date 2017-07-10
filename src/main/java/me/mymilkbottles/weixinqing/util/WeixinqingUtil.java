@@ -1,5 +1,6 @@
 package me.mymilkbottles.weixinqing.util;
 
+import com.alibaba.fastjson.JSONObject;
 import me.mymilkbottles.weixinqing.configuration.InterceptorConfiguration;
 
 /**
@@ -8,6 +9,8 @@ import me.mymilkbottles.weixinqing.configuration.InterceptorConfiguration;
 public class WeixinqingUtil {
 
     public static final int ADMIN_ID = 0;
+
+    public static final String TICKET_NAME = "weixinqing_ticket";
 
     public static int parseUserId(String userIdS) {
         int userId = -1;
@@ -25,5 +28,11 @@ public class WeixinqingUtil {
         } catch (Exception e) {
         }
         return page;
+    }
+
+    public static String getJSONString(int code) {
+        JSONObject json = new JSONObject();
+        json.put("code", code);
+        return json.toJSONString();
     }
 }

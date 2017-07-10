@@ -21,6 +21,18 @@ public class Feed {
 
     private int isDelete;
 
+    public Feed() {
+
+    }
+
+    public Feed(int userId, int type, int weiboId, int extsId, Date fTime, int isDelete) {
+        this.userId = userId;
+        this.type = type;
+        this.weiboId = weiboId;
+        this.extsId = extsId;
+        this.fTime = fTime;
+        this.isDelete = isDelete;
+    }
 
     public long getId() {
         return id;

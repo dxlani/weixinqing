@@ -75,6 +75,6 @@ public class UserFriendController {
             vos.add(vo);
         }
         model.addAttribute("vos", vos);
-        return "";
+        return "user_friend";
     }
 }

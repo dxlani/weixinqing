@@ -84,4 +84,8 @@ public class WeiboService {
     public int getUserWeiboCountAfterDate(int userId, Date date) {
         return weiboMapper.getUserWeiboCountAfterDate(userId, date);
     }
+
+    public List<Weibo> getWeibo(int start, int end) {
+        return weiboMapper.getWeibo(start, end);
+    }
 }
