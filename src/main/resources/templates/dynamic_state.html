@@ -1,76 +1,79 @@
 <div id="weibosDiv">
-    <#list vo.weibos as weibo>
-        <#if weibo ? is_first>
-            <input type="hidden" value="${weibo.weibo.id ? c}" id="firstData">
+
+    <#list vo as vos>
+        <#if vo ? is_first>
+            <input type="hidden" value="${vo.id ? c}" id="firstData">
         </#if>
 
-        <#if weibo ? is_last>
-            <input type="hidden" value="${weibo.weibo.id ? c}" id="lastData">
+        <#if vo ? is_last>
+            <input type="hidden" value="${vo.id ? c}" id="lastData">
         </#if>
 
-        <div class="panel panel-default weibo"
-             style="width: 84%;height: auto;float: right;margin-left: 1%;">
-            <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;">
+        <#if vo.type>
+            <div class="panel panel-default weibo"
+                 style="width: 84%;height: auto;float: right;margin-left: 1%;">
+                <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;">
 
 
-                <div style="float: left;width: 13%;height: auto;">
-                    <img src="/headimg/${weibo.user.id?c}" alt="..." class="img-circle weiboHeadImg"
-                         style="width: 70px;height: 70px;">
-                </div>
-
-                <div style="float: right;width: 87%;">
-                    <div style="float: left;width: 100%;">
-                        <strong style="font-size: 15px;float: left;"
-                                class="username">${weibo.user.username}</strong>
+                    <div style="float: left;width: 13%;height: auto;">
+                        <img src="/headimg/${vo.weibo.masterId ? c}" alt="..." class="img-circle weiboHeadImg"
+                             style="width: 70px;height: 70px;">
                     </div>
-                    <span style="color: #808080;float: left; margin-top: 5px;
+
+                    <div style="float: right;width: 87%;">
+                        <div style="float: left;width: 100%;">
+                            <strong style="font-size: 15px;float: left;"
+                                    class="username">${vo.user.username}</strong>
+                        </div>
+                        <span style="color: #808080;float: left; margin-top: 5px;
 text-decoration: none;font-size: 12px;" class="datetime">${weibo.weibo.fTime?datetime}</span>
-                </div>
+                    </div>
 
 
-                <p style="display:block;width:87%;height:auto;margin-top: 5px;float: right;
+                    <p style="display:block;width:87%;height:auto;margin-top: 5px;float: right;
                           overflow:hidden; text-overflow:ellipsis;" class="weibo_content">${weibo.weibo.content}</p>
 
-                <div style="width:87%;height:auto;margin-top: 5px;float: right;" class="weibo_imgs">
-                    <#list weibo.imgs as weiboImg>
-                        <img src="/weixinqing/img/${weiboImg}"
-                             alt="..."
-                             style="height:140px;width:140px;margin:2px;margin-right: 0px;margin-left: 0px;"
-                             class="img-rounded">
-                    </#list>
-                </div>
+                    <div style="width:87%;height:auto;margin-top: 5px;float: right;" class="weibo_imgs">
+                        <#list weibo.imgs as weiboImg>
+                            <img src="/weixinqing/img/${weiboImg}"
+                                 alt="..."
+                                 style="height:140px;width:140px;margin:2px;margin-right: 0px;margin-left: 0px;"
+                                 class="img-rounded">
+                        </#list>
+                    </div>
 
-                <ul class="op-ul"
-                    style="float: left;width: 100%;margin-bottom:0px;padding-bottom:0px;padding-left: 0px;">
-                    <li>
-                        <div style="text-align:center;" class="save">
-                            <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                            <span class="">收藏</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div style="text-align:center;" class="share">
-                            <span class="glyphicon glyphicon-share" aria-hidden="true"></span>
-                            <span class="">131</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div style="text-align:center;" class="comment">
+                    <ul class="op-ul"
+                        style="float: left;width: 100%;margin-bottom:0px;padding-bottom:0px;padding-left: 0px;">
+                        <li>
+                            <div style="text-align:center;" class="save">
+                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                                <span class="">收藏</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div style="text-align:center;" class="share">
+                                <span class="glyphicon glyphicon-share" aria-hidden="true"></span>
+                                <span class="">131</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div style="text-align:center;" class="comment">
                             <span class="glyphicon glyphicon-comment" aria-hidden="true"
                             ></span>
-                            <span class="">579</span>
-                        </div>
-                    </li>
-                    <li>
-                        <div style="text-align:center;" class="up">
-                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-                            <span class="">188</span>
-                        </div>
-                    </li>
-                </ul>
+                                <span class="">579</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div style="text-align:center;" class="up">
+                                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                                <span class="">188</span>
+                            </div>
+                        </li>
+                    </ul>
 
+                </div>
             </div>
-        </div>
+        </#if>
     </#list>
     <div id="addContentFlagEnd" style="display: none;"></div>
 </div>

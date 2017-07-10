@@ -55,6 +55,7 @@ public class UserFriendController {
 
             int type = feed.getType();
             vo.add("type", type);
+            vo.add("id", feed.getId());
             if (type == EntityType.FIRE_WEIBO.getValue()) {
 
             } else if (type == EntityType.COMMENT.getValue()) {
@@ -71,6 +72,8 @@ public class UserFriendController {
             }
             weibo = weiboService.getWeiboById(feed.getUserId());
             vo.add("weibo", weibo);
+            user = userService.getUserById(weibo.getMasterId());
+            vo.add("user", user);
 
             vos.add(vo);
         }
