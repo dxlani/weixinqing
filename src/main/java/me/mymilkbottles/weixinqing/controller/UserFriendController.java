@@ -1,5 +1,6 @@
 package me.mymilkbottles.weixinqing.controller;
 
+import me.mymilkbottles.weixinqing.dao.JedisDAO;
 import me.mymilkbottles.weixinqing.model.*;
 import me.mymilkbottles.weixinqing.service.CommentsService;
 import me.mymilkbottles.weixinqing.service.IndexService;
@@ -35,6 +36,9 @@ public class UserFriendController {
     @Autowired
     CommentsService commentsService;
 
+    @Autowired
+    JedisDAO jedisAdapter;
+
     @RequestMapping("/user/friend")
     public String friend(Model model) {
         User localUser = hostHolder.getUser();
@@ -51,6 +55,11 @@ public class UserFriendController {
         User user = null;
         Weibo weibo = null;
         Comments comments = null;
+
+        User loginUser = hostHolder.getUser();
+        int loginUserId = loginUser.getId();
+        int weiboValue = EntityType.WEIBO.getValue();
+
         for (Feed feed : feeds) {
             ViewObject vo = new ViewObject();
 
@@ -73,6 +82,16 @@ public class UserFriendController {
             }
             weibo = weiboService.getWeiboById(feed.getWeiboId());
             vo.add("imgs", weiboService.getWeiboImgs(weibo.getImg()));
+
+
+            int weiboId = weibo.getId();
+            vo.add("comms", commentsService.getWeiboCommentCount(weiboId));
+            vo.add("ups", jedisAdapter.getUpvoteCount(loginUserId, weiboValue, weiboId));
+            vo.add("upvote",
+                    jedisAdapter.isUserUpvote(loginUserId, weiboValue, weiboId));
+            vo.add("collection", jedisAdapter.isUserCollection(loginUserId, weiboValue, weiboId));
+
+
 
             weibo.setContent(
                     weibo.getContent().replace("style=\"width:1em;height:1em;\"", "style=\"width:22px;height:22px;\""));

@@ -29,4 +29,7 @@ public interface CommentsDAO {
 
     @Select({"select * from " + TABLE_NAME + " where id = #{id}"})
     public Comments getCommentsById(int id);
+
+    @Select({"select count(id) from " + TABLE_NAME + " where weibo_id = #{id} and (is_delete != 1)"})
+    Integer getWeiboCommentCount(int id);
 }

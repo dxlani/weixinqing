@@ -58,8 +58,8 @@ public class IndexController {
 
         List<Weibo> weiboList = weiboService.getWeibo(0, PAGE_COUNT);
 
-        ViewObject vo = weiboService.addWeiboDetail(weiboList, PAGE_COUNT);
-        model.addAttribute("vo", vo);
+        ViewObject vos = weiboService.addWeiboDetail(weiboList, PAGE_COUNT);
+        model.addAttribute("vos", vos);
         return "index";
     }
 

@@ -35,6 +35,9 @@ public class WeiboService {
     @Autowired
     HandlerProducer handlerProducer;
 
+    @Autowired
+    CommentsService commentsService;
+
     public int insertWeibo(Weibo weibo) {
 
         if (weiboMapper.insertWeibo(weibo) > 0) {
@@ -73,6 +76,9 @@ public class WeiboService {
 
         ViewObject vo = new ViewObject();
 
+        User loginUser = hostHolder.getUser();
+        int loginUserId = loginUser.getId();
+        int weiboValue = EntityType.WEIBO.getValue();
         for (Weibo weibo : weiboList) {
             ViewObject viewObject = new ViewObject();
             viewObject.add("weibo", weibo);
@@ -81,10 +87,16 @@ public class WeiboService {
             User user = userService.getUserById(userId);
             viewObject.add("user", user);
 
+            int weiboId = weibo.getId();
+            viewObject.add("comms", commentsService.getWeiboCommentCount(weiboId));
+            viewObject.add("ups", jedisAdapter.getUpvoteCount(loginUserId, weiboValue, weiboId));
+            viewObject.add("upvote",
+                    jedisAdapter.isUserUpvote(loginUserId, weiboValue, weiboId));
+            viewObject.add("collection", jedisAdapter.isUserCollection(loginUserId, weiboValue, weiboId));
+
             viewObject.add("imgs", getWeiboImgs(weibo.getImg()));
             viewObjectList.add(viewObject);
         }
-        vo.add("weibos", viewObjectList);
         return vo;
     }
 

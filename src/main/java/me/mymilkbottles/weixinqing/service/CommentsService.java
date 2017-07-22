@@ -40,4 +40,8 @@ public class CommentsService {
     public Comments getCommentsById(int id) {
         return commentsMapper.getCommentsById(id);
     }
+
+    public Integer getWeiboCommentCount(int id) {
+        return commentsMapper.getWeiboCommentCount(id);
+    }
 }

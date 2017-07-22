@@ -77,6 +77,18 @@ public class JedisDAO {
         return -1;
     }
 
+
+    public int getUpvoteCount(int userId, int entityType, int entityId) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            String key = RedisKeyUtil.getUpVoteKey(entityType, entityId);
+            return jedis.scard(key).intValue();
+        }
+        return -1;
+    }
+
+
+
     public int collection(int userId, int entityType, int entityId) {
         Jedis jedis = getJedis();
         if (jedis != null) {
