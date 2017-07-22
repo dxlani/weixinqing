@@ -35,5 +35,8 @@ public interface LoginDAO {
 
 
     @Select({"select count(id) from " + TABLE_NAME + " where (login_date >= date) and id = #{userId}"})
-    int getUserLoginTimesAfterDate(@Param("userId") int userId, @Param("date") Date date);
+    public int getUserLoginTimesAfterDate(@Param("userId") int userId, @Param("date") Date date);
+
+    @Update({"update " + TABLE_NAME + " set is_delete = 1 where  user_id = #{id}"})
+    int deleteLoginInfoById(Integer id);
 }

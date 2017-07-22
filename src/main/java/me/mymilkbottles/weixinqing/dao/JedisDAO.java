@@ -2,6 +2,7 @@ package me.mymilkbottles.weixinqing.dao;
 
 
 import me.mymilkbottles.weixinqing.model.Feed;
+import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -63,7 +64,57 @@ public class JedisDAO {
         return null;
     }
 
+    public int upvote(int userId, int entityType, int entityId) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            String key = RedisKeyUtil.getUpVoteKey(entityType, entityId);
+            if (jedis.sadd(key, String.valueOf(userId)).longValue() == 0) {
+                jedis.srem(key, String.valueOf(userId));
+                return 0;
+            }
+            return 1;
+        }
+        return -1;
+    }
 
+    public int collection(int userId, int entityType, int entityId) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            String key = RedisKeyUtil.getCollectionKey(entityType, entityId);
+            if (jedis.sadd(key, String.valueOf(userId)).longValue() == 0) {
+                jedis.srem(key, String.valueOf(userId));
+                return 0;
+            }
+            return 1;
+        }
+        return -1;
+    }
+
+
+    public Boolean isUserCollection(int userId, int entityType, int entityId) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            String key = RedisKeyUtil.getCollectionKey(entityType, entityId);
+            return jedis.sismember(key, String.valueOf(userId));
+        }
+        return null;
+    }
+
+
+    public Boolean isUserUpvote(int userId, int entityType, int entityId) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            String key = RedisKeyUtil.getUpVoteKey(entityType, entityId);
+            return jedis.sismember(key, String.valueOf(userId));
+        }
+        return null;
+    }
+
+
+    public List<String> getActivers() {
+        String activePersonKey = RedisKeyUtil.getActivePersonKey();
+        return lrange(activePersonKey, 0, -1);
+    }
     public void set(String key, String value) {
         Jedis jedis = getJedis();
         if (jedis != null) {
@@ -167,6 +218,7 @@ public class JedisDAO {
         }
     }
 
+
     public List<String> brpop(String key) {
         Jedis jedis = getJedis();
         if (jedis != null) {
@@ -177,6 +229,10 @@ public class JedisDAO {
         return new ArrayList<String>();
     }
 
+
+//    public static void main(String[] args) {
+//        new JedisDAO().getJedis().incr("hello world test");
+//    }
 //    public static void main(String[] args) {
 //        set("redis-key", "redis-value", 3000L);
 //        String value = get("redis-key");

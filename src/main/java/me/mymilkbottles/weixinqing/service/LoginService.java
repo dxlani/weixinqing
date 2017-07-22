@@ -86,4 +86,8 @@ public class LoginService {
 
         return loginMapper.insertLoginInfo(login);
     }
+
+    public int deleteLoginInfoById(Integer id) {
+        return loginMapper.deleteLoginInfoById(id);
+    }
 }

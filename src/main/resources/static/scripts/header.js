@@ -21,6 +21,11 @@ $('document').ready(function () {
     $('.get-msg').click(function () {
 
         console.log('get-msg click');
+
+        if (!$('.unlogin-msg').is(":hidden")) {
+            $('.unlogin-msg').hide();
+            return;
+        }
         if (!$('.msg-loading').is(":hidden")) {
             console.log('msg-loading is not hidden');
             $('.msg-loading').hide();

@@ -24,7 +24,7 @@ public interface CommentsDAO {
     @Update({"update " + TABLE_NAME + " set is_delete = 1 where id = #{id}"})
     public int deleteComments(int id);
 
-    @Select({"select count(id) from " + TABLE_NAME + " where f_time > #{date} and master_id = #{userId}"})
+    @Select({"select count(id) from " + TABLE_NAME + " where f_time > #{date} and master_id = #{userId} and is_delete = 0"})
     public int getUserCommentsCountAfterDate(@Param("userId") int userId, @Param("date") Date date);
 
     @Select({"select * from " + TABLE_NAME + " where id = #{id}"})

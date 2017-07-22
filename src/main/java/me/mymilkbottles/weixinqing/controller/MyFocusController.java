@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by Administrator on 2017/07/04 22:32.
  */
 @Controller
-public class UserFriendController {
+public class MyFocusController {
 
     @Autowired
     HostHolder hostHolder;
@@ -35,17 +36,18 @@ public class UserFriendController {
     @Autowired
     CommentsService commentsService;
 
-    @RequestMapping("/user/friend")
+    @RequestMapping("/user/myfocus")
     public String friend(Model model) {
         User localUser = hostHolder.getUser();
         List<Feed> feeds = null;
         if (userService.isUserActive(localUser.getId())) {
-            feeds = indexService.pushFriend(localUser.getId(), 0, 10);
+            feeds = indexService.pushFocus(localUser.getId(), 0, 10);
         } else {
-            feeds = indexService.pullFriend(localUser.getId(), 0, 10);
+            feeds = indexService.pullFocus(localUser.getId(), 0, 10);
         }
 
-        List<ViewObject> vos = new ArrayList<ViewObject>(10);
+
+        List<ViewObject> vos = new ArrayList<ViewObject>(feeds.size());
 
         //" id, user_id, type, weibo_id, exts_id, f_time, is_delete "
         User user = null;
@@ -86,7 +88,8 @@ public class UserFriendController {
             vos.add(vo);
         }
 
-        model.addAttribute("PageType", "myfriends");
+//        System.out.println(vos);
+        model.addAttribute("PageType", "myfocus");
         model.addAttribute("vos", vos);
 
         return "user_friend";

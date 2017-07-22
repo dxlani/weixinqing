@@ -33,6 +33,6 @@ public interface WeiboDAO {
     @Select({"select count(id) from " + TABLE_NAME + " where f_time > #{date} and master_id = #{userId}"})
     public int getUserWeiboCountAfterDate(@Param("userId") int userId, @Param("date") Date date);
 
-    @Select({"select * from " + TABLE_NAME + " id = #{id}"})
+    @Select({"select * from " + TABLE_NAME + " where id = #{id}"})
     public Weibo getWeiboById(int id);
 }

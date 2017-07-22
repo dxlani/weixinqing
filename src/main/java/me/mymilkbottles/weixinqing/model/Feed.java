@@ -89,4 +89,17 @@ public class Feed {
     public void setIsDelete(int isDelete) {
         this.isDelete = isDelete;
     }
+
+    @Override
+    public String toString() {
+        return "Feed{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", type=" + type +
+                ", weiboId=" + weiboId +
+                ", extsId=" + extsId +
+                ", fTime=" + fTime +
+                ", isDelete=" + isDelete +
+                '}';
+    }
 }

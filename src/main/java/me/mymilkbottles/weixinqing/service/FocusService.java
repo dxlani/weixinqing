@@ -1,7 +1,10 @@
 package me.mymilkbottles.weixinqing.service;
 
 import me.mymilkbottles.weixinqing.dao.FocusDAO;
+import me.mymilkbottles.weixinqing.dao.JedisDAO;
 import me.mymilkbottles.weixinqing.model.Focus;
+import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
+import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,53 +20,68 @@ import java.util.Set;
 public class FocusService {
 
     @Autowired
-    FocusDAO focusMapper;
+    FocusDAO focusDAO;
+
+    @Autowired
+    JedisDAO jedisDAO;
+
+    @Autowired
+    FocusService focusService;
 
     public int focus(int masterId, int slaveId) {
         Focus focus = new Focus();
         focus.setMasterId(masterId);
         focus.setSlaveId(slaveId);
-        return focusMapper.focus(focus);
+        return focusDAO.focus(focus);
     }
 
     public int unFocus(int masterId, int slaveId) {
-        return focusMapper.unFocus(masterId, slaveId);
+        return focusDAO.unFocus(masterId, slaveId);
     }
 
     public boolean isFocus(int masterId, int slaveId) {
-        return focusMapper.isFocus(masterId, slaveId);
+        return focusDAO.isFocus(masterId, slaveId);
     }
 
     public int slaveCount(int userId) {
-        return focusMapper.slaveCount(userId);
+        return focusDAO.slaveCount(userId);
     }
 
     public int masterCount(int userId) {
-        return focusMapper.masterCount(userId);
+        return focusDAO.masterCount(userId);
     }
 
     public List<Integer> getMasterUser(int userId) {
-        return focusMapper.getMasterUser(userId);
+        return focusDAO.getMasterUser(userId);
     }
 
     public List<Integer> getSlaveUser(int userId) {
-        return focusMapper.getSlaveUser(userId);
+        return focusDAO.getSlaveUser(userId);
+    }
+
+    public List<Integer> getActiveSlaveUser(int userId) {
+        return focusDAO.getActiveSlaveUser(userId, jedisDAO.getActivers());
+    }
+
+    public List<Integer> getActiveFriend(int userId) {
+        List<Integer> activers = WeixinqingUtil.toIntegerList(jedisDAO.getActivers());
+        List<Integer> friends = focusService.getFriendUsers(userId);
+        return getCommonUsers(activers, friends);
     }
 
     public List<Integer> getFriendUsers(int userId) {
-        List<Integer> slaveUsers = focusMapper.getSlaveUser(userId);
-        List<Integer> masterUsers = focusMapper.getMasterUser(userId);
-        if (slaveUsers.size() > masterUsers.size()) {
-            return getCommonUsers(slaveUsers, masterUsers);
-        } else {
-            return getCommonUsers(masterUsers, slaveUsers);
-        }
+        List<Integer> slaveUsers = focusDAO.getSlaveUser(userId);
+        List<Integer> masterUsers = focusDAO.getMasterUser(userId);
+        return getCommonUsers(masterUsers, slaveUsers);
     }
 
-    private List<Integer> getCommonUsers(List<Integer> muchUsers, List<Integer> lessUsers) {
-        Set<Integer> set = new HashSet<>(muchUsers);
-        List<Integer> commonUsers = new ArrayList<>(lessUsers.size());
-        for (Integer id : lessUsers) {
+    private List<Integer> getCommonUsers(List<Integer> list1, List<Integer> list2) {
+        if (list1.size() < list2.size()) {
+            return getCommonUsers(list2, list1);
+        }
+        Set<Integer> set = new HashSet<>(list1);
+        List<Integer> commonUsers = new ArrayList<>(list2.size());
+        for (Integer id : list2) {
             if (set.contains(id)) {
                 commonUsers.add(id);
             }

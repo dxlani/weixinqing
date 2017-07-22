@@ -5,7 +5,7 @@
 
     <sql id="table_name"> feed </sql>
 
-    <select id="getFeed" resultType="me.mymilkbottles.weixinqing.model.Feed">
+    <select id="getFeeds" resultType="me.mymilkbottles.weixinqing.model.Feed">
         select *
         from
         <include refid="table_name"/>

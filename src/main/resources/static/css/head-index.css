@@ -8,7 +8,7 @@ body {
     background: url("/images/body_bg_img.jpg") no-repeat top center;
 }
 
-.search-submit, .user-center, .glyphicon-envelope, .glyphicon-refresh {
+.search-submit, .user-center, .glyphicon-envelope, .glyphicon-refresh, .glyphicon-cog {
     cursor: pointer;
     color: rgba(16, 38, 23, 0.67);
 }
@@ -17,7 +17,7 @@ body {
     background-color: #fbfbfb;
 }
 
-.nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
+.nav .open > a, .nav .open > a:focus, .nav .open > a:hover, .open {
     background-color: #fbfbfb;
 }
 
@@ -25,7 +25,16 @@ body {
     color: #fa7d3c;
 }
 
-.search-submit:hover, .user-center:hover, .glyphicon-envelope:hover {
+.open, .hover {
+    background-color: #fbfbfb;
+}
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .open > a:hover {
+    color: #fbfbfb;
+    background-color: #fbfbfb;
+}
+
+.search-submit:hover, .user-center:hover, .glyphicon-envelope:hover, .glyphicon-cog:hover {
     color: black;
 }
 

@@ -22,8 +22,8 @@ public class FeedService {
         return feedDAO.insertFeed(feed);
     }
 
-    public List<Feed> getFeed(List<Integer> userIds, int start, int end) {
-        return feedDAO.getFeed(userIds, start, end);
+    public List<Feed> getFriendsFeed(List<Integer> userFriendsId, int start, int end) {
+        return feedDAO.getFeeds(userFriendsId, start, end);
     }
 
     public int deleteFeed(int id) {
@@ -32,5 +32,9 @@ public class FeedService {
 
     public Feed getFeedById(int id) {
         return feedDAO.getFeedById(id);
+    }
+
+    public List<Feed> getFocusFeed(List<Integer> userFocusId, int start, int end) {
+        return feedDAO.getFeeds(userFocusId, start, end);
     }
 }

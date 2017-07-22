@@ -39,19 +39,19 @@ public class RedisKeyUtil {
         return ACTIVE_PERSON_KEY;
     }
 
-    public static String getActivePersonFeedKey() {
-        return ACTIVE_PERSON_FEED_KEY;
+    public static String getActivePersonFeedKey(Integer id) {
+        return ACTIVE_PERSON_FEED_KEY + id;
     }
 
-    public static String getActiveFriendFeedKey() {
-        return ACTIVE_FRIEND_FEED_KEY;
+    public static String getActiveFriendFeedKey(Integer id) {
+        return ACTIVE_FRIEND_FEED_KEY + id;
     }
 
-    public static String getUpVoteKey(int type, int id) {
-        return UP_VOTE_KEY + type + SPLIT + id;
+    public static String getUpVoteKey(int entityType, int entityId) {
+        return UP_VOTE_KEY + entityType + SPLIT + entityId;
     }
 
-    public static String getCollectionKey(int userId) {
-        return COLLECTION_KEY + userId;
+    public static String getCollectionKey(int entityType, int entityId) {
+        return COLLECTION_KEY + entityType + SPLIT + entityId;
     }
 }

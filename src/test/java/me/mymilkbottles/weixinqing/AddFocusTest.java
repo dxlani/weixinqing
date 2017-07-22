@@ -29,20 +29,25 @@ public class AddFocusTest {
     @Test
     public void addFocus() {
         int sum = userService.userCount();
-        Random random = new Random();
-        for (int i = 33; i < sum; ++i) {
-            if (random.nextInt(5000) <= 2) {
 
-            } else {
-                for (int j = 0; j < 3; ++j) {
-                    int temp;
-                    while ((temp = random.nextInt(sum)) >= 33 && temp != i) {
-                        break;
-                    }
-                    focusService.focus(temp, i);
-                    Assert.assertEquals(focusService.isFocus(temp, i), true);
-                }
+        for (int i = 34; i < sum; ++i) {
+            if (!focusService.isFocus(i, 33)) {
+                focusService.focus(i, 33);
             }
         }
+//        for (int i = 33; i < sum; ++i) {
+//            if (random.nextInt(5000) <= 2) {
+//
+//            } else {
+//                for (int j = 0; j < 3; ++j) {
+//                    int temp;
+//                    while ((temp = random.nextInt(sum)) >= 33 && temp != i) {
+//                        break;
+//                    }
+//                    focusService.focus(temp, i);
+//                    Assert.assertEquals(focusService.isFocus(temp, i), true);
+//                }
+//            }
+//        }
     }
 }

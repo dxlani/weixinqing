@@ -6,7 +6,8 @@ package me.mymilkbottles.weixinqing.model;
 public enum EventType {
 
     LOGIN(1),
-    REGISTER(2);
+    REGISTER(2),
+    FIRE_WEIBO(3);
 
     private int value;
 

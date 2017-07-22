@@ -43,7 +43,7 @@ public class EventModel {
         this.producer = producer;
     }
 
-    public EventModel putExt(String key, Object obj) {
+    public EventModel addExt(String key, Object obj) {
         this.getExts().put(key, obj);
         return this;
     }
@@ -52,39 +52,53 @@ public class EventModel {
         return producer;
     }
 
-    public void setProducer(int producer) {
+    public EventModel setProducer(int producer) {
         this.producer = producer;
+        return this;
     }
 
     public int getEventId() {
         return eventId;
     }
 
-    public void setEventId(int eventId) {
+    public EventModel setEventId(int eventId) {
         this.eventId = eventId;
+        return this;
     }
 
     public int getAdvicer() {
         return advicer;
     }
 
-    public void setAdvicer(int advicer) {
+    public EventModel setAdvicer(int advicer) {
         this.advicer = advicer;
+        return this;
     }
 
     public EventType getEventType() {
         return eventType;
     }
 
-    public void setEventType(EventType eventType) {
+    public EventModel setEventType(EventType eventType) {
         this.eventType = eventType;
+        return this;
+    }
+
+    public Object getExt(String key) {
+        return exts.get(key);
     }
 
     public Map<String, Object> getExts() {
         return exts;
     }
 
-    public void setExts(Map<String, Object> exts) {
+    public EventModel setExts(Map<String, Object> exts) {
         this.exts = exts;
+        return this;
+    }
+
+    public EventModel putExt(String activationMail, Object mail) {
+        this.exts = exts;
+        return this;
     }
 }

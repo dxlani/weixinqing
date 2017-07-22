@@ -3,6 +3,8 @@ package me.mymilkbottles.weixinqing;
 import me.mymilkbottles.weixinqing.dao.FeedDAO;
 import me.mymilkbottles.weixinqing.dao.UserDAO;
 import me.mymilkbottles.weixinqing.model.Feed;
+import me.mymilkbottles.weixinqing.service.FocusService;
+import me.mymilkbottles.weixinqing.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,17 @@ public class FeedDAOTest {
     @Autowired
     FeedDAO feedDAO;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    FocusService focusService;
+
     @Test
     public void getFeedTest() {
-        List<Feed> feeds = feedDAO.getFeed(Arrays.asList(new Integer[]{}), 1, 10);
+        List<Integer> masters = focusService.getMasterUser(33);
+        System.out.println(masters);
+        List<Feed> feeds = feedDAO.getFeeds(masters, 0, 10);
+        System.out.println(feeds);
     }
 }

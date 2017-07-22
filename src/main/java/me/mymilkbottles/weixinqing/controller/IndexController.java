@@ -63,18 +63,18 @@ public class IndexController {
         return "index";
     }
 
-    @RequestMapping("/index/news/{ids}")
-    @ResponseBody
-    public ViewObject indexNew(@PathVariable("ids") String ids) {
-        int id = WeixinqingUtil.parseUserId(ids);
-        if (id == -1) {
-            log.error("indexNew函数的参数ids必须为数字类型");
-            throw new IllegalArgumentException("参数ids必须为数字类型");
-        }
-        List<Weibo> weiboList = weiboService.getWeiboBrforeId(0, PAGE_COUNT, id);
-        ViewObject vo = weiboService.addWeiboDetail(weiboList, PAGE_COUNT);
-        return vo;
-    }
+//    @RequestMapping("/index/news/{ids}")
+//    @ResponseBody
+//    public ViewObject indexNew(@PathVariable("ids") String ids) {
+//        int id = WeixinqingUtil.parseUserId(ids);
+//        if (id == -1) {
+//            log.error("indexNew函数的参数ids必须为数字类型");
+//            throw new IllegalArgumentException("参数ids必须为数字类型");
+//        }
+//        List<Weibo> weiboList = weiboService.getWeiboBrforeId(0, PAGE_COUNT, id);
+//        ViewObject vo = weiboService.addWeiboDetail(weiboList, PAGE_COUNT);
+//        return vo;
+//    }
 
     @RequestMapping("/weixinqing/img/{name}")
     public void weiboImg(@PathVariable("name") String name, HttpServletResponse response) {

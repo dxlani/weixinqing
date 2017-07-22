@@ -34,10 +34,11 @@ public interface FocusDAO {
     @Select({"select count(id) from " + TABLE_NAME + " where master_id = #{userId}"})
     public int masterCount(int userId);
 
-    @Select({"select * from " + TABLE_NAME + " where slave_id = #{userId}"})
+    @Select({"select master_id from " + TABLE_NAME + " where slave_id = #{userId}"})
     public List<Integer> getMasterUser(int userId);
 
-    @Select({"select * from " + TABLE_NAME + " where master_id = #{userId}"})
+    @Select({"select slave_id from " + TABLE_NAME + " where master_id = #{userId}"})
     public List<Integer> getSlaveUser(int userId);
 
+    List<Integer> getActiveSlaveUser(@Param("userId") int userId, @Param("activers") List<String> activers);
 }

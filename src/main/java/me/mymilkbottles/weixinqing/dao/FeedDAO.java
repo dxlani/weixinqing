@@ -25,8 +25,6 @@ public interface FeedDAO {
     @Insert({"insert into " + TABLE_NAME + "(" + FIELD + ") values(#{userId}, #{type}, #{weiboId}, #{extsId}, #{fTime}, #{isDelete})"})
     public int insertFeed(Feed feed);
 
-    public List<Feed> getFeed(@Param("userIds") List<Integer> userIds, @Param("start") int start, @Param("end") int end);
-
     @Select({"update " + TABLE_NAME + " set is_delete = 1 where id = #{id} "})
     public int deleteFeed(int id);
 
@@ -34,5 +32,5 @@ public interface FeedDAO {
     public Feed getFeedById(int id);
 
 
-
+    List<Feed> getFeeds(@Param("userIds") List<Integer> userIds, @Param("start") int start, @Param("end") int end);
 }

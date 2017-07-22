@@ -60,6 +60,16 @@ public class LoginController {
         return "login";
     }
 
+    @RequestMapping("/logout")
+    public String logout() {
+        User user = hostHolder.getUser();
+
+        if (user != null) {
+            loginService.deleteLoginInfoById(user.getId());
+        }
+        return "redirect:/login";
+    }
+
     @RequestMapping(value = "/login/", method = RequestMethod.POST)
     public String loginIn(@RequestParam(value = "from", defaultValue = "", required = false) String from,
                           String username, String password, String code, HttpSession session,
