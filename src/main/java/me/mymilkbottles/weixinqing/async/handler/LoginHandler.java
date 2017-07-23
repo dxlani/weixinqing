@@ -44,13 +44,10 @@ public class LoginHandler implements Event {
 
         int advicer = eventModel.getAdvicer();
 
-        log.info("mail send");
+//        log.info("mail send");
 
         return Boolean.TRUE;
 
-//        mailUtil.sendMail("javaxz@163.com", "登录", MailTemplateType.LOGIN_MAIL, eventModel.getExts());
-
-//        mailUtil.sendMail("3028089952@qq.com", "登录", MailTemplateType.LOGIN_MAIL, eventModel.getExts());
     }
 
     @Override

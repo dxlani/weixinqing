@@ -80,6 +80,7 @@ public class UserFriendController {
             } else if (type == EntityType.UPVOTE.getValue()) {
                 vo.add("f_time", feed.getfTime());
             }
+
             weibo = weiboService.getWeiboById(feed.getWeiboId());
             vo.add("imgs", weiboService.getWeiboImgs(weibo.getImg()));
 
@@ -91,13 +92,10 @@ public class UserFriendController {
                     jedisAdapter.isUserUpvote(loginUserId, weiboValue, weiboId));
             vo.add("collection", jedisAdapter.isUserCollection(loginUserId, weiboValue, weiboId));
 
-
-
             weibo.setContent(
                     weibo.getContent().replace("style=\"width:1em;height:1em;\"", "style=\"width:22px;height:22px;\""));
 
             vo.add("weibo", weibo);
-
 
             user = userService.getUserById(weibo.getMasterId());
             vo.add("user", user);

@@ -76,7 +76,7 @@ public class LoginController {
                           HttpServletResponse response, Model model,
                           HttpServletRequest request) {
 
-        log.info("/login/" + "user=" + hostHolder.getUser());
+//        log.info("/login/" + "user=" + hostHolder.getUser());
 
         String sessionId = session.getId();
         String message = userService.validateLogin(username, password, code, sessionId);
@@ -93,7 +93,7 @@ public class LoginController {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        log.info("/login/" + "addCookie=" + cookie.getValue() + "cookie path=" + cookie.getPath());
+//        log.info("/login/" + "addCookie=" + cookie.getValue() + "cookie path=" + cookie.getPath());
         hostHolder.setUser(user);
 
         loginService.insertLoginInfo(cookie.getValue(), user.getId(), request);

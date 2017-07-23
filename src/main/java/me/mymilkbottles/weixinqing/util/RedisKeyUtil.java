@@ -23,6 +23,8 @@ public class RedisKeyUtil {
 
     private static final String COLLECTION_KEY = "CK";
 
+    private static final String TRANSMIT_KEY = "TK";
+
     public static String getVerifyCodeKey(String id) {
         return VERIFY_CODE_KEY + SPLIT + id;
     }
@@ -53,5 +55,9 @@ public class RedisKeyUtil {
 
     public static String getCollectionKey(int entityType, int entityId) {
         return COLLECTION_KEY + entityType + SPLIT + entityId;
+    }
+
+    public static String getUserTransmitKey(int weiboId) {
+        return TRANSMIT_KEY + SPLIT + weiboId;
     }
 }

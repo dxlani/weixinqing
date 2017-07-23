@@ -67,12 +67,18 @@ public class JedisDAO {
     public int upvote(int userId, int entityType, int entityId) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            String key = RedisKeyUtil.getUpVoteKey(entityType, entityId);
-            if (jedis.sadd(key, String.valueOf(userId)).longValue() == 0) {
-                jedis.srem(key, String.valueOf(userId));
-                return 0;
+            try {
+                String key = RedisKeyUtil.getUpVoteKey(entityType, entityId);
+                if (jedis.sadd(key, String.valueOf(userId)).longValue() == 0) {
+                    jedis.srem(key, String.valueOf(userId));
+                    return 0;
+                }
+                return 1;
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
             }
-            return 1;
         }
         return -1;
     }
@@ -81,45 +87,68 @@ public class JedisDAO {
     public int getUpvoteCount(int userId, int entityType, int entityId) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            String key = RedisKeyUtil.getUpVoteKey(entityType, entityId);
-            return jedis.scard(key).intValue();
+            try {
+                String key = RedisKeyUtil.getUpVoteKey(entityType, entityId);
+                return jedis.scard(key).intValue();
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
-        return -1;
+        return 0;
     }
 
 
-
-    public int collection(int userId, int entityType, int entityId) {
+    public boolean collection(int userId, int entityType, int entityId) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            String key = RedisKeyUtil.getCollectionKey(entityType, entityId);
-            if (jedis.sadd(key, String.valueOf(userId)).longValue() == 0) {
-                jedis.srem(key, String.valueOf(userId));
-                return 0;
+            try {
+                String key = RedisKeyUtil.getCollectionKey(entityType, entityId);
+                if (jedis.sadd(key, String.valueOf(userId)).longValue() == 0) {
+                    jedis.srem(key, String.valueOf(userId));
+                    return false;
+                }
+                return true;
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
             }
-            return 1;
         }
-        return -1;
+        return false;
     }
 
 
     public Boolean isUserCollection(int userId, int entityType, int entityId) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            String key = RedisKeyUtil.getCollectionKey(entityType, entityId);
-            return jedis.sismember(key, String.valueOf(userId));
+            try {
+                String key = RedisKeyUtil.getCollectionKey(entityType, entityId);
+                return jedis.sismember(key, String.valueOf(userId));
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
-        return null;
+        return Boolean.FALSE;
     }
 
 
     public Boolean isUserUpvote(int userId, int entityType, int entityId) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            String key = RedisKeyUtil.getUpVoteKey(entityType, entityId);
-            return jedis.sismember(key, String.valueOf(userId));
+            try {
+                String key = RedisKeyUtil.getUpVoteKey(entityType, entityId);
+                return jedis.sismember(key, String.valueOf(userId));
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
-        return null;
+        return Boolean.FALSE;
     }
 
 
@@ -129,37 +158,53 @@ public class JedisDAO {
     }
     public void set(String key, String value) {
         Jedis jedis = getJedis();
-        if (jedis != null) {
+        try {
             jedis.set(key, value);
-            jedis.close();
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
         }
     }
 
     public String get(String key) {
         Jedis jedis = getJedis();
-        String value = jedis.get(key);
-        jedis.close();
-        return value;
+        try {
+            return jedis.get(key);
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
     }
 
     public void set(String key, String value, long time) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            if (jedis.get(key) == null) {
-                jedis.set(key, value, "NX", "PX", time);
-            } else {
-                jedis.set(key, value, "XX", "PX", time);
+            try {
+                if (jedis.get(key) == null) {
+                    jedis.set(key, value, "NX", "PX", time);
+                } else {
+                    jedis.set(key, value, "XX", "PX", time);
+                }
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
             }
-            jedis.close();
         }
     }
 
     public long srem(String key, String json) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            long result = jedis.srem(key, json);
-            jedis.close();
-            return result;
+            try {
+                return jedis.srem(key, json);
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
         return -1;
     }
@@ -167,9 +212,13 @@ public class JedisDAO {
     public long sadd(String key, String json) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            long result = jedis.sadd(key, json);
-            jedis.close();
-            return result;
+            try {
+                return jedis.sadd(key, json);
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
         return -1;
     }
@@ -177,9 +226,13 @@ public class JedisDAO {
     public boolean sismember(String key, String member) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            boolean result = jedis.sismember(key, member);
-            jedis.close();
-            return result;
+            try {
+                return jedis.sismember(key, member);
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
         return false;
     }
@@ -187,9 +240,13 @@ public class JedisDAO {
     public Set<String> smembers(String key) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            Set<String> set = jedis.smembers(key);
-            jedis.close();
-            return set;
+            try {
+                return jedis.smembers(key);
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
         return null;
     }
@@ -197,9 +254,13 @@ public class JedisDAO {
     public List<String> lrange(String key, int start, int end) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            List<String> list = jedis.lrange(key, start, end);
-            jedis.close();
-            return list;
+            try {
+                return jedis.lrange(key, start, end);
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
         return null;
     }
@@ -207,9 +268,13 @@ public class JedisDAO {
     public Set<String> sinter(String key, String member) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            Set<String> set = jedis.sinter(key, member);
-            jedis.close();
-            return set;
+            try {
+                return jedis.sinter(key, member);
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
         return null;
     }
@@ -217,16 +282,26 @@ public class JedisDAO {
     public void lpush(String key, String json) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            jedis.lpush(key, json);
-            jedis.close();
+            try {
+                jedis.lpush(key, json);
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
     }
 
     public void lrem(int count, String listKey, String key) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            jedis.lrem(listKey, count, key);
-            jedis.close();
+            try {
+                jedis.lrem(listKey, count, key);
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
     }
 
@@ -234,11 +309,54 @@ public class JedisDAO {
     public List<String> brpop(String key) {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            List<String> list = jedis.brpop(0, key);
-            jedis.close();
-            return list;
+            try {
+                return jedis.brpop(0, key);
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
         return new ArrayList<String>();
+    }
+
+    public int transmit(int weiboId, int userId) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            try {
+                String key = RedisKeyUtil.getUserTransmitKey(weiboId);
+                return jedis.sadd(key, String.valueOf(userId)).intValue();
+            } finally {
+                jedis.close();
+            }
+        }
+        return 0;
+    }
+
+    public int getTransmitCount(int weiboId) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            try {
+                String key = RedisKeyUtil.getUserTransmitKey(weiboId);
+                return jedis.scard(key).intValue();
+            } finally {
+                jedis.close();
+            }
+        }
+        return 0;
+    }
+
+    public boolean isUserTransmited(int weiboId, int userId) {
+        Jedis jedis = getJedis();
+        if (jedis != null) {
+            try {
+                String key = RedisKeyUtil.getUserTransmitKey(weiboId);
+                return jedis.sismember(key, String.valueOf(userId));
+            } finally {
+                jedis.close();
+            }
+        }
+        return false;
     }
 
 

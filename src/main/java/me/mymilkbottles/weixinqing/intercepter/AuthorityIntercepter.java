@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,6 +22,14 @@ public class AuthorityIntercepter implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if (hostHolder.getUser() == null) {
+            String userActionCookie = null;
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie != null && "userAction".equals(cookie.getName())) {
+                    userActionCookie = cookie.getValue();
+                    break;
+                }
+            }
+
             response.sendRedirect("/login?from=" + request.getRequestURI());
             return false;
         }

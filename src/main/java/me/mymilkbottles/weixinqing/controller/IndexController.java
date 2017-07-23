@@ -34,7 +34,7 @@ public class IndexController {
 
     private static final Logger log = LoggerFactory.getLogger(LoginIntercepter.class);
 
-    private static final int PAGE_COUNT = 20;
+    private static final int PAGE_COUNT = 10;
 
     private static final int SIZE = 1024;
 
@@ -55,13 +55,20 @@ public class IndexController {
 
     @RequestMapping(value = {"/", "/index"})
     public String index(Model model) {
-
         List<Weibo> weiboList = weiboService.getWeibo(0, PAGE_COUNT);
-
-        ViewObject vos = weiboService.addWeiboDetail(weiboList, PAGE_COUNT);
+        List<ViewObject> vos = weiboService.addWeiboDetail(weiboList, PAGE_COUNT);
         model.addAttribute("vos", vos);
         return "index";
     }
+
+    @RequestMapping(value = {"/indexJson"})
+    @ResponseBody
+    public List<ViewObject> indexJson() {
+        List<Weibo> weiboList = weiboService.getWeibo(0, PAGE_COUNT);
+        List<ViewObject> vos = weiboService.addWeiboDetail(weiboList, PAGE_COUNT);
+        return vos;
+    }
+
 
 //    @RequestMapping("/index/news/{ids}")
 //    @ResponseBody

@@ -7,6 +7,7 @@ import me.mymilkbottles.weixinqing.service.WeiboService;
 import me.mymilkbottles.weixinqing.util.EntityType;
 import me.mymilkbottles.weixinqing.util.SensitiveWordFilterUtil;
 import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -40,15 +41,39 @@ public class WeiboController {
         return WeixinqingUtil.getJsonResponse(code);
     }
 
+    @RequestMapping("/user/transmit")
+    @ResponseBody
+    public String transmit(@RequestParam(value = "comment", required = false) String comment,
+                           String weiboIds,
+                           HttpServletRequest request,
+                           Model model) {
+        int weiboId = WeixinqingUtil.parseWeiboId(weiboIds);
+        if (weiboId != -1) {
+            return WeixinqingUtil.getJsonResponse(weiboService.transmit(weiboId, comment));
+        } else {
+            return WeixinqingUtil.getJsonResponse(0);
+        }
+    }
+
     @RequestMapping("/user/upvote/{weiboIds}")
     @ResponseBody
     public String upvote(@PathVariable("weiboIds") String weiboIds) {
         int weiboId = WeixinqingUtil.parseWeiboId(weiboIds);
         if (weiboId != -1) {
-            weiboService.upvote(hostHolder.getUser().getId(), EntityType.UPVOTE.getValue(), weiboId);
-        } else {
-            return WeixinqingUtil.getJsonResponse(0);
+            int code = weiboService.upvote(hostHolder.getUser().getId(), EntityType.UPVOTE.getValue(), weiboId);
+            return WeixinqingUtil.getJsonResponse(code);
         }
-        return null;
+        return WeixinqingUtil.getJsonResponse(0);
+    }
+
+    @RequestMapping("/user/collection/{weiboIds}")
+    @ResponseBody
+    public String collection(@PathVariable("weiboIds") String weiboIds) {
+        int weiboId = WeixinqingUtil.parseWeiboId(weiboIds);
+        if (weiboId != -1) {
+            int code = weiboService.collection(hostHolder.getUser().getId(), EntityType.COLLECTION.getValue(), weiboId) ? 200 : 0;
+            return WeixinqingUtil.getJsonResponse(code);
+        }
+        return WeixinqingUtil.getJsonResponse(0);
     }
 }

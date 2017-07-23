@@ -39,18 +39,13 @@ public class WeiboService {
     CommentsService commentsService;
 
     public int insertWeibo(Weibo weibo) {
-
         if (weiboMapper.insertWeibo(weibo) > 0) {
             EventModel eventModel = new EventModel();
-
             eventModel.setEventId(hostHolder.getUser().getId()).setEventType(EventType.FIRE_WEIBO)
                     .addExt("time", new Date()).setEventId(weibo.getId());
-
             handlerProducer.produceHandler(eventModel);
-
             return 1;
         }
-
         return 0;
     }
 
@@ -70,14 +65,13 @@ public class WeiboService {
 //        jedisAdapter.
     }
 
-    public ViewObject addWeiboDetail(List<Weibo> weiboList, int pageCount) {
+
+    public List<ViewObject> addWeiboDetail(List<Weibo> weiboList, int pageCount) {
 
         List<ViewObject> viewObjectList = new ArrayList<>(pageCount);
 
-        ViewObject vo = new ViewObject();
-
         User loginUser = hostHolder.getUser();
-        int loginUserId = loginUser.getId();
+        int loginUserId = loginUser == null ? -1 : loginUser.getId();
         int weiboValue = EntityType.WEIBO.getValue();
         for (Weibo weibo : weiboList) {
             ViewObject viewObject = new ViewObject();
@@ -90,14 +84,15 @@ public class WeiboService {
             int weiboId = weibo.getId();
             viewObject.add("comms", commentsService.getWeiboCommentCount(weiboId));
             viewObject.add("ups", jedisAdapter.getUpvoteCount(loginUserId, weiboValue, weiboId));
-            viewObject.add("upvote",
+            viewObject.add("upd",
                     jedisAdapter.isUserUpvote(loginUserId, weiboValue, weiboId));
-            viewObject.add("collection", jedisAdapter.isUserCollection(loginUserId, weiboValue, weiboId));
+            viewObject.add("coll", jedisAdapter.isUserCollection(loginUserId, weiboValue, weiboId));
+            viewObject.add("trs", jedisAdapter.getTransmitCount(weiboId));
 
             viewObject.add("imgs", getWeiboImgs(weibo.getImg()));
             viewObjectList.add(viewObject);
         }
-        return vo;
+        return viewObjectList;
     }
 
     public int getUserWeiboCountAfterDate(int userId, Date date) {
@@ -126,7 +121,25 @@ public class WeiboService {
         return jedisAdapter.upvote(userId, entityType, entityId);
     }
 
-    public int collection(int userId, int entityType, int entityId) {
+    public Boolean collection(int userId, int entityType, int entityId) {
         return jedisAdapter.collection(userId, entityType, entityId);
     }
+
+    public int transmit(int weiboId, String comment) {
+        User loginUser = hostHolder.getUser();
+        int loginUserId = loginUser.getId();
+
+        EventModel eventModel = new EventModel();
+        eventModel.setEventId(weiboId).setProducer(loginUserId)
+                .addExt("time", new Date());
+
+        if (StringUtils.isNotBlank(comment)) {
+            eventModel.setEventType(EventType.TRANSMIT_COMMENT).addExt("comment", comment);
+        } else {
+            eventModel.setEventType(EventType.TRANSMIT);
+        }
+        handlerProducer.produceHandler(eventModel);
+        return 200;
+    }
+
 }
