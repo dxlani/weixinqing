@@ -100,23 +100,23 @@ public class JedisDAO {
     }
 
 
-    public boolean collection(int userId, int entityType, int entityId) {
+    public int collection(int userId, int entityType, int entityId) {
         Jedis jedis = getJedis();
         if (jedis != null) {
             try {
                 String key = RedisKeyUtil.getCollectionKey(entityType, entityId);
                 if (jedis.sadd(key, String.valueOf(userId)).longValue() == 0) {
                     jedis.srem(key, String.valueOf(userId));
-                    return false;
+                    return 1;
                 }
-                return true;
+                return 1;
             } finally {
                 if (jedis != null) {
                     jedis.close();
                 }
             }
         }
-        return false;
+        return 0;
     }
 
 

@@ -121,7 +121,7 @@ public class WeiboService {
         return jedisAdapter.upvote(userId, entityType, entityId);
     }
 
-    public Boolean collection(int userId, int entityType, int entityId) {
+    public int collection(int userId, int entityType, int entityId) {
         return jedisAdapter.collection(userId, entityType, entityId);
     }
 

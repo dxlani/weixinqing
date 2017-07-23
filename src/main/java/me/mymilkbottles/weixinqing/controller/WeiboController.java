@@ -41,10 +41,10 @@ public class WeiboController {
         return WeixinqingUtil.getJsonResponse(code);
     }
 
-    @RequestMapping("/user/transmit")
+    @RequestMapping("/user/transmit/{weiboIds}")
     @ResponseBody
-    public String transmit(@RequestParam(value = "comment", required = false) String comment,
-                           String weiboIds,
+    public String transmit(@ModelAttribute(value = "comment") String comment,
+                           @PathVariable("weiboIds") String weiboIds,
                            HttpServletRequest request,
                            Model model) {
         int weiboId = WeixinqingUtil.parseWeiboId(weiboIds);
@@ -71,7 +71,7 @@ public class WeiboController {
     public String collection(@PathVariable("weiboIds") String weiboIds) {
         int weiboId = WeixinqingUtil.parseWeiboId(weiboIds);
         if (weiboId != -1) {
-            int code = weiboService.collection(hostHolder.getUser().getId(), EntityType.COLLECTION.getValue(), weiboId) ? 200 : 0;
+            int code = weiboService.collection(hostHolder.getUser().getId(), EntityType.COLLECTION.getValue(), weiboId) == 1 ? 200 : 0;
             return WeixinqingUtil.getJsonResponse(code);
         }
         return WeixinqingUtil.getJsonResponse(0);
