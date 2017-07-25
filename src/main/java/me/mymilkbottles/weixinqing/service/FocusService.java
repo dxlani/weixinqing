@@ -3,6 +3,7 @@ package me.mymilkbottles.weixinqing.service;
 import me.mymilkbottles.weixinqing.dao.FocusDAO;
 import me.mymilkbottles.weixinqing.dao.JedisDAO;
 import me.mymilkbottles.weixinqing.model.Focus;
+import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class FocusService {
 
     @Autowired
     FocusService focusService;
+
+    @Autowired
+    UserService userService;
 
     public int focus(int masterId, int slaveId) {
         Focus focus = new Focus();
@@ -91,5 +95,31 @@ public class FocusService {
 
     public boolean isFriend(int userIdA, int userIdB) {
         return isFocus(userIdA, userIdB) && isFocus(userIdB, userIdA);
+    }
+
+    public int getSlaveUserCount(int userId) {
+        return focusDAO.getSlaveUserCount(userId);
+    }
+
+    public int getMasterUserCount(int userId) {
+        return focusDAO.getMasterUserCount(userId);
+    }
+
+    public List<User> getSlaveUser(Integer userId, int start, int end) {
+        List<Integer> userIds = focusDAO.getSlaveUserPage(userId, start, end);
+        List<User> users = new ArrayList<>(userIds.size());
+        for (Integer id : userIds) {
+            users.add(userService.getUserById(id));
+        }
+        return users;
+    }
+
+    public List<User> getMasterUser(int userId, int start, int end) {
+        List<Integer> userIds = focusDAO.getMasterUserPage(userId, start, end);
+        List<User> users = new ArrayList<>(userIds.size());
+        for (Integer id : userIds) {
+            users.add(userService.getUserById(id));
+        }
+        return users;
     }
 }

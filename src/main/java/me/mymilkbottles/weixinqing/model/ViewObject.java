@@ -10,6 +10,13 @@ import java.util.Map;
  */
 public class ViewObject implements Serializable {
 
+    public ViewObject() {
+
+    }
+
+    public ViewObject(String key, Object value) {
+        vo.put(key, value);
+    }
     private Map<String, Object> vo = new HashMap<>();
 
     public Map<String, Object> getVo() {

@@ -1,0 +1,44 @@
+<ul class="nav nav-pills nav-stacked index-left-ul"
+    style="width:127.5px;
+            display: block; position: fixed;
+            background-color: rgba(70,149,194,0.3);
+            float: left;border-radius:5px;">
+
+    <li role="presentation"><a href="/index">微心情</a></li>
+    <li role="presentation"><a href="/user/home/${user.id}">
+        <#if (v?? && v.self) || (vo?? && vo.self)>
+            我的动态
+            <#else>
+                他的动态
+        </#if>
+    </a></li>
+    <li role="presentation"><a href="/user/focus/${user.id}/1">
+        <#if (v?? && v.self) || (vo?? && vo.self)>
+            我的关注
+            <#else>
+                他的关注
+        </#if>
+    </a></li>
+    <li role="presentation"><a href="/user/follow/${user.id}/1">
+        <#if (v?? && v.self) || (vo?? && vo.self)>
+            我的粉丝
+            <#else>
+                他的粉丝
+        </#if>
+    </a></li>
+    <li role="presentation"><a href="/user/message/${user.id}">
+        <#if (v?? && v.self) || (vo?? && vo.self)>
+            我的私信
+            <#else>
+                他的私信
+        </#if>
+    </a></li>
+    <li role="presentation"><a href="/user/advice/${user.id}">
+        <#if (v?? && v.self) || (vo?? && vo.self)>
+            我的通知
+            <#else>
+                他的通知
+        </#if>
+    </a></li>
+
+</ul>

@@ -95,6 +95,10 @@ public class FeedService {
         feedDAO.deleteFeeds(userId, value, weiboId, entityId);
     }
 
+    public int getUserFeedCount(int userId) {
+        return feedDAO.getUserFeedCount(userId);
+    }
+
     public List<ViewObject> getFeedDetail(List<Feed> feeds) {
 
         List<ViewObject> vos = new ArrayList<ViewObject>(10);

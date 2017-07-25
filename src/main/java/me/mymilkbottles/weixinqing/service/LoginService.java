@@ -65,7 +65,7 @@ public class LoginService {
 
         Date nowDate = new Date();
         login.setLoginDate(nowDate);
-        login.setExpireDate(new Date(nowDate.getTime() + 20L * 60 * 1000));
+        login.setExpireDate(new Date(nowDate.getTime() + 30L * 60 * 1000));
 
         Map<String, Object> map = new HashMap<>();
 

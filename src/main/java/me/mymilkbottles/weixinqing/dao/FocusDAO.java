@@ -41,4 +41,16 @@ public interface FocusDAO {
     public List<Integer> getSlaveUser(int userId);
 
     List<Integer> getActiveSlaveUser(@Param("userId") int userId, @Param("activers") List<String> activers);
+
+    @Select({"select count(id) from " + TABLE_NAME + " where slave_id = #{userId}"})
+    int getMasterUserCount(int userId);
+
+    @Select({"select count(id) from " + TABLE_NAME + " where master_id = #{userId}"})
+    int getSlaveUserCount(int userId);
+
+    @Select({"select slave_id from " + TABLE_NAME + " where master_id = #{userId} limit #{start}, #{end}"})
+    List<Integer> getSlaveUserPage(@Param("userId") Integer id, @Param("start") int start, @Param("end") int end);
+
+    @Select({"select master_id from " + TABLE_NAME + " where slave_id = #{userId} limit #{start}, #{end}"})
+    List<Integer> getMasterUserPage(@Param("userId") Integer id, @Param("start") int start, @Param("end") int end);
 }

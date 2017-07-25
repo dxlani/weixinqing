@@ -34,4 +34,7 @@ public interface FeedDAO {
 
     @Select({"select " + ALL_FIELD + " from " + TABLE_NAME + " where user_id = #{userId} and id < #{maxId} order by f_time desc limit #{size}"})
     List<Feed> getUserFeeds(@Param("userId") int userId, @Param("maxId") int maxId, @Param("size") int pageSize);
+
+    @Select({"select count(id) from " + TABLE_NAME + " where id = #{userId}"})
+    int getUserFeedCount(int userId);
 }
