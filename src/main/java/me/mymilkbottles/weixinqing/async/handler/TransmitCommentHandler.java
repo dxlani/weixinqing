@@ -3,14 +3,13 @@ package me.mymilkbottles.weixinqing.async.handler;
 import me.mymilkbottles.weixinqing.async.Event;
 import me.mymilkbottles.weixinqing.async.EventModel;
 import me.mymilkbottles.weixinqing.dao.JedisDAO;
-import me.mymilkbottles.weixinqing.model.Comments;
-import me.mymilkbottles.weixinqing.model.EventType;
-import me.mymilkbottles.weixinqing.model.Feed;
-import me.mymilkbottles.weixinqing.service.FeedService;
-import me.mymilkbottles.weixinqing.service.FocusService;
-import me.mymilkbottles.weixinqing.service.UserService;
+import me.mymilkbottles.weixinqing.model.*;
+
+import me.mymilkbottles.weixinqing.service.*;
 import me.mymilkbottles.weixinqing.util.EntityType;
+import me.mymilkbottles.weixinqing.util.MessageType;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
+import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,6 +39,15 @@ public class TransmitCommentHandler implements Event {
     @Autowired
     FocusService focusService;
 
+    @Autowired
+    WeiboService weiboService;
+
+    @Autowired
+    CommentsService commentsService;
+
+    @Autowired
+    MessageService messageService;
+
     @Override
     public Boolean doHandler(EventModel eventModel) {
 
@@ -49,37 +57,42 @@ public class TransmitCommentHandler implements Event {
 
         Object comment = eventModel.getExt("comment");
 
-        Date time = (Date) eventModel.getExt("time");
+        Date time = new Date(Long.valueOf(eventModel.getExt("time").toString()));
 
-
-        jedisDAO.transmit(weiboId, userId);
         Feed feed = new Feed();
         feed.setUserId(userId);
         feed.setWeiboId(weiboId);
 
         if (comment == null) {
-            feed.setType(EventType.TRANSMIT.getValue());
+            feed.setType(EntityType.TRANSMIT.getValue());
         } else {
-            feed.setType(EventType.TRANSMIT_COMMENT.getValue());
+            feed.setType(EntityType.TRANSMIT_COMMENT.getValue());
             Comments comments = new Comments();
             comments.setWeiboId(weiboId);
             comments.setfTime(time);
             comments.setContent((String) comment);
             comments.setMasterId(userId);
+            commentsService.insertComments(comments);
             feed.setExtsId((int) comments.getId());
         }
         feed.setfTime(time);
         feed.setIsDelete(0);
-        if (feedService.insertFeed(feed) < 0) {
+        if (feedService.insertFeed(feed) <= 0) {
             log.error("增加feed失败");
             return Boolean.FALSE;
         }
+
+        if (messageService.insertTransmitCommentMessage(userId, weiboId, time) <= 0) {
+            log.error("增加TransmitCommentMessage失败");
+            return Boolean.FALSE;
+        }
+
         feedService.pushFeedToActivers(userId, String.valueOf(feed.getId()));
         return Boolean.TRUE;
     }
 
     @Override
-    public List<EventType> getSupportEventType() {
-        return Arrays.asList(new EventType[]{EventType.TRANSMIT_COMMENT, EventType.TRANSMIT});
+    public List<EntityType> getSupportEntityType() {
+        return Arrays.asList(new EntityType[]{EntityType.TRANSMIT_COMMENT, EntityType.TRANSMIT});
     }
 }

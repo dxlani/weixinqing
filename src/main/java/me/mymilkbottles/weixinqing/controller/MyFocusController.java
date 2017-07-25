@@ -64,9 +64,9 @@ public class MyFocusController {
             } else if (type == EntityType.COMMENT.getValue()) {
                 comments = commentsService.getCommentsById(feed.getExtsId());
                 vo.add("comments", comments);
-            } else if (type == EntityType.FORWARD.getValue()) {
+            } else if (type == EntityType.TRANSMIT.getValue()) {
                 vo.add("f_time", feed.getfTime());
-            } else if (type == EntityType.FORWARD_COMMENTS.getValue()) {
+            } else if (type == EntityType.TRANSMIT_COMMENT.getValue()) {
                 comments = commentsService.getCommentsById(feed.getExtsId());
                 vo.add("comments", comments);
                 vo.add("f_time", feed.getfTime());

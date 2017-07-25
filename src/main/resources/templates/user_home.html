@@ -35,107 +35,405 @@
             background-color: rgba(70,149,194,0.3);
             float: left;border-radius:5px;">
 
-            <!--<li role="presentation"><a href="/index">微心情</a></li>-->
+            <li role="presentation"><a href="/index">微心情</a></li>
+            <li role="presentation"><a href="/user/home/${user.id}">
+                <#if v.self>
+                    我的动态
+                    <#else>
+                        他的动态
+                </#if>
+            </a></li>
+            <li role="presentation"><a href="/user/focus/${user.id}">
+                <#if v.self>
+                    我的关注
+                    <#else>
+                        他的关注
+                </#if>
+            </a></li>
+            <li role="presentation"><a href="/user/slave/${user.id}">
+                <#if v.self>
+                    我的粉丝
+                    <#else>
+                        他的粉丝
+                </#if>
+            </a></li>
+            <li role="presentation"><a href="/user/message/${user.id}">
+                <#if v.self>
+                    我的私信
+                    <#else>
+                        他的私信
+                </#if>
+            </a></li>
+            <li role="presentation"><a href="/user/advice/${user.id}">
+                <#if v.self>
+                    我的通知
+                    <#else>
+                        他的通知
+                </#if>
+            </a></li>
 
-            <div class="panel-body">
-                <img src="http://ww1.sinaimg.cn/default/images/default_avatar_male_uploading_180.gif"
-                     alt="${vo.username}" title="${vo.username}"
-                     class="img-circle"
-                     style="width:95px; height:95px;">
-                <!--<img src="/user/headimg/${vo.userId}" alt="..." class="img-circle">-->
-            </div>
-
-            <div style="width: 100%;padding: 8px;">
-                ${vo.username}首页首页首页首页
-            </div>
-
-            <li role="presentation"><a href="#">我的动态</a></li>
-            <li role="presentation"><a href="#">我的关注</a></li>
-            <li role="presentation"><a href="#">我的粉丝</a></li>
-            <li role="presentation"><a href="#">我的私信</a></li>
-            <li role="presentation"><a href="#">我的通知</a></li>
         </ul>
 
-        <!--<div style="width:127.5px;height:500px;float: left;"></div>-->
+        <!--<div style="width: 713px;height:215px;float: right;"></div>-->
 
-        <div class="panel panel-default" style="width: 84%;height:auto;float: right;padding-bottom: 0px;">
-            <div class="panel-body">
+        <div class="panel panel-default" style="width: 714px;height:auto;float: right;
+        padding-bottom: 0px;background-color: rgba(70,149,194,0.3);border: none; ">
+            <div class="panel-body" style="padding-top: 15px;" align="center">
 
-                <img src="/images/fresh.png" style="float: left;">
+                <img src="/headimg/${user.id}" alt="${user.username}" align="center"
+                     style="width:95px; height:95px;" title="${user.username}"
+                     class="img-circle">
 
-                <!--<strong style="font: 12px/1.3 'Arial','Microsoft YaHei'">已输入12字</strong>-->
-
-                <textarea class="form-control" rows="10"
-                          style="float: left;width: 100%;resize:none; margin-top: 8px;"></textarea>
-
-                <div style="width: 100%;">
-                    <a class="submit-text">发布</a>
+                <div style="width: 100%;padding: 4px;font-size: 22px;text-align: center;color: #fff;text-shadow: 0 0 4px rgba(0,0,0,0.5);">
+                    ${user.username}
                 </div>
 
+                <style>
+                    .indexTop2 {
+                        float: left;
+                        width: 104px;
+                        height: 34px;
+                        text-align: center;
+                        color: #fff;
+                        cursor: pointer;
+                        padding-top: 10px;
+                        text-decoration: none;
+                        font: 12px/1.3 'Arial', 'Microsoft YaHei';
+                        font-size: 14px;
+                        box-shadow: 0px 2px 1px rgba(0, 0, 0, .2);
+                        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+                    }
+
+                    .pri-msg {
+                        background: -webkit-linear-gradient(top, #696e78 0%, #646973 100%);
+                    }
+
+                    .unfocusU {
+                        background: -webkit-linear-gradient(top, #fa7d3c 0%, #f55f10 100%);
+                    }
+
+                    .focusU {
+                        background: -webkit-linear-gradient(top, #696e78 0%, #646973 100%);
+                    }
+
+                    .indexTop2:hover {
+                        background: -webkit-linear-gradient(top, #5f636d 0%, #535861 100%);
+                    }
+                </style>
+                <#if !v.self>
+                    <div style="text-align: center;width:auto;margin-left: 230px;margin-top: 5px;" align="center">
+
+                        <if v.focusd>
+                            <span style="" class="indexTop2 unfocusU" align="center">关注</span>
+                            <else>
+                                <span style="" class="indexTop2 focusU" align="center">取消关注</span>
+                        </if>
+
+                        <span style="margin-left: 15px;" class="indexTop2 pri-msg" align="center">私信</span>
+                    </div>
+                </#if>
             </div>
         </div>
 
 
-        <#list 1..10 as index>
-            <div class="panel panel-default" style="width: 84%;height: auto;float: right;margin-left: 1%;">
-                <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;">
+        <div id="weibosDiv">
 
-                    <div style="float: left;width: 13%;height: auto;">
-                        <img src="/images/body_background.png" alt="..." class="img-circle"
-                             style="width: 70px;height: 70px;">
-                    </div>
+            <#list v.vo.vo as vo>
+                <#if vo ? is_first>
+                    <input type="hidden" value="${vo.vo.id ? c}" id="firstData">
+                </#if>
 
-                    <div style="float: right;width: 87%;">
-                        <div style="float: left;width: 100%;">
-                            <strong style="font-size: 15px;float: left;">猪猪爱讲冷笑话</strong>
+                <#if vo ? is_last>
+                    <input type="hidden" value="${vo.vo.id ? c}" id="lastData">
+                </#if>
+
+                <div class="panel panel-default weibo"
+                     style="width: 84%;height: auto;float: right;margin-left: 1%;">
+                    <div class="panel-body" style="margin-bottom: 0px;padding:0px;">
+
+                        <!-- UPVOTE (5)-->
+                        <#if vo.vo.type == 5>
+
+                            <div style="float: left; width:100%;
+ border-bottom-style: solid;padding-bottom: 5px;
+    border-bottom-width: 1px;padding-left: 20px;padding-top: 15px;
+    border-bottom-color: #f2f2f5;">
+                    <span style="color: #e46755; font-size: 18px; margin-right: 6px;margin-bottom: 5px;padding-left: 20px;float: left; "
+                          class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                                <span style="float: left;">${user.username}赞过的微博</span>
+                            </div>
+
+                            <!--FORWARD(4)-->
+                            <#elseif vo.type == 4>
+                                <div
+
+                                        style="padding-bottom: 5px;
+              border-bottom-style: solid;
+    border-bottom-width: 1px;padding-left: 20px;padding-top: 15px;
+    border-bottom-color: #f2f2f5;
+          float: left; width:100%;">
+                    <span
+                            style="margin-left: 20px;color: #e46755; font-size: 18px;margin-right: 6px;float: left;"
+                            class="glyphicon glyphicon-share" aria-hidden="true"></span>
+                                    <span style="float: left;">${user.username}转发了微博</span>
+
+                                </div>
+
+
+                                <#elseif vo.type == 7 || vo.type == 3>
+
+                                    <!--FORWARD_COMMENTS(7) COMMENT(3)-->
+
+                                    <div style="border-bottom-style: solid;float: left;width: 100%;
+                            border-bottom-width: 1px;padding-left: 20px;padding-top: 15px;
+                            border-bottom-color: #f2f2f5;">
+                                        <div style="float: left;width: 13%;height: auto;">
+                                            <img src="/headimg/${user.id?c}" alt="..." class="img-circle weiboHeadImg"
+                                                 style="width: 70px;height: 70px;">
+                                        </div>
+
+                                        <div style="float: right;width: 87%;">
+                                            <div style="float: left;width: 100%;">
+                                                <strong style="font-size: 15px;float: left;"
+                                                        class="username">${user.username}</strong>
+                                            </div>
+                                            <span style="color: #808080;float: left; margin-top: 5px;
+text-decoration: none;font-size: 12px;" class="datetime">${vo.comments.fTime?datetime}</span>
+                                        </div>
+
+                                        <p style="display:block;width:87%;height:auto;margin-top: 5px;float: right;
+                          overflow:hidden; text-overflow:ellipsis;" class="weibo_content">${vo.comments.content}</p>
+                                    </div>
+                        </#if>
+
+
+                        <!--<#if vo.type == 7 || vo.type == 3>-->
+                        <!--<div style="background-color: #f2f2f5;height: auto;width: 100%;float: left;margin: 0px;padding: 0px;">-->
+                        <!--<#else>-->
+                        <!--<div>-->
+                        <!--</#if>-->
+
+
+                        <div style="width: 100%;background-color: #f2f2f5;margin: 0px;float: left;padding-top: 10px;padding-left: 15px;">
+                            <#if vo.type != 7 && vo.type != 3>
+                                <div style="float: left;width: 13%;height: auto;margin: 0px;padding: 0px;">
+                                    <img src="/headimg/${vo.weibo.masterId ? c}" alt="..."
+                                         class="img-circle weiboHeadImg"
+                                         style="width: 70px;height: 70px;">
+                                </div>
+                            </#if>
+
+                            <div style="float: right;width: 87%;margin: 0px;background-color: #f2f2f5;">
+                                <div style="float: left;width: 100%;">
+                                    <strong style="font-size: 15px;float: left;"
+                                            class="username">
+                                        <#if vo.type == 7 || vo.type == 3>@</#if>
+                                        ${vo.user.username}</strong>
+                                </div>
+                                <span style="color: #808080;float: left; margin-top: 5px;
+        text-decoration: none;font-size: 12px;" class="datetime">${vo.weibo.fTime?datetime}</span>
+                            </div>
+
+
+                            <p style="display:block;width:87%;height:auto;margin-top: 5px;float: right;background-color: #f2f2f5;
+                          overflow:hidden; text-overflow:ellipsis;" class="weibo_content">${vo.weibo.content}</p>
+
+                            <div style="width:87%;height:auto;margin-top: 5px;float: right;background-color: #f2f2f5;"
+                                 class="weibo_imgs">
+                                <#list vo.imgs as weiboImg>
+                                    <img src="/weixinqing/img/${weiboImg}"
+                                         alt="..."
+                                         style="height:140px;width:140px;margin:2px;margin-right: 0px;margin-left: 0px;"
+                                         class="img-rounded">
+                                </#list>
+                            </div>
                         </div>
-                        <span style="color: #808080;float: left; margin-top: 5px;
-text-decoration: none;font-size: 12px;">今天08:12</span>
+
+                        <!--<#if vo.type == 7 || vo.type == 3>-->
+                        <!--</div>-->
+                        <!--</#if>-->
+
                     </div>
 
 
-                    <p style="display:block;width:87%;max-height:150px;margin-top: 5px;float: right;
-                          overflow:hidden; text-overflow:ellipsis;">
-                        炎炎夏日，冷饮瓜果成为了消暑的首选，但多吃又会伤到脾胃，湿热才是身体不舒服的关键所在，排除体内湿气，很有必要，不妨学一些祛湿的实用小窍门哦!
-                    </p>
+                    <style>
+                        ul li {
+                            border: none;
+                        }
 
+                        * {
+                            outline: none;
+                        }
 
+                        .op-ul li {
+                            margin-top: 4px;
+                        }
+
+                        .op-ul li div:hover, .op-ul li div:focus {
+                            cursor: pointer;
+                        }
+
+                        .btn {
+                            vertical-align: baseline;
+                            padding: 0;
+                        }
+
+                        .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
+                            outline: none;
+                            outline-offset: 0;
+                        }
+
+                        .btn.active, .btn:active {
+                            background-image: none;
+                            outline: 0;
+                            -webkit-box-shadow: none;
+                        }
+
+                        input[type="button"], input[type="submit"], input[type="reset"], input[type="file"]::-webkit-file-upload-button, button {
+                            background: none;
+                        }
+
+                        popover {
+                            z-index: 99999;
+                        }
+
+                        a, a:hover, a:visited, a:active {
+                            text-decoration: none;
+                        }
+
+                        .upd {
+                            color: #eb7350;
+                        }
+                    </style>
                     <ul class="op-ul"
-                        style="float: left;width: 100%;margin-bottom:0px;padding-bottom:0px;padding-left: 0px;">
+                        style="float: left;width:100%;margin-bottom:0px;padding-bottom:0px;padding-left: 0px;padding-top:7px;">
                         <li>
-                            <div style="text-align:center;" class="save">
-                                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-                                <span class="">收藏</span>
+                            <div style="text-align:center;" tabindex="1" class="save star user_action_advice"
+                                 weiboid="${vo.vo.weibo.id ? c}">
+
+                                <button tabindex="2"
+                                        class="btn starAdvice${vo.weibo.id ? c} "
+                                        data-placement="bottom"
+                                        data-toggle="popover"
+                                        data-container="body"
+                                        data-trigger="manual" data-html="true"
+                                        data-content="收藏成功！">
+                                    <#if vo.coll>
+                            <span class="glyphicon glyphicon-star starspan${vo.weibo.id ? c} colld" aria-hidden="true"
+                                  weiboid="${vo.weibo.id ? c}"></span>
+                                        <#else>
+                                <span class="glyphicon glyphicon-star-empty starspan${vo.weibo.id ? c}"
+                                      aria-hidden="true" weiboid="${vo.weibo.id ? c}"></span>
+                                    </#if>
+                                </button>
+
+                                <span class="collchar${vo.weibo.id ? c}">
+                                <#if vo.coll>
+                                    已收藏
+                                    <#else>
+                                    收藏
+                                </#if>
+                            </span>
                             </div>
                         </li>
                         <li>
-                            <div style="text-align:center;" class="share">
-                                <span class="glyphicon glyphicon-share" aria-hidden="true"></span>
-                                <span class="">131</span>
+                            <div style="text-align:center;" tabindex="7" class="share user_action_advice"
+                                 weiboid="${vo.weibo.id ? c}" uname="${vo.user.username}">
+
+                                <input type="hidden" value='<div style="height: auto;width: 250px;padding-bottom:5px;">
+                    <span style="font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-size: 14px;float:left;margin-bottom:5px;">转发${vo.user.username}的微心情</span>
+    <a aria-hidden="true" class="trClose"  href="javascript:void(0)" onclick="trCloseA(${vo.weibo.id ? c})" weiboid="${vo.weibo.id ? c}" style="float:right;font-size: 18px;padding-top:0px;margin-top:-10px;cursor:pointer;
+    color: #696e78; -webkit-font-smoothing: antialiased;font-family: wbficonregular !important;">&times;</a>
+        <textarea cols="10" rows="4" id="trCommText${vo.weibo.id ? c}"
+    style="resize:none;float: left;width: 250px;height: auto;border: 1px solid #eb7350;margin-bottom:5px;" maxlength="140" placeholder="请输入您想说的话"></textarea>
+        <div style="float: left;margin-top:5px;margin-bottom:10px;">
+        <input type="checkbox" id="hasComm${vo.weibo.id ? c}" aria-label="..." style="vertical-align:middle;float: left;height:14px;width:14px;">
+        <span style="padding-top:2px;margin-left:3px;float: left;font: 12px/1.3 Arial,Microsoft YaHei;vertical-align:middle;"
+        id="trCommUname">同时评论给 ${vo.user.username}</span>
+        </div>
+
+        <button  weiboid="${vo.weibo.id ? c}" style="float:right;height:27px;width:65px;margin-bottom:7px;"
+                            class="btn transSubmit${vo.weibo.id ? c}"
+                            data-container="body" tabindex="3"
+                            data-toggle="popover" data-placement="bottom"
+                            data-trigger="manual" data-html="true"
+                            data-content="">
+                    <a class="submit-text transmitComm"  onclick="submitTr(${vo.weibo.id ? c})"
+                     style="text-align:center;margin-top:0px;width: 60px;padding-top:2px;
+    height: 24px;font: 13px/1.3 Arial,Microsoft YaHei;"
+        ><span style="margin-top:1px;">转发</span></a>
+
+                    </button>
+        </div>'
+                                       id="trContent${vo.weibo.id ? c}">
+
+
+                                <button weiboid="${vo.weibo.id ? c}" style="z-index: 9999"
+                                        class="btn trAdvice${vo.weibo.id ? c}"
+                                        data-container="body" tabindex="3"
+                                        data-toggle="popover" data-placement="bottom"
+                                        data-trigger="manual" data-html="true"
+                                        data-content=''>
+                                    <#if vo.trd?? && vo.trd>
+                            <span class="glyphicon glyphicon-share transmit trspan${vo.weibo.id ? c} trd"
+                                  aria-hidden="true"
+                                  weiboid="${vo.weibo.id ? c}"></span>
+                                        <#else>
+                                <span class="glyphicon glyphicon-share transmit trspan${vo.weibo.id ? c}"
+                                      aria-hidden="true"
+                                      weiboid="${vo.weibo.id ? c}"></span>
+                                    </#if>
+
+                                </button>
+
+
+                                <span class="trsCount${vo.weibo.id ? c}">${vo.trs ? c}</span>
                             </div>
                         </li>
                         <li>
-                            <div style="text-align:center;" class="comment">
-                            <span class="glyphicon glyphicon-comment" aria-hidden="true"
-                            ></span>
-                                <span class="">579</span>
+                            <a href="/comment/detail/${vo.weibo.id ? c}" style="color: #696e78;" target="_blank">
+                                <div style="text-align:center;" class="comm" weiboid="${vo.weibo.id ? c}">
+
+
+                        <span class="glyphicon glyphicon-comment" aria-hidden="true" weiboid="${vo.weibo.id ? c}"
+                        ></span>
+
+                                    <span class="commCntSpan${vo.weibo.id ? c}">${vo.comms ? c}</span>
                             </div>
+                            </a>
                         </li>
                         <li>
-                            <div style="text-align:center;" class="up">
-                                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-                                <span class="">188</span>
+                            <div style="text-align:center;" tabindex="10" class="up user_action_advice"
+                                 weiboid="${vo.weibo.id ? c}">
+
+                                <button weiboid="${vo.weibo.id ? c}" tabindex="11"
+                                        class="btn upAdvice${vo.weibo.id ? c} "
+                                        data-placement="bottom"
+                                        data-trigger="manual" data-container="body"
+                                        data-content="">
+
+                                    <#if vo.upd>
+                            <span class="glyphicon glyphicon-thumbs-up upd upspan${vo.weibo.id ? c}" aria-hidden="true"
+                                  weiboid="${vo.weibo.id ? c}"/>
+                                        <#else>
+                                <span class="glyphicon glyphicon-thumbs-up upspan${vo.weibo.id ? c}" aria-hidden="true"
+                                      weiboid="${vo.weibo.id ? c}"/>
+                                    </#if>
+                                </button>
+
+
+                                <span class="upCount${vo.weibo.id ? c}"
+                                      weiboid="${vo.weibo.id ? c}">${vo.ups ? c}</span>
                             </div>
                         </li>
                     </ul>
 
-
+                    <input type="hidden" id="unameHid${vo.weibo.id ? c}" value="${vo.user.username}">
                 </div>
-            </div>
-        </#list>
+            </#list>
+        </div>
 
-
-    </div>
 
 
     <a href="javascript:scroll(0,0)" style=" background-color: #47a6d9;display: block;cursor: pointer;
@@ -146,7 +444,206 @@ height: 35px;text-align: center;">
               style="font-size: 28px;color: #fff;margin-top: 5px;">
         </span>
     </a>
+        <script>
+            function trCloseA(num) {
+                $(".trAdvice" + num).popover("hide");
+                $('.transSubmit' + num).popover('hide');
+            }
 
+
+            function uuid() {
+                return (Math.floor(Math.random() * 1200000000)).toString(16) + "" + (Math.floor(Math.random() * 1200000000)).toString(16);
+            }
+
+            //    $('.trClose').click(function () {
+            //        console.log('tr close');
+            //        var weiboId = $(this).attr('weiboid');
+            //        $(".trAdvice" + weiboId).popover("hide");
+            //
+            //        console.log('transSubmit close' + weiboId);
+            //
+            //    });
+
+            function submitTr(weiboId) {
+                console.log('transmitComm' + weiboId);
+
+                var content = "";
+                console.log($("#hasComm" + weiboId));
+                console.log($("#hasComm" + weiboId).is(':checked'));
+                if ($("#hasComm" + weiboId).is(':checked')) {
+                    content = $('#trCommText' + weiboId).val();
+                    if (content == null || content == undefined || content == '') {
+                        $('.transSubmit' + weiboId).attr('data-content', '要输入评论噢！');
+                        $('.transSubmit' + weiboId).popover('show');
+                        return;
+                    }
+                }
+                $.ajax({
+                    type: "post",
+                    url: "/user/transmit/" + weiboId,
+                    data: {
+                        "comment": content
+                    },
+                    success: function (datas) {
+                        if (datas.indexOf('登录') != -1) {
+                            $('.transSubmit' + weiboId).attr('data-content', '请登录后再操作！');
+                            $('.transSubmit' + weiboId).popover('show');
+                            return;
+                        }
+                        var data = JSON.parse(datas);
+                        console.log(data);
+                        console.log(data.code);
+                        console.log(data.msg);
+
+                        if (data.code == 200) {
+                            $('.transSubmit' + weiboId).attr('data-content', '转发成功！');
+                            $('.trsCount' + weiboId).html(parseInt($('.trsCount' + weiboId).html()) + 1);
+                            $('.trspan' + weiboId).toggleClass('trd');
+                            setTimeout(function () {
+                                $('.transSubmit' + weiboId).popover('hide');
+                                $('.trAdvice' + weiboId).popover('hide');
+                            }, 2000);
+                        } else if (data.code == 199) {
+                            $('.transSubmit' + weiboId).attr('data-content', data.msg);
+                        } else if (data.code == 0) {
+                            $('.transSubmit' + weiboId).attr('data-content', '转发失败，请您稍后重试！');
+                        }
+                        $('.transSubmit' + weiboId).popover('show');
+                    },
+                    error: function () {
+                        $('.transSubmit' + weiboId).attr('data-content', '转发失败，请您稍后重试！');
+                        $('.transSubmit' + weiboId).popover('show');
+                    }
+                });
+            }
+
+
+            bindEvent();
+
+
+            function bindEvent() {
+                $('.user_action_advice').each(function () {
+                    $(this).unbind('click');
+                    $(this).bind('focusout', function () {
+                        var weiboId = $(this).attr('weiboid');
+
+                        $('.starAdvice' + weiboId).popover('hide');
+                        $('.transSubmit' + weiboId).popover('hide');
+
+                        console.log('.upAdvice' + weiboId);
+                        $('.upAdvice' + weiboId).popover('hide');
+                        //              $('.trAdvice' + weiboId).popover('hide');
+                    });
+                });
+
+
+                $('.up').each(function () {
+                    $(this).unbind('click');
+                    $(this).bind('click', function () {
+                        var weiboId = $(this).attr('weiboid');
+                        $.ajax({
+                            type: "post",
+                            url: '/user/upvote/' + weiboId,
+                            success: function (data) {
+                                if (data.indexOf('登录') != -1) {
+                                    $('.upAdvice' + weiboId).attr('data-content', '请登录后再操作！');
+                                    $('.upAdvice' + weiboId).popover('show');
+                                    return;
+                                }
+                                console.log('upd = ' + $('.upspan').hasClass('upd'));
+                                if ($('.upspan' + weiboId).hasClass('upd')) {
+                                    $('.upAdvice' + weiboId).attr('data-content', '取消成功！');
+                                    $('.upCount' + weiboId).html(parseInt($('.upCount' + weiboId).html()) - 1);
+                                } else {
+                                    $('.upAdvice' + weiboId).attr('data-content', '点赞成功！');
+                                    $('.upCount' + weiboId).html(parseInt($('.upCount' + weiboId).html()) + 1);
+                                }
+                                $('.upspan' + weiboId).toggleClass('upd');
+                                $('.upAdvice' + weiboId).popover('show');
+                            },
+                            error: function () {
+                                $('.upAdvice' + weiboId).attr('data-content', '点赞失败，请您稍后重试！');
+                                $('.upAdvice' + weiboId).popover('show');
+                            }
+                        });
+                    });
+                });
+
+
+                $('.share').each(function () {
+                    $(this).unbind('click');
+                    $(this).bind('click', function () {
+                        console.log('share');
+                        var weiboId = $(this).attr('weiboid');
+                        $.ajax({
+                            type: "post",
+                            url: '/user/transmit/-1',
+                            data: {
+                                "comment": ''
+                            },
+                            success: function (data) {
+                                if (data.indexOf('登录') != -1) {
+                                    $('.trAdvice' + weiboId).attr('data-content', '请登录后再操作！');
+                                    $('.trAdvice' + weiboId).popover('show');
+                                    return;
+                                }
+                                $('.trAdvice' + weiboId).attr('data-content', $('#trContent' + weiboId).val());
+                                $('.trAdvice' + weiboId).popover('show');
+                            },
+                            error: function () {
+                                $('.trAdvice' + weiboId).attr('data-content', '转发失败，请您稍后重试！');
+                                $('.trAdvice' + weiboId).popover('show');
+                            }
+                        });
+                    });
+                });
+
+                $('.comm').each(function () {
+                    $(this).unbind('click');
+                    $(this).bind('click', function () {
+
+                    });
+                });
+
+                $('.star').each(function () {
+                    $(this).unbind('click');
+                    $(this).bind('click', function () {
+                        var weiboId = $(this).attr('weiboid');
+                        $.ajax({
+                            type: "post",
+                            url: '/user/collection/' + weiboId,
+                            success: function (data) {
+                                if (data.indexOf('登录') != -1) {
+                                    $('.starAdvice' + weiboId).attr('data-content', '请登录后再操作！');
+                                    $('.starAdvice' + weiboId).popover('show');
+                                    return;
+                                }
+                                if ($(".starspan" + weiboId).hasClass('glyphicon-star')) {
+                                    $('.starAdvice' + weiboId).attr('data-content', '取消成功！');
+                                    $(".collchar" + weiboId).html('收藏');
+                                } else {
+                                    $('.starAdvice' + weiboId).attr('data-content', '收藏成功！');
+                                    $(".collchar" + weiboId).html('已收藏');
+                                }
+
+                                $(".starspan" + weiboId).toggleClass('glyphicon-star');
+                                $(".starspan" + weiboId).toggleClass('glyphicon-star-empty');
+                                $(".starspan" + weiboId).toggleClass('colld');
+                                //                $(".collchar" + weiboId).toggleClass('colld');
+
+
+                                $('.starAdvice' + weiboId).popover('show');
+                            },
+                            error: function () {
+                                $('.starAdvice' + weiboId).attr('data-content', '收藏失败，请您稍后重试！');
+                                $('.starAdvice' + weiboId).popover('show');
+                            }
+                        })
+                    });
+                });
+            }
+
+        </script>
 </div>
 </body>
 </html>

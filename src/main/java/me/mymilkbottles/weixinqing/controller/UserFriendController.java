@@ -2,10 +2,7 @@ package me.mymilkbottles.weixinqing.controller;
 
 import me.mymilkbottles.weixinqing.dao.JedisDAO;
 import me.mymilkbottles.weixinqing.model.*;
-import me.mymilkbottles.weixinqing.service.CommentsService;
-import me.mymilkbottles.weixinqing.service.IndexService;
-import me.mymilkbottles.weixinqing.service.UserService;
-import me.mymilkbottles.weixinqing.service.WeiboService;
+import me.mymilkbottles.weixinqing.service.*;
 import me.mymilkbottles.weixinqing.util.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,6 +36,9 @@ public class UserFriendController {
     @Autowired
     JedisDAO jedisAdapter;
 
+    @Autowired
+    FeedService feedService;
+
     @RequestMapping("/user/friend")
     public String friend(Model model) {
         User localUser = hostHolder.getUser();
@@ -49,59 +49,8 @@ public class UserFriendController {
             feeds = indexService.pullFriend(localUser.getId(), 0, 10);
         }
 
-        List<ViewObject> vos = new ArrayList<ViewObject>(10);
 
-        //" id, user_id, type, weibo_id, exts_id, f_time, is_delete "
-        User user = null;
-        Weibo weibo = null;
-        Comments comments = null;
-
-        User loginUser = hostHolder.getUser();
-        int loginUserId = loginUser.getId();
-        int weiboValue = EntityType.WEIBO.getValue();
-
-        for (Feed feed : feeds) {
-            ViewObject vo = new ViewObject();
-
-            int type = feed.getType();
-            vo.add("type", type);
-            vo.add("id", feed.getId());
-            if (type == EntityType.FIRE_WEIBO.getValue()) {
-
-            } else if (type == EntityType.COMMENT.getValue()) {
-                comments = commentsService.getCommentsById(feed.getExtsId());
-                vo.add("comments", comments);
-            } else if (type == EntityType.FORWARD.getValue()) {
-                vo.add("f_time", feed.getfTime());
-            } else if (type == EntityType.FORWARD_COMMENTS.getValue()) {
-                comments = commentsService.getCommentsById(feed.getExtsId());
-                vo.add("comments", comments);
-                vo.add("f_time", feed.getfTime());
-            } else if (type == EntityType.UPVOTE.getValue()) {
-                vo.add("f_time", feed.getfTime());
-            }
-
-            weibo = weiboService.getWeiboById(feed.getWeiboId());
-            vo.add("imgs", weiboService.getWeiboImgs(weibo.getImg()));
-
-
-            int weiboId = weibo.getId();
-            vo.add("comms", commentsService.getWeiboCommentCount(weiboId));
-            vo.add("ups", jedisAdapter.getUpvoteCount(loginUserId, weiboValue, weiboId));
-            vo.add("upvote",
-                    jedisAdapter.isUserUpvote(loginUserId, weiboValue, weiboId));
-            vo.add("collection", jedisAdapter.isUserCollection(loginUserId, weiboValue, weiboId));
-
-            weibo.setContent(
-                    weibo.getContent().replace("style=\"width:1em;height:1em;\"", "style=\"width:22px;height:22px;\""));
-
-            vo.add("weibo", weibo);
-
-            user = userService.getUserById(weibo.getMasterId());
-            vo.add("user", user);
-
-            vos.add(vo);
-        }
+        List<ViewObject> vos = feedService.getFeedDetail(feeds);
 
         model.addAttribute("PageType", "myfriends");
         model.addAttribute("vos", vos);

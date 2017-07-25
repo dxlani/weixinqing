@@ -6,33 +6,19 @@
     }
 </style>
 
-<div class="panel panel-default" id="weixinqing_loading_front" style="width: 84%;float: right;display: none;">
-    <div class="panel-body" align="center">
-            <span class="glyphicon glyphicon-refresh" id="msg-loading-icon"
-                  style="margin-left: 15px;font-size: 17px;margin-top: 6px;"
-                  aria-hidden="true">
-            </span>
-        <span style="margin-left: 8px;margin-bottom: 10px;"
-              id="content-loading-advice">微心情加载中，请您稍后...</span>
-    </div>
-</div>
-
-<div id="addContentFlagFront" style="display: none;"></div>
 
 <div id="weibosDiv">
 
     <#list vos as vo>
         <#if vo ? is_first>
             <input type="hidden" value="${vo.weibo.id ? c}" id="firstDataId">
-            <input type="hidden" value="${vo.weibo.fTime ? datetime}" id="firstDataTime">
         </#if>
 
         <#if vo ? is_last>
             <input type="hidden" value="${vo.weibo.id ? c}" id="lastDataId">
-            <input type="hidden" value="${vo.weibo.fTime ? datetime}" id="lastDataTime">
         </#if>
 
-        <div class="panel panel-default weibo"
+        <div class="panel panel-default weibo weibo${vo.user.id ? c }"
              style="width: 84%;height: auto;float: right;margin-left: 1%;">
             <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;">
 
@@ -82,6 +68,11 @@
                     cursor: pointer;
                 }
 
+                .btn {
+                    vertical-align: baseline;
+                    padding: 0;
+                }
+
                 .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
                     outline: none;
                     outline-offset: 0;
@@ -104,37 +95,47 @@
                 a, a:hover, a:visited, a:active {
                     text-decoration: none;
                 }
-            </style>
-        <ul class="op-ul"
-            style="float: left;width:100%;margin-bottom:0px;padding-bottom:0px;padding-left: 0px;">
-            <li>
-                <div style="text-align:center;" tabindex="1" class="save star user_action_advice"
-                     weiboid="${vo.weibo.id ? c}">
 
-                    <button tabindex="2"
-                            class="btn starAdvice${vo.weibo.id ? c} "
-                            data-placement="bottom"
-                            data-toggle="popover"
-                            data-container="body"
-                            data-trigger="manual" data-html="true"
-                            data-content="收藏成功！">
-                        <#if vo.coll>
-                            <span class="glyphicon glyphicon-star starspan${vo.weibo.id ? c}" aria-hidden="true"
+                .upd {
+                    color: #eb7350;
+                }
+            </style>
+            <ul class="op-ul"
+                style="float: left;width:100%;margin-bottom:0px;padding-bottom:0px;padding-left: 0px;padding-top:7px;">
+                <li>
+                    <div style="text-align:center;" tabindex="1" class="save star user_action_advice"
+                         weiboid="${vo.weibo.id ? c}">
+
+                        <button tabindex="2"
+                                class="btn starAdvice${vo.weibo.id ? c} "
+                                data-placement="bottom"
+                                data-toggle="popover"
+                                data-container="body"
+                                data-trigger="manual" data-html="true"
+                                data-content="收藏成功！">
+                            <#if vo.coll>
+                            <span class="glyphicon glyphicon-star starspan${vo.weibo.id ? c} colld" aria-hidden="true"
                                   weiboid="${vo.weibo.id ? c}"></span>
-                            <#else>
+                                <#else>
                                 <span class="glyphicon glyphicon-star-empty starspan${vo.weibo.id ? c}"
                                       aria-hidden="true" weiboid="${vo.weibo.id ? c}"></span>
-                        </#if>
-                    </button>
+                            </#if>
+                        </button>
 
-                    <span class="">收藏</span>
-                </div>
-            </li>
-            <li>
-                <div style="text-align:center;" tabindex="7" class="share user_action_advice"
-                     weiboid="${vo.weibo.id ? c}" uname="${vo.user.username}">
+                        <span class="collchar${vo.weibo.id ? c}">
+                    <#if vo.coll>
+                        已收藏
+                        <#else>
+                            收藏
+                    </#if>
+                    </span>
+                    </div>
+                </li>
+                <li>
+                    <div style="text-align:center;" tabindex="7" class="share user_action_advice"
+                         weiboid="${vo.weibo.id ? c}" uname="${vo.user.username}">
 
-                    <input type="hidden" value='<div style="height: auto;width: 250px;padding-bottom:5px;">
+                        <input type="hidden" value='<div style="height: auto;width: 250px;padding-bottom:5px;">
                     <span style="font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
     font-size: 14px;float:left;margin-bottom:5px;">转发${vo.user.username}的微心情</span>
     <a aria-hidden="true" class="trClose"  href="javascript:void(0)" onclick="trCloseA(${vo.weibo.id ? c})" weiboid="${vo.weibo.id ? c}" style="float:right;font-size: 18px;padding-top:0px;margin-top:-10px;cursor:pointer;
@@ -147,79 +148,89 @@
         id="trCommUname">同时评论给 ${vo.user.username}</span>
         </div>
 
-        <button  weiboid="${vo.weibo.id ? c}" style="z-index: 9999"
+        <button  weiboid="${vo.weibo.id ? c}" style="float:right;height:27px;width:65px;margin-bottom:7px;"
                             class="btn transSubmit${vo.weibo.id ? c}"
                             data-container="body" tabindex="3"
                             data-toggle="popover" data-placement="bottom"
                             data-trigger="manual" data-html="true"
                             data-content="">
-                    <a class="submit-text transmitComm" weiboid="${vo.weibo.id ? c}" style="height:27px;width:65px;float: right;text-align:center;margin-bottom:7px;"
+                    <a class="submit-text transmitComm"  onclick="submitTr(${vo.weibo.id ? c})"
+                     style="text-align:center;margin-top:0px;width: 60px;padding-top:2px;
+    height: 24px;font: 13px/1.3 Arial,Microsoft YaHei;"
         ><span style="margin-top:1px;">转发</span></a>
 
                     </button>
-
-
         </div>'
-                           id="trContent${vo.weibo.id ? c}">
+                               id="trContent${vo.weibo.id ? c}">
 
 
-                    <button weiboid="${vo.weibo.id ? c}" style="z-index: 9999"
-                            class="btn trAdvice${vo.weibo.id ? c}"
-                            data-container="body" tabindex="3"
-                            data-toggle="popover" data-placement="bottom"
-                            data-trigger="manual" data-html="true"
-                            data-content=''>
-                        <span class="glyphicon glyphicon-share transmit" aria-hidden="true"
-                              weiboid="${vo.weibo.id ? c}"></span>
-                    </button>
+                        <button weiboid="${vo.weibo.id ? c}" style="z-index: 9999"
+                                class="btn trAdvice${vo.weibo.id ? c}"
+                                data-container="body" tabindex="3"
+                                data-toggle="popover" data-placement="bottom"
+                                data-trigger="manual" data-html="true"
+                                data-content=''>
+                            <#if vo.trd?? && vo.trd>
+                            <span class="glyphicon glyphicon-share transmit trspan${vo.weibo.id ? c} trd"
+                                  aria-hidden="true"
+                                  weiboid="${vo.weibo.id ? c}"></span>
+                                <#else>
+                                <span class="glyphicon glyphicon-share transmit trspan${vo.weibo.id ? c}"
+                                      aria-hidden="true"
+                                      weiboid="${vo.weibo.id ? c}"></span>
+                            </#if>
 
-                    <span class="">${vo.trs ? c}</span>
-                </div>
-            </li>
-            <li>
-                <div style="text-align:center;" class="comm" weiboid="${vo.weibo.id ? c}">
+                        </button>
 
-                    <button tabindex="4"
-                            class="btn commAdvice${vo.weibo.id ? c} "
-                            data-placement="bottom"
-                            data-trigger="manual"
-                            data-container="body"
-                            data-content="">
+
+                        <span class="trsCount${vo.weibo.id ? c}">${vo.trs ? c}</span>
+                    </div>
+                </li>
+                <li>
+                    <a href="/comment/detail/${vo.weibo.id ? c}" target="_blank">
+                        <div style="text-align:center;" class="comm" weiboid="${vo.weibo.id ? c}">
+
+
                         <span class="glyphicon glyphicon-comment" aria-hidden="true" weiboid="${vo.weibo.id ? c}"
                         ></span>
-                    </button>
 
-                    <span class="">${vo.comms ? c}</span>
-                </div>
-            </li>
-            <li>
-                <div style="text-align:center;" class="up" weiboid="${vo.weibo.id ? c}">
+                            <span class="commCntSpan${vo.weibo.id ? c}">${vo.comms ? c}</span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <div style="text-align:center;" tabindex="10" class="up user_action_advice"
+                         weiboid="${vo.weibo.id ? c}">
 
-                    <button tabindex="5"
-                            class="btn upAdvice${vo.weibo.id ? c} "
-                            data-placement="bottom"
-                            data-trigger="manual"
-                            data-content="">
+                        <button weiboid="${vo.weibo.id ? c}" tabindex="11"
+                                class="btn upAdvice${vo.weibo.id ? c} "
+                                data-placement="bottom"
+                                data-trigger="manual" data-container="body"
+                                data-content="">
 
-                        <#if vo.upd>
-                            <span class="glyphicon glyphicon-thumbs-up" style="color: #eb7350;" aria-hidden="true"
+                            <#if vo.upd>
+                            <span class="glyphicon glyphicon-thumbs-up upd upspan${vo.weibo.id ? c}" aria-hidden="true"
                                   weiboid="${vo.weibo.id ? c}"/>
-                            <#else>
-                                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"
+                                <#else>
+                                <span class="glyphicon glyphicon-thumbs-up upspan${vo.weibo.id ? c}" aria-hidden="true"
                                       weiboid="${vo.weibo.id ? c}"/>
-                        </#if>
-                    </button>
+                            </#if>
+                        </button>
 
 
-                    <span class="">${vo.ups ? c}</span>
-                </div>
-            </li>
-        </ul>
+                        <span class="upCount${vo.weibo.id ? c}" weiboid="${vo.weibo.id ? c}">${vo.ups ? c}</span>
+                    </div>
+                </li>
+            </ul>
+
+            <input type="hidden" id="unameHid${vo.weibo.id ? c}" value="${vo.user.username}">
         </div>
+
     </#list>
 </div>
 
 
+<div id="addContentFlagEnd" style="display: none;"></div>
 
 <div class="panel panel-default" id="weixinqing_loading_end"
      style="width: 84%;float: right;display: none;">
@@ -236,141 +247,32 @@
 
 <script>
 
-    function trCloseA(num) {
-        $(".trAdvice" + num).popover("hide");
-    }
+    $('.weibo').click(function () {
 
-
-    function uuid() {
-        return (Math.floor(Math.random() * 1200000000)).toString(16) + "" + (Math.floor(Math.random() * 1200000000)).toString(16);
-    }
-
-    $('.trClose').click(function () {
-        console.log('tr close');
-        $(".trAdvice" + $(this).attr('weiboid')).popover("hide");
     });
 
-    $('.transmitComm').click(function () {
-        var weiboId = $(this).attr('weiboid');
-        var content = "";
-        if ($(".hasComm" + weiboId).is(':checked')) {
-            content = $('.trCommText' + weiboId).val();
-        }
-        $.ajax({
-            type: "post",
-            url: "/user/transmit/" + weiboId,
-            data: {
-                "comment": content
-            },
-            success: function (data) {
-                if (data.indexOf('登录') != -1) {
-                    $('.transSubmit' + weiboId).attr('data-content', '请登录后再操作！');
-                    $('.transSubmit' + weiboId).popover('show');
-                    return;
-                }
-
-            },
-            error: function () {
-
-            }
-        });
-    });
-
-    $('.user_action_advice').focusout(function () {
-        var weiboId = $(this).attr('weiboid');
-
-        $('.starAdvice' + weiboId).popover('hide');
-        $('.transSubmit' + weiboId).popover('hide');
-
-//        $('.trAdvice' + weiboId).popover('hide');
-    });
-
-    //    $('.share').click(function () {
-    //        console.log('share');
-    //        var weiboId = $(this).attr('weiboid');
-    //        $.ajax({
-    //            type: "post",
-    //            url: '/user/transmit/' + weiboId,
-    //            success: function (data) {
-    //                if (data.indexOf('登录') != -1) {
-    //                    $('.trAdvice' + weiboId).attr('data-content', '请登录后再操作！');
-    //                    $('.trAdvice' + weiboId).popover('show');
-    //                    return;
-    //                }
-    //                $('.trAdvice' + weiboId).attr('data-content', $('#trContent' + weiboId).val());
-    //                $('.trAdvice' + weiboId).popover('show');
-    //            },
-    //            error: function () {
-    //                $('.trAdvice' + weiboId).attr('data-content', '转发失败，请您稍后重试！');
-    //                $('.trAdvice' + weiboId).popover('show');
-    //            }
-    //        })
-    //    });
-
-    $('.popover').focus(function () {
-        console.log($(this));
-    });
-
-    $('.star').click(function () {
-
-        var weiboId = $(this).attr('weiboid');
-        $.ajax({
-            type: "post",
-            url: '/user/collection/' + weiboId,
-            success: function (data) {
-                if (data.indexOf('登录') != -1) {
-                    $('.starAdvice' + weiboId).attr('data-content', '请登录后再操作！');
-                    $('.starAdvice' + weiboId).popover('show');
-                    return;
-                }
-                $(".starspan" + weiboId).toggleClass('glyphicon-star');
-                $(".starspan" + weiboId).toggleClass('glyphicon-star-empty');
-                $('.starAdvice' + weiboId).attr('data-content', '收藏成功！');
-                $('.starAdvice' + weiboId).popover('show');
-            },
-            error: function () {
-                $('.starAdvice' + weiboId).attr('data-content', '收藏失败，请您稍后重试！');
-                $('.starAdvice' + weiboId).popover('show');
-            }
-        })
-    });
-
-
-</script>
-
-
-
-<script>
-
-    //    setTimeout(function(){
-    //        window.scrollTo(0,0);
-    //    }, 50);
-
-    var isLoadingNews = false;
     function loading_news() {
         isLoadingNews = true;
         $.ajax({
             type: "post",
-            url: '/index/news/' + $('#lastData').val(),
+            url: '/index/news/' + $('#lastDataId').val(),
             success: function (data) {
-                var weiboOrigin = $('.weibo')[0];
-                var weiboDivObj = jQuery.extend(true, {}, weiboOrigin)
-                var weiboDiv = $(weiboDivObj.outerHTML);
 
-                console.log('weiboDiv=');
-                console.log(weiboDiv);
+                for (var i = 0; i < data.length; ++i) {
 
-                console.log('data=');
-                console.log(data);
+                    var weiboDivObj = jQuery.extend(true, {}, $('.weibo:first'));
 
-                var weibos = data.vo.weibos
-                for (var i = 0; i < weibos.length; ++i) {
-                    var weibo_i_vo = weibos[i];
-                    console.log('weibo_i_vo=', typeof weibo_i_vo);
-                    console.log(weibo_i_vo);
+                    console.log('weiboDivObj = ');
+                    console.log(weiboDivObj);
+                    var weiboDiv = $(weiboDivObj[0].outerHTML);
+
+
+                    console.log('weiboDiv = ');
+                    console.log(weiboDiv);
+
+                    var weibo_i_vo = data[i];
                     var weibo_i = weibo_i_vo.vo;
-                    console.log('weibo_i=');
-                    console.log(weibo_i);
+
                     weiboDiv.find('.weiboHeadImg').attr('src', '/headimg/' + weibo_i.user.id);
                     weiboDiv.find('.username').html(weibo_i.user.username);
                     weiboDiv.find('.datetime').html(new Date(weibo_i.weibo.fTime).pattern("yyyy-MM-dd hh:mm:ss"));
@@ -378,21 +280,94 @@
 
                     var imgs = weibo_i.imgs;
 
-                    imgsHtml = '';
+                    var imgsHtml = '';
                     for (var j = 0; j < imgs.length; ++j) {
                         var addImg = '<img src="/weixinqing/img/' + imgs[j] + '" ' +
                             'style="height:140px;width:140px;margin:2px;margin-right: 0px;margin-left: 0px;" ' +
                             'class="img-rounded">';
-                        console.log('add_img=');
-                        console.log(addImg);
                         imgsHtml = imgsHtml + addImg;
                     }
                     weiboDiv.find('.weibo_imgs').html(imgsHtml);
-                    console.log('add_weiboDiv');
-                    console.log('weiboDiv=');
+
+                    console.log('weiboDiv = ');
                     console.log(weiboDiv);
+
+                    console.log(weiboDiv[0].outerHTML)
+                    console.log('weiboDiv.find(.op-ul) = ');
+                    console.log(weiboDiv.find('.op-ul'));
+
+                    var weiboIdOld = weiboDiv.find('.op-ul').find('.save').attr('weiboid');
+
+                    console.log(weiboIdOld);
+
+                    console.log('ul[0].outerHTML = ');
+                    console.log(weiboDiv.find('.op-ul'));
+                    console.log($(weiboDiv.find('.op-ul')[0]));
+
+                    $('#lastDataId').val(Math.min(parseInt($('#lastDataId').val()), weibo_i.weibo.id));
+                    console.log('replace = ' + weiboIdOld + " " + weibo_i.weibo.id.toString());
+                    var weiboIdOldStr = weiboIdOld.toString();
+
+                    console.log('weiboDiv mid = ');
+                    console.log(weiboDiv);
+                    var ulHtml = weiboDiv[0].outerHTML;
+
+                    var re = new RegExp(weiboIdOldStr, "g");
+
+
+                    var weiboId = weibo_i.weibo.id;
+                    weiboDiv[0].innerHTML = weiboDiv[0].innerHTML.replace(re, weiboId.toString());
+
+                    var oldName = $('#unameHid' + weiboIdOld).val();
+                    re = new RegExp(oldName, "g");
+
+                    console.log('replace = ' + oldName + " " + weibo_i.user.username);
+                    weiboDiv[0].innerHTML = weiboDiv[0].innerHTML.replace(re, weibo_i.user.username);
+
+
+                    console.log('weibo_i.coll = ' + weibo_i.coll);
+
+                    if (weibo_i.coll) {
+                        weiboDiv.find('.starspan' + weiboId).addClass('glyphicon-star');
+                        weiboDiv.find('.starspan' + weiboId).addClass('colld');
+                        weiboDiv.find('.starspan' + weiboId).removeClass('glyphicon-star-empty');
+                    } else {
+                        console.log(weiboDiv.find('.starspan' + weiboId));
+                        console.log(weiboDiv.find('.starspan' + weiboId).hasClass('glyphicon-star-empty'));
+                        weiboDiv.find('.starspan' + weiboId).addClass('glyphicon-star-empty');
+                        weiboDiv.find('.starspan' + weiboId).removeClass('glyphicon-star');
+                        weiboDiv.find('.starspan' + weiboId).removeClass('colld');
+                        console.log(weiboDiv.find('.starspan' + weiboId).hasClass('glyphicon-star-empty'));
+                    }
+
+                    weiboDiv.find('.collchar' + weiboId).html(weibo_i.coll ? '已收藏' : '收藏');
+
+                    if (weibo_i.upd) {
+                        weiboDiv.find('.upspan' + weiboId).addClass('upd');
+                    } else {
+                        weiboDiv.find('.upspan' + weiboId).removeClass('upd');
+                    }
+
+                    if (weibo_i.trd) {
+                        weiboDiv.find('.trspan' + weiboId).addClass('trd');
+                    } else {
+                        weiboDiv.find('.trspan' + weiboId).removeClass('trd');
+                    }
+
+                    weiboDiv.find('.commCntSpan' + weiboId).html(weibo_i.comms);
+                    weiboDiv.find('.upCount' + weiboId).html(weibo_i.ups);
+                    weiboDiv.find('.trsCount' + weiboId).html(weibo_i.trs);
+
+
+                    console.log('weiboDiv = ');
+                    console.log(weiboDiv);
+
+                    console.log('weiboDiv[0].outerHTML last = ');
                     console.log(weiboDiv[0].outerHTML);
-                    $(weiboDiv[0].outerHTML).insertBefore('#addContentFlagEnd');
+                    weiboDivObj.context.outerHTML = weiboDiv[0].outerHTML;
+                    $($(weiboDiv[0].outerHTML)).insertBefore('#addContentFlagEnd');
+
+                    bindEvent();
                 }
                 console.log('loading_news finish');
                 isLoadingNews = false;
@@ -405,55 +380,26 @@
         });
     }
 
-    var scrollFlag = 0;
+    var isLoadingNews = false;
 
-
+    var lastLoadTime = 0;
     $(window).scroll(function () {
-
-        var scrollTop = $(this).scrollTop();
-        var scrollHeight = $(document).height();
-        var windowHeight = $(this).height();
-//        var offsetHeight = $('')
-//       console.log(scrollTop + ' ' + windowHeight + ' ' + scrollHeight)
-
-        if (scrollTop + windowHeight + 100 >= scrollHeight && scrollFlag > 1) {
-//           alert('last')
+//        console.log($(this).scrollTop() >= $(document).height() - $(window).height());
+        if ($(this).scrollTop() >= $(document).height() - $(window).height()) {
+            $('#content-loading-advice').text('微心情加载中，请您稍后...');
             $('#weixinqing_loading_end').show();
+//            console.log('isLoadingNews = ' + isLoadingNews);
             if (!isLoadingNews) {
                 loading_news();
-
+//                var nowTime = new Date().getTime();
+//                var tempLastLoadTime = lastLoadTime;
+//                if (nowTime - tempLastLoadTime >= 3000) {
+//                    lastLoadTime = nowTime;
+//                    loading_news();
+//                }
             }
         }
-
-        ++scrollFlag;
-        if (scrollFlag >= 200000) {
-            scrollFlag = 1000;
-        }
-
-//        var scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
-//        console.log(scrollTop);
-//        if(document.documentElement.scrollHeight == document.documentElement.clientHeight + scrollTop ) {
-//            $('weixinqing_loading').show();
-//        }
-
     });
-
-    //    $('document').ready(function () {
-    ////        document.getElementsByTagName('body')[0].scrollTop = 0;
-    //        setTimeout(function(){
-    //            $(window).scrollTop(0);
-    //        }, 1000)
-    //    });
-    document.onload = function () {
-        setTimeout(function () {
-            window.scrollTo(0, 0);
-        }, 150);
-    }
-
-    //        $('html, body').animate({scrollTop:0}, 'slow');
-    //        document.getElementsByTagName('body')[0].scrollTop = 0 + 'px';
-    //    alert('drup');
-
 
     /** * 对Date的扩展，将 Date 转化为指定格式的String * 月(M)、日(d)、12小时(h)、24小时(H)、分(m)、秒(s)、周(E)、季度(q)
      可以用 1-2 个占位符 * 年(y)可以用 1-4 个占位符，毫秒(S)只能用 1 个占位符(是 1-3 位的数字) * eg: * (new
@@ -496,10 +442,205 @@
         }
         return fmt;
     }
+
+    function trCloseA(num) {
+        $(".trAdvice" + num).popover("hide");
+        $('.transSubmit' + num).popover('hide');
+    }
+
+
+    function uuid() {
+        return (Math.floor(Math.random() * 1200000000)).toString(16) + "" + (Math.floor(Math.random() * 1200000000)).toString(16);
+    }
+
+    //    $('.trClose').click(function () {
+    //        console.log('tr close');
+    //        var weiboId = $(this).attr('weiboid');
+    //        $(".trAdvice" + weiboId).popover("hide");
+    //
+    //        console.log('transSubmit close' + weiboId);
+    //
+    //    });
+
+    function submitTr(weiboId) {
+        console.log('transmitComm' + weiboId);
+
+        var content = "";
+        console.log($("#hasComm" + weiboId));
+        console.log($("#hasComm" + weiboId).is(':checked'));
+        if ($("#hasComm" + weiboId).is(':checked')) {
+            content = $('#trCommText' + weiboId).val();
+            if (content == null || content == undefined || content == '') {
+                $('.transSubmit' + weiboId).attr('data-content', '要输入评论噢！');
+                $('.transSubmit' + weiboId).popover('show');
+                return;
+            }
+        }
+        $.ajax({
+            type: "post",
+            url: "/user/transmit/" + weiboId,
+            data: {
+                "comment": content
+            },
+            success: function (datas) {
+                if (datas.indexOf('登录') != -1) {
+                    $('.transSubmit' + weiboId).attr('data-content', '请登录后再操作！');
+                    $('.transSubmit' + weiboId).popover('show');
+                    return;
+                }
+                var data = JSON.parse(datas);
+                console.log(data);
+                console.log(data.code);
+                console.log(data.msg);
+
+                if (data.code == 200) {
+                    $('.transSubmit' + weiboId).attr('data-content', '转发成功！');
+                    $('.trsCount' + weiboId).html(parseInt($('.trsCount' + weiboId).html()) + 1);
+                    $('.trspan' + weiboId).toggleClass('trd');
+                    setTimeout(function () {
+                        $('.transSubmit' + weiboId).popover('hide');
+                        $('.trAdvice' + weiboId).popover('hide');
+                    }, 2000);
+                } else if (data.code == 199) {
+                    $('.transSubmit' + weiboId).attr('data-content', data.msg);
+                } else if (data.code == 0) {
+                    $('.transSubmit' + weiboId).attr('data-content', '转发失败，请您稍后重试！');
+                }
+                $('.transSubmit' + weiboId).popover('show');
+            },
+            error: function () {
+                $('.transSubmit' + weiboId).attr('data-content', '转发失败，请您稍后重试！');
+                $('.transSubmit' + weiboId).popover('show');
+            }
+        });
+    }
+
+
+    bindEvent();
+
+
+    function bindEvent() {
+        $('.user_action_advice').each(function () {
+            $(this).unbind('click');
+            $(this).bind('focusout', function () {
+                var weiboId = $(this).attr('weiboid');
+
+                $('.starAdvice' + weiboId).popover('hide');
+                $('.transSubmit' + weiboId).popover('hide');
+
+                console.log('.upAdvice' + weiboId);
+                $('.upAdvice' + weiboId).popover('hide');
+//              $('.trAdvice' + weiboId).popover('hide');
+            });
+        });
+
+
+        $('.up').each(function () {
+            $(this).unbind('click');
+            $(this).bind('click', function () {
+                var weiboId = $(this).attr('weiboid');
+                $.ajax({
+                    type: "post",
+                    url: '/user/upvote/' + weiboId,
+                    success: function (data) {
+                        if (data.indexOf('登录') != -1) {
+                            $('.upAdvice' + weiboId).attr('data-content', '请登录后再操作！');
+                            $('.upAdvice' + weiboId).popover('show');
+                            return;
+                        }
+                        console.log('upd = ' + $('.upspan').hasClass('upd'));
+                        if ($('.upspan' + weiboId).hasClass('upd')) {
+                            $('.upAdvice' + weiboId).attr('data-content', '取消成功！');
+                            $('.upCount' + weiboId).html(parseInt($('.upCount' + weiboId).html()) - 1);
+                        } else {
+                            $('.upAdvice' + weiboId).attr('data-content', '点赞成功！');
+                            $('.upCount' + weiboId).html(parseInt($('.upCount' + weiboId).html()) + 1);
+                        }
+                        $('.upspan' + weiboId).toggleClass('upd');
+                        $('.upAdvice' + weiboId).popover('show');
+                    },
+                    error: function () {
+                        $('.upAdvice' + weiboId).attr('data-content', '点赞失败，请您稍后重试！');
+                        $('.upAdvice' + weiboId).popover('show');
+                    }
+                });
+            });
+        });
+
+
+        $('.share').each(function () {
+            $(this).unbind('click');
+            $(this).bind('click', function () {
+                console.log('share');
+                var weiboId = $(this).attr('weiboid');
+                $.ajax({
+                    type: "post",
+                    url: '/user/transmit/-1',
+                    data: {
+                        "comment": ''
+                    },
+                    success: function (data) {
+                        if (data.indexOf('登录') != -1) {
+                            $('.trAdvice' + weiboId).attr('data-content', '请登录后再操作！');
+                            $('.trAdvice' + weiboId).popover('show');
+                            return;
+                        }
+                        $('.trAdvice' + weiboId).attr('data-content', $('#trContent' + weiboId).val());
+                        $('.trAdvice' + weiboId).popover('show');
+                    },
+                    error: function () {
+                        $('.trAdvice' + weiboId).attr('data-content', '转发失败，请您稍后重试！');
+                        $('.trAdvice' + weiboId).popover('show');
+                    }
+                });
+            });
+        });
+
+        $('.comm').each(function () {
+            $(this).unbind('click');
+            $(this).bind('click', function () {
+
+            });
+        });
+
+        $('.star').each(function () {
+            $(this).unbind('click');
+            $(this).bind('click', function () {
+                var weiboId = $(this).attr('weiboid');
+                $.ajax({
+                    type: "post",
+                    url: '/user/collection/' + weiboId,
+                    success: function (data) {
+                        if (data.indexOf('登录') != -1) {
+                            $('.starAdvice' + weiboId).attr('data-content', '请登录后再操作！');
+                            $('.starAdvice' + weiboId).popover('show');
+                            return;
+                        }
+                        if ($(".starspan" + weiboId).hasClass('glyphicon-star')) {
+                            $('.starAdvice' + weiboId).attr('data-content', '取消成功！');
+                            $(".collchar" + weiboId).html('收藏');
+                        } else {
+                            $('.starAdvice' + weiboId).attr('data-content', '收藏成功！');
+                            $(".collchar" + weiboId).html('已收藏');
+                        }
+
+                        $(".starspan" + weiboId).toggleClass('glyphicon-star');
+                        $(".starspan" + weiboId).toggleClass('glyphicon-star-empty');
+                        $(".starspan" + weiboId).toggleClass('colld');
+//                $(".collchar" + weiboId).toggleClass('colld');
+
+
+                        $('.starAdvice' + weiboId).popover('show');
+                    },
+                    error: function () {
+                        $('.starAdvice' + weiboId).attr('data-content', '收藏失败，请您稍后重试！');
+                        $('.starAdvice' + weiboId).popover('show');
+                    }
+                })
+            });
+        });
+    }
 </script>
-
-
-
 
 
 

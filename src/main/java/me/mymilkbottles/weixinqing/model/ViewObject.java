@@ -2,6 +2,7 @@ package me.mymilkbottles.weixinqing.model;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,4 +33,10 @@ public class ViewObject implements Serializable {
     }
 
 
+    @Override
+    public String toString() {
+        return "ViewObject{" +
+                "vo=" + vo +
+                '}';
+    }
 }

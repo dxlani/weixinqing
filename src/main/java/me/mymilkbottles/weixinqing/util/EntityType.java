@@ -8,10 +8,10 @@ public enum EntityType {
     LOGIN(1),
     REGISTER(2),
     COMMENT(3),
-    FORWARD(4),
+    TRANSMIT(4),
     UPVOTE(5),
     FIRE_WEIBO(6),
-    FORWARD_COMMENTS(7),
+    TRANSMIT_COMMENT(7),
     COLLECTION(8),
     WEIBO(9);
 

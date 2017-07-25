@@ -1,8 +1,12 @@
 package me.mymilkbottles.weixinqing.service;
 
+import com.sun.glass.ui.View;
 import me.mymilkbottles.weixinqing.dao.UserDAO;
+import me.mymilkbottles.weixinqing.model.Feed;
+import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.dao.JedisDAO;
+import me.mymilkbottles.weixinqing.model.ViewObject;
 import me.mymilkbottles.weixinqing.util.Md5Util;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import org.apache.log4j.Logger;
@@ -27,6 +31,9 @@ public class UserService {
     JedisDAO jedisAdapter;
 
     @Autowired
+    HostHolder hostHolder;
+
+    @Autowired
     LoginService loginService;
 
     @Autowired
@@ -37,6 +44,9 @@ public class UserService {
 
     @Autowired
     FocusService focusService;
+
+    @Autowired
+    FeedService feedService;
 
     private static final Logger log = Logger.getLogger(UserService.class);
 
@@ -164,5 +174,19 @@ public class UserService {
             log.error("jedis Transaction关闭失败" + e.getMessage());
         }
         jedis.close();
+    }
+
+    public ViewObject getUserDynamic(int userId, int maxId, int pageSize) {
+        ViewObject vo = new ViewObject();
+
+        User master = hostHolder.getUser();
+
+        vo.add("self", master.getId() == userId);
+        vo.add("focusd", focusService.isFocus(userId, master.getId()));
+
+        List<Feed> feeds = feedService.getUserFeeds(userId, maxId, pageSize);
+
+        vo.add("vo", feedService.getFeedDetail(feeds));
+        return vo;
     }
 }

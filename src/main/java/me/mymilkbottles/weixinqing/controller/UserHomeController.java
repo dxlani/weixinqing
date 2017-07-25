@@ -19,6 +19,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
@@ -44,7 +45,7 @@ public class UserHomeController {
 
     private static final byte[] bytes = new byte[SIZE];
 
-
+    private static final int PAGE_SIZE = 10;
     @Autowired
     HostHolder hostHolder;
 
@@ -60,17 +61,19 @@ public class UserHomeController {
         if (userId == -1) {
             return "404";
         }
-
-        User user = userService.getUserById(userId);
-
-        ViewObject viewObject = new ViewObject();
-
-        viewObject.add("userId", userId);
-        viewObject.add("username", user.getUsername());
-
-        model.addAttribute("vo", viewObject);
+        ViewObject vo = userService.getUserDynamic(userId, Integer.MAX_VALUE, PAGE_SIZE);
+        model.addAttribute("v", vo);
         return "user_home";
     }
+
+    @RequestMapping("/user/home/json/{id}")
+    @ResponseBody
+    public ViewObject userHomeJson(@PathVariable("id") String id, Model model) {
+        int userId = WeixinqingUtil.parseUserId(id);
+        ViewObject vo = userService.getUserDynamic(userId, Integer.MAX_VALUE, PAGE_SIZE);
+        return vo;
+    }
+
 
     @RequestMapping("/headimg/{id}")
     public void userheadImg(@PathVariable("id") String ids,

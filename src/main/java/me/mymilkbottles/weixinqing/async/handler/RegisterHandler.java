@@ -2,9 +2,9 @@ package me.mymilkbottles.weixinqing.async.handler;
 
 import me.mymilkbottles.weixinqing.async.Event;
 import me.mymilkbottles.weixinqing.async.EventModel;
-import me.mymilkbottles.weixinqing.model.EventType;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.service.ActivationService;
+import me.mymilkbottles.weixinqing.util.EntityType;
 import me.mymilkbottles.weixinqing.util.MailTemplateType;
 import me.mymilkbottles.weixinqing.util.MailUtil;
 import org.apache.log4j.Logger;
@@ -47,7 +47,7 @@ public class RegisterHandler implements Event {
     }
 
     @Override
-    public List<EventType> getSupportEventType() {
-        return Arrays.asList(EventType.REGISTER);
+    public List<EntityType> getSupportEntityType() {
+        return Arrays.asList(EntityType.REGISTER);
     }
 }

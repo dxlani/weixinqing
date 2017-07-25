@@ -24,12 +24,12 @@ public interface CommentsDAO {
     @Update({"update " + TABLE_NAME + " set is_delete = 1 where id = #{id}"})
     public int deleteComments(int id);
 
-    @Select({"select count(id) from " + TABLE_NAME + " where f_time > #{date} and master_id = #{userId} and is_delete = 0"})
+    @Select({"select count(id) from " + TABLE_NAME + " where f_time > #{date} and master_id = #{userId} and (is_delete != 1 or is_delete is null)"})
     public int getUserCommentsCountAfterDate(@Param("userId") int userId, @Param("date") Date date);
 
     @Select({"select * from " + TABLE_NAME + " where id = #{id}"})
     public Comments getCommentsById(int id);
 
-    @Select({"select count(id) from " + TABLE_NAME + " where weibo_id = #{id} and (is_delete != 1)"})
+    @Select({"select count(id) from " + TABLE_NAME + " where weibo_id = #{id} and (is_delete != 1 or is_delete is null)"})
     Integer getWeiboCommentCount(int id);
 }

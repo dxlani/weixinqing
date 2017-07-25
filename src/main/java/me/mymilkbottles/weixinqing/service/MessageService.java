@@ -1,0 +1,143 @@
+package me.mymilkbottles.weixinqing.service;
+
+import me.mymilkbottles.weixinqing.dao.MessageDAO;
+import me.mymilkbottles.weixinqing.model.Message;
+import me.mymilkbottles.weixinqing.model.User;
+import me.mymilkbottles.weixinqing.model.Weibo;
+import me.mymilkbottles.weixinqing.util.EntityType;
+import me.mymilkbottles.weixinqing.util.MessageType;
+import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/07/24 10:39.
+ */
+@Service
+public class MessageService {
+
+    @Autowired
+    MessageDAO messageDAO;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    WeiboService weiboService;
+
+
+    public int insertUpvoteMessage(int userId, int weiboId, Date time) {
+        User user = userService.getUserById(userId);
+
+        Message message = new Message();
+        /*
+        hi,你好啊，有一位神秘的朋友（<a href="/user/home/1">username</a>）点赞了你的微心情，
+        快去看看把!<a href="/user/advice">/user/advice</a>
+         */
+        StringBuilder sb = new StringBuilder();
+        sb.append("hi,你好啊，有一位神秘的朋友");
+        sb.append("（<a href=");
+        sb.append("\"/user/home/");
+        sb.append(userId);
+        sb.append("\"");
+        sb.append(">");
+        sb.append(user.getUsername());
+        sb.append("</a>）");
+        sb.append("点赞了你的微心情，快去看看把!<a href=\"/user/advice\">/user/advice</a>");
+
+        message.setContent(sb.toString());
+        message.setStime(time);
+        message.setIsDelete(0);
+        message.setIsRead(0);
+        message.setMsgType(MessageType.ADVICE.getValue());
+
+        message.setProducer(WeixinqingUtil.ADMIN_ID);
+
+        Weibo weibo = weiboService.getWeiboById(weiboId);
+
+        message.setAdvicer(weibo.getMasterId());
+
+        return insertMessage(message);
+    }
+
+
+    public int insertTransmitCommentMessage(int userId, int weiboId, Date time) {
+        User user = userService.getUserById(userId);
+
+        Message message = new Message();
+        /*
+        hi,你好啊，有一位神秘的朋友（<a href="/user/home/1">username</a>）转发了你的微心情，
+        快去看看把!<a href="/user/advice">/user/advice</a>
+         */
+        StringBuilder sb = new StringBuilder();
+        sb.append("hi,你好啊，有一位神秘的朋友");
+        sb.append("（<a href=");
+        sb.append("\"/user/home/");
+        sb.append(userId);
+        sb.append("\"");
+        sb.append(">");
+        sb.append(user.getUsername());
+        sb.append("</a>）");
+        sb.append("转发了你的微心情，快去看看把!<a href=\"/user/advice\">/user/advice</a>");
+
+        message.setContent(sb.toString());
+        message.setStime(time);
+        message.setIsDelete(0);
+        message.setIsRead(0);
+        message.setMsgType(MessageType.ADVICE.getValue());
+
+        message.setProducer(WeixinqingUtil.ADMIN_ID);
+
+        Weibo weibo = weiboService.getWeiboById(weiboId);
+
+        message.setAdvicer(weibo.getMasterId());
+
+        return insertMessage(message);
+    }
+
+
+    public int insertMessage(Message message) {
+        return messageDAO.insertMessage(message);
+    }
+
+    public Message getMessageById(int id) {
+        return messageDAO.getMessageById(id);
+    }
+
+    public int getUserUnreadMessageCount(int id) {
+        return messageDAO.getUserUnreadMessageCount(id);
+    }
+
+    public int getUserMessageCount(int id) {
+        return messageDAO.getUserMessageCount(id);
+    }
+
+    public int getUserUnreadTypeMessageCount(int id, int type) {
+        return messageDAO.getUserUnreadTypeMessageCount(id, type);
+    }
+
+    public int getUserTypeMessageCount(int id, int type) {
+        return messageDAO.getUserTypeMessageCount(id, type);
+    }
+
+    public List<Message> getUserUnreadMessage(int id, int start, int end) {
+        return messageDAO.getUserUnreadMessage(id, start, end);
+    }
+
+    public List<Message> getUserMessage(int id, int start, int end) {
+        return messageDAO.getUserMessage(id, start, end);
+    }
+
+    public List<Message> getUserUnreadTypeMessage(int id, int type, int start, int end) {
+        return messageDAO.getUserUnreadTypeMessage(id, type, start, end);
+    }
+
+    public List<Message> getUserTypeMessage(int id, int type, int start, int end) {
+        return messageDAO.getUserTypeMessage(id, type, start, end);
+    }
+}

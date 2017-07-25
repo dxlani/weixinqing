@@ -3,11 +3,12 @@ package me.mymilkbottles.weixinqing.async.handler;
 import me.mymilkbottles.weixinqing.async.Event;
 import me.mymilkbottles.weixinqing.async.EventModel;
 import me.mymilkbottles.weixinqing.async.HandlerCustomer;
-import me.mymilkbottles.weixinqing.model.EventType;
+
 import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.Login;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.service.UserService;
+import me.mymilkbottles.weixinqing.util.EntityType;
 import me.mymilkbottles.weixinqing.util.MailTemplateType;
 import me.mymilkbottles.weixinqing.util.MailUtil;
 import org.apache.log4j.Logger;
@@ -38,7 +39,7 @@ public class LoginHandler implements Event {
     public Boolean doHandler(EventModel eventModel) {
         int eventId = eventModel.getEventId();
 
-        EventType eventType = eventModel.getEventType();
+        EntityType eventType = eventModel.getEntityType();
 
         int producer = eventModel.getProducer();
 
@@ -51,7 +52,7 @@ public class LoginHandler implements Event {
     }
 
     @Override
-    public List<EventType> getSupportEventType() {
-        return Arrays.asList(new EventType[]{EventType.LOGIN});
+    public List<EntityType> getSupportEntityType() {
+        return Arrays.asList(new EntityType[]{EntityType.LOGIN});
     }
 }

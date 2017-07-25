@@ -58,6 +58,10 @@
     height: 38px;
 }
 
+.upd {
+    color: #eb7350;
+}
+
 .op-ul li {
     float: left;
     width: 25%;
@@ -70,10 +74,14 @@
 }
 
 .op-ul li span {
-    color: #696e78;
+    /*color: #696e78;*/
     cursor: pointer;
 }
 
 .glyphicon {
     position: static;
+}
+
+.upd, .colld, .trd {
+    color: #eb7350;
 }

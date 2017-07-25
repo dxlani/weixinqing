@@ -2,7 +2,8 @@ package me.mymilkbottles.weixinqing.async;
 
 import com.alibaba.fastjson.JSON;
 import me.mymilkbottles.weixinqing.dao.JedisDAO;
-import me.mymilkbottles.weixinqing.model.EventType;
+
+import me.mymilkbottles.weixinqing.util.EntityType;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
@@ -16,10 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * Created by Administrator on 2017/06/13 13:31.
@@ -32,7 +30,7 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
     @Autowired
     JedisDAO jedisAdapter;
 
-    private Map<EventType, List<Event>> eventHandlerSolver = new HashMap<>();
+    private Map<EntityType, List<Event>> eventHandlerSolver = new HashMap<>();
 
     private static ExecutorService executors = Executors.newFixedThreadPool(3);
 
@@ -43,18 +41,20 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
         Map<String, Event> beans = applicationContext.getBeansOfType(Event.class);
         if (beans != null) {
             for (Map.Entry<String, Event> entry : beans.entrySet()) {
-                List<EventType> eventTypes = entry.getValue().getSupportEventType();
+                List<EntityType> entityTypes = entry.getValue().getSupportEntityType();
 
-                for (EventType eventType : eventTypes) {
-                    if (eventHandlerSolver.containsKey(eventType) == false) {
-                        eventHandlerSolver.put(eventType, new ArrayList<Event>(3));
+                for (EntityType entityType : entityTypes) {
+                    if (eventHandlerSolver.containsKey(entityType) == false) {
+                        eventHandlerSolver.put(entityType, new ArrayList<Event>(2));
                     }
-                    eventHandlerSolver.get(eventType).add(entry.getValue());
+                    eventHandlerSolver.get(entityType).add(entry.getValue());
                 }
             }
         }
+        log.info("eventHandlerSolver = ");
+        log.info(eventHandlerSolver);
 
-        for (Map.Entry<EventType, List<Event>> entry : eventHandlerSolver.entrySet()) {
+        for (Map.Entry<EntityType, List<Event>> entry : eventHandlerSolver.entrySet()) {
             log.info("异步时间类型 " + entry.getKey() + " " + entry.getValue());
         }
 
@@ -62,28 +62,48 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 while (true) {
                     EventModel eventModel = null;
-                    for (String jsonObject : jedisAdapter.brpop(RedisKeyUtil.getHandlerKey())) {
+                    List<String> jsonObjects = jedisAdapter.brpop(RedisKeyUtil.getHandlerKey());
+
+                    for (String jsonObject : jsonObjects) {
                         log.info("异步事件消费者brpop=" + jsonObject);
-                        if (RedisKeyUtil.getHandlerKey().equals(jsonObject) == false) {
+                        if (!RedisKeyUtil.getHandlerKey().equals(jsonObject)) {
                             eventModel = JSON.parseObject(jsonObject, EventModel.class);
-                            break;
+
+                            if (!eventHandlerSolver.containsKey(eventModel.getEntityType())) {
+                                log.error("不能识别的事件" + eventModel.getEntityType());
+                                continue;
+                            }
+
+                            EventModel finalEventModel = eventModel;
+                            log.info("finalEventModel");
+                            log.info(finalEventModel);
+                            Future<Boolean> future = executors.submit(new Callable<Boolean>() {
+                                @Override
+                                public Boolean call() throws Exception {
+                                    Boolean result = Boolean.TRUE;
+                                    log.info("finalEventModel.getEntityType() = ");
+                                    log.info(finalEventModel.getEntityType());
+                                    for (Event event : eventHandlerSolver.get(finalEventModel.getEntityType())) {
+                                        result = result && event.doHandler(finalEventModel);
+                                        log.info("dohandler" + event + " " + finalEventModel);
+                                    }
+                                    return result;
+                                }
+                            });
+                            try {
+                                log.info("call finish " + future.get());
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
 
-                    EventModel finalEventModel = eventModel;
-                    Future<Boolean> future = executors.submit(new Callable<Boolean>() {
-                        @Override
-                        public Boolean call() throws Exception {
 
-                            for (Event event : eventHandlerSolver.get(finalEventModel.getEventType())) {
-                                event.doHandler(finalEventModel);
-                                log.info("dohandler" + event + " " + finalEventModel);
-                            }
-                            return null;
-                        }
-                    });
                 }
             }
         }).start();

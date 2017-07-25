@@ -1,7 +1,7 @@
 package me.mymilkbottles.weixinqing.async;
 
 
-import me.mymilkbottles.weixinqing.model.EventType;
+import me.mymilkbottles.weixinqing.util.EntityType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ public class EventModel {
 
     private int eventId;
 
-    private EventType eventType;
+    private EntityType entityType;
 
     private int producer;
 
@@ -24,22 +24,22 @@ public class EventModel {
     public EventModel() {
     }
 
-    public EventModel(int eventId, EventType eventType, int producer, int advicer, Map<String, Object> exts) {
+    public EventModel(int eventId, EntityType entityType, int producer, int advicer, Map<String, Object> exts) {
         this.eventId = eventId;
-        this.eventType = eventType;
+        this.entityType = entityType;
         this.producer = producer;
         this.advicer = advicer;
         this.exts = exts;
     }
 
-    public EventModel(EventType eventType, int producer, Map<String, Object> exts) {
-        this.eventType = eventType;
+    public EventModel(EntityType entityType, int producer, Map<String, Object> exts) {
+        this.entityType = entityType;
         this.producer = producer;
         this.exts = exts;
     }
 
-    public EventModel(EventType eventType, int producer) {
-        this.eventType = eventType;
+    public EventModel(EntityType entityType, int producer) {
+        this.entityType = entityType;
         this.producer = producer;
     }
 
@@ -75,12 +75,12 @@ public class EventModel {
         return this;
     }
 
-    public EventType getEventType() {
-        return eventType;
+    public EntityType getEntityType() {
+        return entityType;
     }
 
-    public EventModel setEventType(EventType eventType) {
-        this.eventType = eventType;
+    public EventModel setEntityType(EntityType entityType) {
+        this.entityType = entityType;
         return this;
     }
 
@@ -100,5 +100,16 @@ public class EventModel {
     public EventModel putExt(String activationMail, Object mail) {
         this.exts = exts;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "EventModel{" +
+                "eventId=" + eventId +
+                ", entityType=" + entityType +
+                ", producer=" + producer +
+                ", advicer=" + advicer +
+                ", exts=" + exts +
+                '}';
     }
 }

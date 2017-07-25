@@ -19,4 +19,14 @@
         order by f_time desc
         limit #{start},#{end}
     </select>
+
+    <update id="deleteFeeds">
+        update
+        <include refid="table_name"/>
+        set is_delete = 1
+        where user_id = #{user_id} and type = #{type} and weibo_id = #{weibo_id}
+        <if test="exts_id != null">
+            and exts_id = #{exts_id}
+        </if>
+    </update>
 </mapper>

@@ -1,7 +1,7 @@
 package me.mymilkbottles.weixinqing.async;
 
 
-import me.mymilkbottles.weixinqing.model.EventType;
+import me.mymilkbottles.weixinqing.util.EntityType;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -13,5 +13,5 @@ public interface Event {
 
     public Boolean doHandler(EventModel eventModel);
 
-    public List<EventType> getSupportEventType();
+    public List<EntityType> getSupportEntityType();
 }

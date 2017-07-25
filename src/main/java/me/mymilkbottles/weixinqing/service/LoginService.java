@@ -7,10 +7,11 @@ package me.mymilkbottles.weixinqing.service;
 import com.alibaba.fastjson.JSON;
 import me.mymilkbottles.weixinqing.async.EventModel;
 import me.mymilkbottles.weixinqing.dao.LoginDAO;
-import me.mymilkbottles.weixinqing.model.EventType;
+
 import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.Login;
 import me.mymilkbottles.weixinqing.model.User;
+import me.mymilkbottles.weixinqing.util.EntityType;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,7 +83,7 @@ public class LoginService {
         exts.put("username", user.getUsername());
 
         log.info("异步信息发送成功");
-        asyncEventService.sendEvent(new EventModel(1, EventType.LOGIN, 1, user.getId(), exts));
+        asyncEventService.sendEvent(new EventModel(1, EntityType.LOGIN, 1, user.getId(), exts));
 
         return loginMapper.insertLoginInfo(login);
     }

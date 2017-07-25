@@ -5,13 +5,14 @@ import me.mymilkbottles.weixinqing.async.EventModel;
 import me.mymilkbottles.weixinqing.async.HandlerProducer;
 import me.mymilkbottles.weixinqing.async.handler.LoginHandler;
 import me.mymilkbottles.weixinqing.model.Activation;
-import me.mymilkbottles.weixinqing.model.EventType;
+
 import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.service.ActivationService;
 import me.mymilkbottles.weixinqing.service.LoginService;
 import me.mymilkbottles.weixinqing.service.RegisterService;
 import me.mymilkbottles.weixinqing.service.UserService;
+import me.mymilkbottles.weixinqing.util.EntityType;
 import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +88,7 @@ public class RegisterController {
 
                 String activationLink = url.toString().replace(servletPath, "/");
 
-                EventModel eventModel = new EventModel(EventType.REGISTER, WeixinqingUtil.ADMIN_ID);
+                EventModel eventModel = new EventModel(EntityType.REGISTER, WeixinqingUtil.ADMIN_ID);
                 eventModel.putExt("activationMail", mail).putExt("activationKey", activationKey)
                         .putExt("userId", returnUserId).putExt("url", activationLink);
 
@@ -120,7 +121,7 @@ public class RegisterController {
 
         String activationLink = url.toString().replace(servletPath, "/");
 
-        EventModel eventModel = new EventModel(EventType.REGISTER, WeixinqingUtil.ADMIN_ID);
+        EventModel eventModel = new EventModel(EntityType.REGISTER, WeixinqingUtil.ADMIN_ID);
         eventModel.putExt("activationMail", activation.getMail())
                 .putExt("activationKey", activation.getActivationKey()).putExt("url", activationLink);
 

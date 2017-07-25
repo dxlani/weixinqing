@@ -27,12 +27,12 @@ public interface WeiboDAO {
     @Select({"select * from " + TABLE_NAME + " order by f_time desc limit #{start}, #{end}"})
     public List<Weibo> getWeibo(@Param("start") int start, @Param("end") int end);
 
-    @Select({"select * from " + TABLE_NAME + " where id < #{id} order by f_time desc limit #{start}, #{end}"})
-    public List<Weibo> getWeiboBeforeId(@Param("start") int start, @Param("end") int end, @Param("id") int id);
-
     @Select({"select count(id) from " + TABLE_NAME + " where f_time > #{date} and master_id = #{userId}"})
     public int getUserWeiboCountAfterDate(@Param("userId") int userId, @Param("date") Date date);
 
     @Select({"select * from " + TABLE_NAME + " where id = #{id}"})
     public Weibo getWeiboById(int id);
+
+    @Select({"select " + ALL_FIELD + " from " + TABLE_NAME + " where id < #{id} order by f_time desc limit #{count}"})
+    List<Weibo> getWeiboBeforeId(@Param("id") int id, @Param("count") int count);
 }

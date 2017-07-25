@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.Weibo;
 import me.mymilkbottles.weixinqing.service.WeiboService;
+import me.mymilkbottles.weixinqing.util.ContentFilter;
 import me.mymilkbottles.weixinqing.util.EntityType;
-import me.mymilkbottles.weixinqing.util.SensitiveWordFilterUtil;
 import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class WeiboController {
     public String fireWeibo(@ModelAttribute("content") String content, HttpServletRequest request,
                             Model model) {
         Weibo weibo = new Weibo();
-        weibo.setContent(SensitiveWordFilterUtil.filter(content));
+        weibo.setContent(ContentFilter.filter(content));
         weibo.setfTime(new Date());
         weibo.setMasterId(hostHolder.getUser().getId());
         int code = weiboService.insertWeibo(weibo) > 0 ? 200 : 0;
@@ -49,10 +49,15 @@ public class WeiboController {
                            Model model) {
         int weiboId = WeixinqingUtil.parseWeiboId(weiboIds);
         if (weiboId != -1) {
-            return WeixinqingUtil.getJsonResponse(weiboService.transmit(weiboId, comment));
-        } else {
-            return WeixinqingUtil.getJsonResponse(0);
+            int transmit = weiboService.transmit(weiboId, comment);
+            if (transmit >= 0) {
+                if (transmit == 0) {
+                    return WeixinqingUtil.getJsonResponse(199, "已经转发过了");
+                }
+                return WeixinqingUtil.getJsonResponse(200);
+            }
         }
+        return WeixinqingUtil.getJsonResponse(0);
     }
 
     @RequestMapping("/user/upvote/{weiboIds}")
@@ -60,7 +65,7 @@ public class WeiboController {
     public String upvote(@PathVariable("weiboIds") String weiboIds) {
         int weiboId = WeixinqingUtil.parseWeiboId(weiboIds);
         if (weiboId != -1) {
-            int code = weiboService.upvote(hostHolder.getUser().getId(), EntityType.UPVOTE.getValue(), weiboId);
+            int code = weiboService.upvote(hostHolder.getUser().getId(), EntityType.UPVOTE, weiboId);
             return WeixinqingUtil.getJsonResponse(code);
         }
         return WeixinqingUtil.getJsonResponse(0);

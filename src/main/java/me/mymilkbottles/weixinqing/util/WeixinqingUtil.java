@@ -22,6 +22,13 @@ public class WeixinqingUtil {
         return jsonObject.toJSONString();
     }
 
+    public static String getJsonResponse(int code, String msg) {
+        JSONObject jsonObject = new JSONObject(2);
+        jsonObject.put("code", code);
+        jsonObject.put("msg", msg);
+        return jsonObject.toJSONString();
+    }
+
     public static int parseUserId(String userIdS) {
         int userId = -1;
         try {

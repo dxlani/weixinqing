@@ -330,7 +330,7 @@ public class JedisDAO {
                 jedis.close();
             }
         }
-        return 0;
+        return -1;
     }
 
     public int getTransmitCount(int weiboId) {
