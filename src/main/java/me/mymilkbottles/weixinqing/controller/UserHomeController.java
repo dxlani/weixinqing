@@ -4,6 +4,7 @@ import com.sun.org.apache.xalan.internal.xsltc.dom.CurrentNodeListFilter;
 import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.model.ViewObject;
+import me.mymilkbottles.weixinqing.service.FocusService;
 import me.mymilkbottles.weixinqing.service.UserService;
 import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
 import org.apache.log4j.Logger;
@@ -52,6 +53,9 @@ public class UserHomeController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    FocusService focusService;
+
     @Value("${weixinqing.img.head-img-directory}")
     String headImgDirectory;
 
@@ -62,6 +66,8 @@ public class UserHomeController {
             return "404";
         }
         ViewObject vo = userService.getUserDynamic(userId, Integer.MAX_VALUE, PAGE_SIZE);
+        vo.add("luser", userService.getUserById(userId));
+        vo.add("focusd", focusService.isFocus(userId, hostHolder.getUser().getId()));
         model.addAttribute("v", vo);
         return "user_home";
     }

@@ -39,4 +39,7 @@ public interface LoginDAO {
 
     @Update({"update " + TABLE_NAME + " set is_delete = 1 where  user_id = #{id}"})
     int deleteLoginInfoById(Integer id);
+
+    @Update({"update " + TABLE_NAME + " set  ticket = #{tik} ,  expire_date = #{time} where  user_id = #{id}"})
+    void updateTicketExpireTime(@Param("tik") String ticket, @Param("time") Date updateTime);
 }

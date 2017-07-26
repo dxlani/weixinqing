@@ -22,7 +22,7 @@ public interface FocusDAO {
     @Insert({"insert into" + TABLE_NAME + "(" + FIELDS + ") values(#{masterId}, #{slaveId})"})
     public int focus(Focus focus);
 
-    @Update({"delete " + TABLE_NAME + " where master_id = #{masterId} and slave_id = ${slaveId}"})
+    @Update({"delete from " + TABLE_NAME + " where master_id = #{masterId} and slave_id = ${slaveId}"})
     public int unFocus(@Param("masterId") int masterId, @Param("slaveId") int slaveId);
 
     @Select({"select count(id) > 0 from " + TABLE_NAME + " where master_id = #{masterId} and slave_id = ${slaveId}"})

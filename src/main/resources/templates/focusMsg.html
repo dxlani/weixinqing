@@ -1,0 +1,135 @@
+<div class="modal fade msgModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title modalUname"></h4>
+            </div>
+            <div class="modal-body" style="width: 100%;height: auto;">
+                <textarea class="form-control" id="msgContent" rows="10" name="content" maxlength="150"
+                          style="float: left;width: 100%;resize:none; margin-top: 2px;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <!--<button type="button" class="btn btn-default" >关闭</button>-->
+
+                <a tabindex="0"
+                   class="btn submit-text smsg" style="padding-top: 5px;float: right;margin-left: 10px;"
+                   role="button" data-toggle="popover" data-animation="true"
+                   data-trigger="manual" data-placement="bottom" uid=""
+                   data-content="您的内容也太少啦，多发一点点呗 ~ ">发送</a>
+
+                <a tabindex="0"
+                   class="btn submit-text" style="padding-top: 5px;float: right;"
+                   role="button" data-toggle="popover" data-animation="true"
+                   data-trigger="manual" data-placement="bottom" uid="" data-dismiss="modal"
+                >关闭</a>
+
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script>
+
+    //    focusTriggerBtn${user.id}
+    //    data-content
+    //    unfocusU
+    //    focusU
+    //    uid
+    //    pmsg
+    //    focusBtn
+
+    $('.smsg').click(function () {
+        var msg = $('#msgContent').val();
+        var uid = $(this).attr('uid');
+        if (msg == null || msg == undefined || msg == '') {
+            $('.smsg').attr('data-content', '您的内容也太少啦，多发一点点呗 ~ ');
+            $('.smsg').popover('show');
+            return;
+        }
+        $.ajax({
+            type: 'post',
+            url: '/user/msg',
+            data: {
+                "uid": uid,
+                "msg": msg
+            },
+            success: function (data) {
+                if (data.indexOf("登录") != -1) {
+                    $('.smsg').attr('data-content', '请登录之后操作');
+                    $('.smsg').popover('show');
+                    return;
+                }
+                res = JSON.parse(data);
+                if (res.code == 200) {
+                    $('.smsg').attr('data-content', '私信成功！');
+                    $('.smsg').popover('show');
+                } else {
+                    $('.smsg').attr('data-content', '私信失败，请稍候重新发送！');
+                    $('.smsg').popover('show');
+                }
+            },
+            error: function () {
+                $('.smsg').attr('data-content', '操作失败，请稍候操作！');
+                $('.smsg').popover('show');
+            }
+        });
+    });
+
+    $('.pmsg').click(function () {
+        $('.smsg').attr('uid', $(this).attr('uid'));
+        $('.modalUname').html('发送私信给 ' + $(this).attr('uname'));
+        $('.msgModal').modal('show');
+    });
+
+    $('.smsg').focusout(function () {
+        $('.smsg').popover('hide');
+    });
+
+    $('.focusTriggerBtn').focusout(function () {
+        var uid = $(this).attr('uid');
+        $('.focusTriggerBtn' + uid).popover('hide');
+    });
+
+    $('.focusBtn').click(function () {
+        var uid = $(this).attr('uid');
+        $.ajax({
+            type: 'post',
+            url: '/user/focus/action/' + uid,
+            success: function (data) {
+                if (data.indexOf("登录") != -1) {
+                    $('.focusTriggerBtn' + uid).attr('data-content', '请登录之后操作');
+                    $('.focusTriggerBtn' + uid).popover('show');
+                    return;
+                }
+                console.log('data = ');
+                console.log(data);
+                res = JSON.parse(data);
+
+                if (res.code == 200) {
+                    if ($('.focusBtnCss' + uid).hasClass('unfocusU')) {
+                        $('.focusTriggerBtn' + uid).attr('data-content', '关注成功！');
+                        $('.focusBtnCss' + uid).html('取消关注');
+                    } else {
+                        $('.focusTriggerBtn' + uid).attr('data-content', '取消关注成功！');
+                        $('.focusBtnCss' + uid).html('关注');
+                    }
+                    $('.focusBtnCss' + uid).toggleClass('unfocusU');
+                    $('.focusBtnCss' + uid).toggleClass('focusU');
+
+                    $('.focusTriggerBtn' + uid).popover('show');
+                } else {
+                    $('.focusTriggerBtn' + uid).attr('data-content', '操作失败，请稍候操作！');
+                    $('.focusTriggerBtn' + uid).popover('show');
+                }
+            },
+            error: function () {
+                $('.focusTriggerBtn' + uid).attr('data-content', '操作失败，请稍候操作！');
+                $('.focusTriggerBtn' + uid).popover('show');
+            }
+        });
+    });
+</script>

@@ -55,6 +55,12 @@ public class LoginIntercepter implements HandlerInterceptor {
                 int userId = loginService.getLoginUser(ticket);
                 User user = userService.getUserById(userId);
                 hostHolder.setUser(user);
+
+
+                Date updateTime = new Date(new Date().getTime() + 5 * 60 * 1000);
+                if (updateTime.after(expireDate)) {
+                    loginService.updateTicketExpireTime(ticket, updateTime);
+                }
             }
         }
         return true;

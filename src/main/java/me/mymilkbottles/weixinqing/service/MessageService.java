@@ -1,9 +1,11 @@
 package me.mymilkbottles.weixinqing.service;
 
 import me.mymilkbottles.weixinqing.dao.MessageDAO;
+import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.Message;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.model.Weibo;
+import me.mymilkbottles.weixinqing.util.ContentFilter;
 import me.mymilkbottles.weixinqing.util.EntityType;
 import me.mymilkbottles.weixinqing.util.MessageType;
 import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
@@ -30,6 +32,9 @@ public class MessageService {
     @Autowired
     WeiboService weiboService;
 
+    @Autowired
+    HostHolder hostHolder;
+
 
     public int insertUpvoteMessage(int userId, int weiboId, Date time) {
         User user = userService.getUserById(userId);
@@ -37,7 +42,7 @@ public class MessageService {
         Message message = new Message();
         /*
         hi,你好啊，有一位神秘的朋友（<a href="/user/home/1">username</a>）点赞了你的微心情，
-        快去看看把!<a href="/user/advice">/user/advice</a>
+        快去看看把!
          */
         StringBuilder sb = new StringBuilder();
         sb.append("hi,你好啊，有一位神秘的朋友");
@@ -48,7 +53,7 @@ public class MessageService {
         sb.append(">");
         sb.append(user.getUsername());
         sb.append("</a>）");
-        sb.append("点赞了你的微心情，快去看看把!<a href=\"/user/advice\">/user/advice</a>");
+        sb.append("点赞了你的微心情，快去看看把！");
 
         message.setContent(sb.toString());
         message.setStime(time);
@@ -72,7 +77,7 @@ public class MessageService {
         Message message = new Message();
         /*
         hi,你好啊，有一位神秘的朋友（<a href="/user/home/1">username</a>）转发了你的微心情，
-        快去看看把!<a href="/user/advice">/user/advice</a>
+        快去看看把!
          */
         StringBuilder sb = new StringBuilder();
         sb.append("hi,你好啊，有一位神秘的朋友");
@@ -83,7 +88,7 @@ public class MessageService {
         sb.append(">");
         sb.append(user.getUsername());
         sb.append("</a>）");
-        sb.append("转发了你的微心情，快去看看把!<a href=\"/user/advice\">/user/advice</a>");
+        sb.append("转发了你的微心情，快去看看把！");
 
         message.setContent(sb.toString());
         message.setStime(time);
@@ -140,4 +145,18 @@ public class MessageService {
     public List<Message> getUserTypeMessage(int id, int type, int start, int end) {
         return messageDAO.getUserTypeMessage(id, type, start, end);
     }
+
+    public int insertMessage(int uid, String msgs, Date date) {
+        Message message = new Message();
+        message.setProducer(hostHolder.getUser().getId());
+        message.setContent(ContentFilter.filter(msgs));
+        message.setMsgType(MessageType.PRIVATE_MESSAGE.getValue());
+        message.setIsRead(0);
+        message.setIsDelete(0);
+        message.setStime(date);
+        message.setAdvicer(uid);
+        int result = messageDAO.insertMessage(message);
+        return result >= 1 ? 200 : 0;
+    }
+
 }

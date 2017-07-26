@@ -37,12 +37,12 @@
         padding-bottom: 0px;background-color: rgba(70,149,194,0.3);border: none; ">
             <div class="panel-body" style="padding-top: 15px;" align="center">
 
-                <img src="/headimg/${user.id}" alt="${user.username}" align="center"
-                     style="width:95px; height:95px;" title="${user.username}"
+                <img src="/headimg/${v.luser.id ? c }" alt="${v.luser.username}" align="center"
+                     style="width:95px; height:95px;" title="${v.luser.username}"
                      class="img-circle">
 
                 <div style="width: 100%;padding: 4px;font-size: 22px;text-align: center;color: #fff;text-shadow: 0 0 4px rgba(0,0,0,0.5);">
-                    ${user.username}
+                    ${v.luser.username}
                 </div>
 
                 <style>
@@ -76,17 +76,85 @@
                     .indexTop2:hover {
                         background: -webkit-linear-gradient(top, #5f636d 0%, #535861 100%);
                     }
+
+                    ul li {
+                        border: none;
+                    }
+
+                    * {
+                        outline: none;
+                    }
+
+                    .op-ul li {
+                        margin-top: 4px;
+                    }
+
+                    .op-ul li div:hover, .op-ul li div:focus {
+                        cursor: pointer;
+                    }
+
+                    .btn {
+                        vertical-align: baseline;
+                        padding: 0;
+                    }
+
+                    .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
+                        outline: none;
+                        outline-offset: 0;
+                    }
+
+                    .btn.active, .btn:active {
+                        background-image: none;
+                        outline: 0;
+                        -webkit-box-shadow: none;
+                    }
+
+                    input[type="button"], input[type="submit"], input[type="reset"], input[type="file"]::-webkit-file-upload-button, button {
+                        background: none;
+                    }
+
+                    popover {
+                        z-index: 99999;
+                    }
+
+                    a, a:hover, a:visited, a:active {
+                        text-decoration: none;
+                    }
+
+                    .upd {
+                        color: #eb7350;
+                    }
                 </style>
                 <#if !v.self>
-                    <div style="text-align: center;width:auto;margin-left: 230px;margin-top: 5px;" align="center">
+                    <div style="text-align: center;margin-top: 5px;width: 100%;height: auto;margin-left: 230px;"
+                         align="center">
 
-                        <if v.focusd>
-                            <span style="" class="indexTop2 unfocusU" align="center">关注</span>
-                            <else>
-                                <span style="" class="indexTop2 focusU" align="center">取消关注</span>
-                        </if>
+                        <#if v.focusd>
+                            <button tabindex="2" style="margin-left: 0px;float: left;margin-top: -1px;"
+                                    class="btn focusTriggerBtn${v.luser.id ? c } focusTriggerBtn"
+                                    data-placement="bottom"
+                                    data-toggle="popover"
+                                    data-container="body"
+                                    data-trigger="manual" data-html="true"
+                                    data-content="收藏成功！">
+                            <span style="" class="indexTop2 unfocusU focusBtn focusBtnCss${v.luser.id ? c}"
+                                  uid="${v.luser.id ? c }" align="center">关注</span>
+                            </button>
+                            <#else>
+                                <button tabindex="2" style="margin-left: 0px;float: left;margin-top: -1px;"
+                                        class="btn focusTriggerBtn${v.luser.id ? c } focusTriggerBtn"
+                                        data-placement="bottom"
+                                        data-toggle="popover"
+                                        data-container="body"
+                                        data-trigger="manual" data-html="true"
+                                        data-content="收藏成功！">
+                            <span style="" class="indexTop2 focusU focusBtn focusBtnCss${v.luser.id ? c}"
+                                  uid="${v.luser.id ? c }" align="center">取消关注</span>
+                                </button>
+                        </#if>
 
-                        <span style="margin-left: 15px;" class="indexTop2 pri-msg" align="center">私信</span>
+                        <span style="margin-left: 15px;" class="indexTop2 pri-msg pmsg" uid="${v.luser.id ? c }"
+                              align="center">私信</span>
                     </div>
                 </#if>
             </div>
@@ -392,7 +460,7 @@ text-decoration: none;font-size: 12px;" class="datetime">${vo.comments.fTime?dat
         </div>
 
 
-
+        <#include "focusMsg.html" parse=true encoding="utf-8"/>
     <a href="javascript:scroll(0,0)" style=" background-color: #47a6d9;display: block;cursor: pointer;
     position: fixed;float: right;bottom: 100px;right: 200px;
     width: 40px;

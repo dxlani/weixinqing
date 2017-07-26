@@ -9,7 +9,6 @@
 
     <link type="text/css" rel="stylesheet" href="/css/head-index.css"/>
     <link type="text/css" rel="stylesheet" href="/css/body-index.css"/>
-
 </head>
 
 
@@ -63,8 +62,52 @@
                 background: -webkit-linear-gradient(top, #5f636d 0%, #535861 100%);
             }
 
-            a, a:hover, a:visited, a.focus {
+            ul li {
+                border: none;
+            }
+
+            * {
+                outline: none;
+            }
+
+            .op-ul li {
+                margin-top: 4px;
+            }
+
+            .op-ul li div:hover, .op-ul li div:focus {
+                cursor: pointer;
+            }
+
+            .btn {
+                vertical-align: baseline;
+                padding: 0;
+            }
+
+            .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
+                outline: none;
+                outline-offset: 0;
+            }
+
+            .btn.active, .btn:active {
+                background-image: none;
+                outline: 0;
+                -webkit-box-shadow: none;
+            }
+
+            input[type="button"], input[type="submit"], input[type="reset"], input[type="file"]::-webkit-file-upload-button, button {
+                background: none;
+            }
+
+            popover {
+                z-index: 99999;
+            }
+
+            a, a:hover, a:visited, a:active {
                 text-decoration: none;
+            }
+
+            .upd {
+                color: #eb7350;
             }
         </style>
 
@@ -72,24 +115,39 @@
         padding-bottom: 0px;background-color: rgba(70,149,194,0.3);border: none; ">
             <div class="panel-body" style="padding-top: 15px;" align="center">
 
-                <img src="/headimg/${user.id}" alt="${user.username}" align="center"
-                     style="width:95px; height:95px;" title="${user.username}"
+                <img src="/headimg/${vo.luser.id ? c}" alt="${vo.luser.username}" align="center"
+                     style="width:95px; height:95px;" title="${vo.luser.username}"
                      class="img-circle">
 
-                <div style="width: 100%;padding: 4px;font-size: 22px;text-align: center;color: #fff;text-shadow: 0 0 4px rgba(0,0,0,0.5);">
-                    ${user.username}
+                <div style="width: 100%;padding: 4px;font-size: 22px;text-align: center;
+                color: #fff;text-shadow: 0 0 4px rgba(0,0,0,0.5);">
+                    ${vo.luser.username}
                 </div>
 
                 <#if !vo.self>
                     <div style="text-align: center;width:auto;margin-left: 230px;margin-top: 5px;" align="center">
 
-                        <#if vo.focusd>
-                            <span class="indexTop2 unfocusU" style="" align="center">关注</span>
-                            <#else>
-                                <span class="indexTop2 focusU" style="" align="center">取消关注</span>
-                        </#if>
+                        <button tabindex="2"
+                                class="btn focusTriggerBtn${user.id ? c} focusTriggerBtn"
+                                data-placement="bottom"
+                                data-toggle="popover" style="float: left;"
+                                data-container="body"
+                                data-trigger="manual" data-html="true"
+                                data-content="收藏成功！">
 
-                        <span class="indexTop2 pri-msg" style="margin-left: 15px;" align="center">私信</span>
+                            <#if vo.focusd>
+                                <span class="indexTop2 unfocusU focusBtn focusBtnCss${vo.luser.id ? c}"
+                                      uid="${vo.luser.id ? c}"
+                                      style="" align="center">关注</span>
+                                <#else>
+                                <span class="indexTop2 focusU focusBtn focusBtnCss${vo.luser.id ? c}"
+                                      uid="${vo.luser.id ? c}"
+                                      style="" align="center">取消关注</span>
+                            </#if>
+                        </button>
+
+                        <span class="indexTop2 pri-msg pmsg" uid="${vo.luser.id ? c}" uname="${vo.luser.username}"
+                              style="margin-left: 15px;float: left;" align="center" ;>私信</span>
                     </div>
                 </#if>
 
@@ -98,28 +156,50 @@
 
         <div class="panel panel-default" style="width: 714px;height:auto;float: right;">
             <div class="panel-body">
-                <#list vo.vos as v>
+                <#list vo.vos as vi>
                     <div style="width: 160px;height: auto;border: 1px solid #f2f2f5;float: left;margin: 5px;">
 
-                        <img src="/headimg/${v.user.id ? c }" alt="..." class="img-circle" align="center"
+                        <img src="/headimg/${vi.user.id ? c }" alt="..." class="img-circle" align="center"
                              style="width: 90px;height: 90px;float: left;margin-left: 40px;margin-top: 10px;">
 
 
                         <div style="width: 100%;padding: 4px;font-size: 14px;float: left;color: black;text-align: center;">
-                            <a target="_blank" href="/user/home/${v.user.id ? c }">${v.user.username}</a>
+                            <a target="_blank" href="/user/home/${vi.user.id ? c }">${vi.user.username}</a>
                         </div>
 
                         <div style="text-align: center;width:100%;margin-top: 5px;float: left;margin-bottom: 10px;"
                              align="center">
-                            <#if v.focusd>
+
+                            <#if vi.focusd>
+                                <button tabindex="2"
+                                        class="btn focusTriggerBtn${vi.user.id ? c } focusTriggerBtn"
+                                        data-placement="bottom"
+                                        data-toggle="popover" style="float: left;margin-top: -1px;"
+                                        data-container="body"
+                                        data-trigger="manual" data-html="true"
+                                        data-content="收藏成功！">
                                 <span style="width: 62px;height: 34px;float: left;margin-left: 10px;"
-                                      userid="${v.user.id ? c }" class="indexTop2 unfocusU" align="center">关注</span>
+                                      uid="${vi.user.id ? c }"
+                                      class="indexTop2 unfocusU focusBtn focusBtnCss${vi.user.id ? c }" align="center">关注</span>
+                                </button>
                                 <#else>
+                                    <button tabindex="2"
+                                            class="btn focusTriggerBtn${vi.user.id ? c } focusTriggerBtn"
+                                            data-placement="bottom"
+                                            data-toggle="popover" style="float: left;margin-top: -1px;"
+                                            data-container="body" uid="${vi.user.id ? c }"
+                                            data-trigger="manual" data-html="true"
+                                            data-content="收藏成功！">
                                     <span style="width: 62px;height: 34px;float: left;margin-left: 10px;"
-                                          class="indexTop2 focusU" userid="${v.user.id ? c }" align="center">取消关注</span>
+                                          class="indexTop2 focusU focusBtn focusBtnCss${vi.user.id ? c }"
+                                          uid="${vi.user.id ? c }" align="center">取消关注</span>
+                                    </button>
                             </#if>
+
+
                             <span style="width: 62px;height: 34px;margin-left: 15px;float: left;"
-                                  userid="${v.user.id ? c }" class="indexTop2 pri-msg" align="center">私信</span>
+                                  uid="${vi.user.id ? c }" uname="${vi.user.username}" class="indexTop2 pri-msg pmsg"
+                                  align="center">私信</span>
                         </div>
 
                     </div>
@@ -127,7 +207,7 @@
             </div>
         </div>
 
-
+        <#include "focusMsg.html" parse=true encoding="utf-8"/>
     </div>
 </body>
 </html>

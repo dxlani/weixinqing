@@ -91,4 +91,8 @@ public class LoginService {
     public int deleteLoginInfoById(Integer id) {
         return loginMapper.deleteLoginInfoById(id);
     }
+
+    public void updateTicketExpireTime(String ticket, Date updateTime) {
+        loginMapper.updateTicketExpireTime(ticket, updateTime);
+    }
 }
