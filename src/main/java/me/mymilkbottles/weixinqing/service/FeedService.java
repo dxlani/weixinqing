@@ -152,6 +152,8 @@ public class FeedService {
             vo.add("weibo", weibo);
 
             user = userService.getUserById(weibo.getMasterId());
+
+            vo.add("auser", userService.getUserById(feed.getUserId()));
             vo.add("user", user);
 
             vos.add(vo);
@@ -162,5 +164,9 @@ public class FeedService {
 
     public List<Feed> getUserFeeds(int userId, int maxId, int pageSize) {
         return feedDAO.getUserFeeds(userId, maxId, pageSize + 1);
+    }
+
+    public List<Feed> getUserFeedsByList(List<Integer> userIds, int maxId, int pageSize) {
+        return feedDAO.getUserFeedsByList(userIds, maxId, pageSize);
     }
 }

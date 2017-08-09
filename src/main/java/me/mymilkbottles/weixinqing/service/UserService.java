@@ -189,4 +189,15 @@ public class UserService {
         vo.add("vo", feedService.getFeedDetail(feeds));
         return vo;
     }
+
+    public ViewObject getUserDynamic(List<Integer> userIds, int maxId, int pageSize) {
+        ViewObject vo = new ViewObject();
+
+        User master = hostHolder.getUser();
+
+        List<Feed> feeds = feedService.getUserFeedsByList(userIds, maxId, pageSize);
+
+        vo.add("vo", feedService.getFeedDetail(feeds));
+        return vo;
+    }
 }

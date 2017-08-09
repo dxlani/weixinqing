@@ -13,7 +13,9 @@ public enum EntityType {
     FIRE_WEIBO(6),
     TRANSMIT_COMMENT(7),
     COLLECTION(8),
-    WEIBO(9);
+    WEIBO(9),
+    INDEX_CONTENT(10),
+    INDEX_USERNAME(11);
 
     private int value;
 

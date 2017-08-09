@@ -31,6 +31,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/06/22 16:10.
@@ -58,6 +59,20 @@ public class UserHomeController {
 
     @Value("${weixinqing.img.head-img-directory}")
     String headImgDirectory;
+
+    @RequestMapping("/user/myfocus")
+    public String focusDynamic(Model model) {
+        int userId = hostHolder.getUser().getId();
+        List<Integer> masterUsers = focusService.getMasterUser(userId);
+
+        ViewObject vo = userService.getUserDynamic(masterUsers, Integer.MAX_VALUE, PAGE_SIZE);
+        vo.add("luser", userService.getUserById(userId));
+        vo.add("focusd", focusService.isFocus(userId, hostHolder.getUser().getId()));
+        model.addAttribute("v", vo);
+        model.addAttribute("PageType", "myfocus");
+        return "focus_dynamic";
+    }
+
 
     @RequestMapping("/user/home/{id}")
     public String userHome(@PathVariable("id") String id, Model model) {

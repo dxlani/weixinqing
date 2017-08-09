@@ -18,34 +18,39 @@
 
 
 <script>
+
     $('document').ready(function () {
         $('[data-toggle="popover"]').popover();
         $('.fireWeiboBtn').click(function () {
             console.log('ok');
-            var $weiboContent = $('#weiboContent').val();
-            if ($weiboContent == null || $weiboContent == undefined || $weiboContent.length < 1) {
-                console.log('$weiboContent = ' + $weiboContent);
+            var $weiboContent = $('#weiboContent').val() + "";
+            console.log('$weiboContent = ' + $weiboContent + " " + $weiboContent.length);
+            console.log($weiboContent == null || $weiboContent == undefined || ($weiboContent.length < 1));
+            if ($weiboContent == null || $weiboContent == undefined || ($weiboContent.length < 1)) {
                 $(".fireWeiboBtn").attr('data-content', '您的内容也太少啦，多发一点点呗 ~ ');
                 $('.fireWeiboBtn').popover('show');
             } else {
-
                 $.ajax({
                     type: 'post',
                     url: '/user/fireweibo',
                     data: {
-                        content: $('weiboContent').val()
+                        "content": $weiboContent
                     },
-                    success: function (data) {
+                    success: function (datas) {
+                        data = JSON.parse(datas);
                         if (data.code == 200) {
-                            $(".fireWeiboBtn").attr('微心情发送成功！');
+                            $(".fireWeiboBtn").attr('data-content', '微心情发送成功！');
                             $('.fireWeiboBtn').popover('show');
+                            setTimeout(function () {
+                                window.location.reload(false);
+                            }, 1000);
                         } else {
-                            $(".fireWeiboBtn").attr('网络繁忙，微心情发送失败，请您稍后重试！');
+                            $(".fireWeiboBtn").attr('data-content', '网络繁忙，微心情发送失败，请您稍后重试！');
                             $('.fireWeiboBtn').popover('show');
                         }
                     },
                     error: function () {
-                        $(".fireWeiboBtn").attr('未知错误，微心情发送失败，请您稍后重试！');
+                        $(".fireWeiboBtn").attr('data-content', '未知错误，微心情发送失败，请您稍后重试！');
                         $('.fireWeiboBtn').popover('show');
                     }
                 })

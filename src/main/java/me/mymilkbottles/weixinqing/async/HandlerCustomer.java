@@ -62,7 +62,6 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 while (true) {
                     EventModel eventModel = null;
                     List<String> jsonObjects = jedisAdapter.brpop(RedisKeyUtil.getHandlerKey());
@@ -77,18 +76,14 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
                                 continue;
                             }
 
-                            EventModel finalEventModel = eventModel;
-                            log.info("finalEventModel");
-                            log.info(finalEventModel);
+                            final EventModel finalEventModel = eventModel;
+
                             Future<Boolean> future = executors.submit(new Callable<Boolean>() {
                                 @Override
                                 public Boolean call() throws Exception {
                                     Boolean result = Boolean.TRUE;
-                                    log.info("finalEventModel.getEntityType() = ");
-                                    log.info(finalEventModel.getEntityType());
                                     for (Event event : eventHandlerSolver.get(finalEventModel.getEntityType())) {
                                         result = result && event.doHandler(finalEventModel);
-                                        log.info("dohandler" + event + " " + finalEventModel);
                                     }
                                     return result;
                                 }
@@ -107,7 +102,6 @@ public class HandlerCustomer implements InitializingBean, ApplicationContextAwar
                 }
             }
         }).start();
-        log.info("异步事件消费者结束");
     }
 
     @Override

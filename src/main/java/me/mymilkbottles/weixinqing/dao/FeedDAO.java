@@ -32,9 +32,11 @@ public interface FeedDAO {
 
     void deleteFeeds(@Param("user_id") int userId, @Param("type") int type, @Param("weibo_id") int weiboId, @Param("exts_id") Integer extId);
 
-    @Select({"select " + ALL_FIELD + " from " + TABLE_NAME + " where user_id = #{userId} and id < #{maxId} order by f_time desc limit #{size}"})
+    @Select({"select " + ALL_FIELD + " from " + TABLE_NAME + " where (is_delete is null or is_delete != 1) and user_id = #{userId} and id < #{maxId} order by f_time desc limit #{size}"})
     List<Feed> getUserFeeds(@Param("userId") int userId, @Param("maxId") int maxId, @Param("size") int pageSize);
 
     @Select({"select count(id) from " + TABLE_NAME + " where id = #{userId}"})
     int getUserFeedCount(int userId);
+
+    List<Feed> getUserFeedsByList(@Param("userIds") List<Integer> userIds, @Param("maxId") int maxId, @Param("pageSize") int pageSize);
 }

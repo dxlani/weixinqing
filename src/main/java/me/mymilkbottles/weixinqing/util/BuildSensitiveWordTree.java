@@ -18,9 +18,7 @@ import java.util.Set;
  * Created by Administrator on 2017/06/23 17:52.
  */
 @Component
-public class BuildSensitiveWordTree implements InitializingBean, ApplicationContextAware {
-
-    private ApplicationContext applicationContext;
+public class BuildSensitiveWordTree implements InitializingBean {
 
     private static final Logger log = Logger.getLogger(BuildSensitiveWordTree.class);
 
@@ -32,10 +30,10 @@ public class BuildSensitiveWordTree implements InitializingBean, ApplicationCont
         File directory = new File(path);
 
         String sensitiveWord = null;
-        int sensitiveWordCount = 0;
+//        int sensitiveWordCount = 0;
 
         Set<String> sensitiveWordSet = new HashSet<String>();
-        long startTime = System.nanoTime();
+//        long startTime = System.nanoTime();
         for (File file : directory.listFiles()) {
             BufferedReader reader = new BufferedReader(new FileReader(file));
             while ((sensitiveWord = reader.readLine()) != null) {
@@ -44,19 +42,14 @@ public class BuildSensitiveWordTree implements InitializingBean, ApplicationCont
                     if (StringUtils.isNotBlank(sensitiveWord)) {
                         sensitiveWordSet.add(sensitiveWord);
                         SensitiveWordFilterUtil.addSensitiveWord(sensitiveWord);
-                        log.info("add sensitiveword " + sensitiveWord);
-                        ++sensitiveWordCount;
+//                        log.info("add sensitiveword " + sensitiveWord);
+//                        ++sensitiveWordCount;
                     }
                 }
             }
         }
-        long endTime = System.nanoTime();
-        log.info("addSensitiveWord cost:" + (endTime - startTime) / 1e9 + "s");
-        log.info("sensitiveWordCount=" + sensitiveWordCount);
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+//        long endTime = System.nanoTime();
+//        log.info("addSensitiveWord cost:" + (endTime - startTime) / 1e9 + "s");
+//        log.info("sensitiveWordCount=" + sensitiveWordCount);
     }
 }

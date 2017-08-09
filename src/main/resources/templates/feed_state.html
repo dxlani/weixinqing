@@ -24,19 +24,19 @@
         </#if>
 
         <div class="panel panel-default weibo"
-             style="width: 84%;height: auto;float: right;margin-left: 1%;">
-            <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;">
+             style="width: 84%;height: auto;float: right;margin-left: 1%;padding: 0px;">
+            <div class="panel-body" style="margin-bottom: 0px;padding: 0px;">
 
                 <!-- UPVOTE (5)-->
                 <#if vo.type == 5>
 
                     <div style="float: left; width:100%;
  border-bottom-style: solid;padding-bottom: 5px;
-    border-bottom-width: 1px;
+    border-bottom-width: 1px;padding-left: 20px;padding-top: 15px;
     border-bottom-color: #f2f2f5;">
                     <span style="color: #e46755; font-size: 18px; margin-right: 6px;float: left; "
                           class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-                        <span style="float: left;">${user.username}赞过的微博</span>
+                        <span style="float: left;">${vo.auser.username}赞过的微博</span>
                     </div>
 
                     <!--FORWARD(4)-->
@@ -44,29 +44,32 @@
                         <div
 
                                 style="padding-bottom: 5px;
-              border-bottom-style: solid;
+              border-bottom-style: solid;padding-left: 20px;padding-top: 15px;
     border-bottom-width: 1px;
     border-bottom-color: #f2f2f5;
           float: left; width:100%;margin-left: 1%;margin-bottom: 10px;">
                     <span
                             style="color: #e46755; font-size: 18px;margin-right: 6px;float: left;"
                             class="glyphicon glyphicon-share" aria-hidden="true"></span>
-                            <span style="float: left;">${user.username}转发了微博</span>
+                            <span style="float: left;">${vo.auser.username}转发了微博</span>
 
                         </div>
 
 
                         <!--FORWARD_COMMENTS(7) COMMENT(3)-->
                         <#elseif vo.type == 7 || vo.type == 3>
+                            <div style="border-bottom-style: solid;float: left;width: 100%;
+                            border-bottom-width: 1px;padding-left: 20px;padding-top: 15px;
+                            border-bottom-color: #f2f2f5;">
                             <div style="float: left;width: 13%;height: auto;">
-                                <img src="/headimg/${user.id?c}" alt="..." class="img-circle weiboHeadImg"
+                                <img src="/headimg/${vo.auser.id?c}" alt="..." class="img-circle weiboHeadImg"
                                      style="width: 70px;height: 70px;">
                             </div>
 
                             <div style="float: right;width: 87%;">
                                 <div style="float: left;width: 100%;">
                                     <strong style="font-size: 15px;float: left;"
-                                            class="username">${user.username}</strong>
+                                            class="username">${vo.auser.username}</strong>
                                 </div>
                                 <span style="color: #808080;float: left; margin-top: 5px;
 text-decoration: none;font-size: 12px;" class="datetime">${vo.comments.fTime?datetime}</span>
@@ -75,6 +78,7 @@ text-decoration: none;font-size: 12px;" class="datetime">${vo.comments.fTime?dat
 
                             <p style="display:block;width:87%;height:auto;margin-top: 5px;float: right;
                           overflow:hidden; text-overflow:ellipsis;" class="weibo_content">${vo.comments.content}</p>
+                                </div>
                 </#if>
 
 

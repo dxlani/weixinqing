@@ -9,6 +9,19 @@
 
 <div id="weibosDiv">
 
+    <#assign vosSize=vos?size>
+        <#if vosSize == 0>
+            <div class="panel panel-default weibo"
+                 style="width: 84%;height: auto;float: right;margin-left: 1%;">
+                <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;text-align: center;">
+                    暂无结果显示...
+                </div>
+            </div>
+            <#else>
+
+
+
+
     <#list vos as vo>
         <#if vo ? is_first>
             <input type="hidden" value="${vo.weibo.id ? c}" id="firstDataId">
@@ -23,15 +36,16 @@
             <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;">
 
                 <div style="float: left;width: 13%;height: auto;">
-                    <img src="/headimg/${vo.user.id ? c }" alt="..." class="img-circle weiboHeadImg"
-                         style="width: 70px;height: 70px;">
+                    <a href="/user/home/${vo.user.id ? c }">
+                        <img src="/headimg/${vo.user.id ? c }" alt="..." class="img-circle weiboHeadImg"
+                                                                  style="width: 70px;height: 70px;"></a>
                 </div>
 
                 <div style="float: right;width: 87%;margin: 0px;padding: 0px;">
                     <div style="float: left;width: 100%;">
-                        <strong style="font-size: 15px;float: left;"
-                                class="username">
-                            ${vo.user.username}</strong>
+                        <a href="/user/home/${vo.user.id ? c }"><strong style="font-size: 15px;float: left;"
+                                   class="username">
+                            ${vo.user.username}</strong></a>
                     </div>
                     <span style="color: #808080;float: left; margin-top: 5px;
         text-decoration: none;font-size: 12px;" class="datetime">${vo.weibo.fTime?datetime}</span>
@@ -187,7 +201,8 @@
                     </div>
                 </li>
                 <li>
-                    <a href="/comment/detail/${vo.weibo.id ? c}" target="_blank">
+                    <!-- href="/comment/detail/${vo.weibo.id ? c}" -->
+                    <a  href="javascript:;" target="_blank">
                         <div style="text-align:center;" class="comm" weiboid="${vo.weibo.id ? c}">
 
 
@@ -227,22 +242,24 @@
         </div>
 
     </#list>
-</div>
+        </#if>
+        <div id="addContentFlagEnd" style="display: none;"></div>
 
-
-<div id="addContentFlagEnd" style="display: none;"></div>
-
-<div class="panel panel-default" id="weixinqing_loading_end"
-     style="width: 84%;float: right;display: none;">
-    <div class="panel-body" align="center">
+        <div class="panel panel-default" id="weixinqing_loading_end"
+             style="width: 84%;float: right;display: none;">
+            <div class="panel-body" align="center">
             <span class="glyphicon glyphicon-refresh" id="msg-loading-icon"
                   style="margin-left: 15px;font-size: 17px;margin-top: 6px;"
                   aria-hidden="true">
             </span>
-        <span style="margin-left: 8px;margin-bottom: 10px;"
-              id="content-loading-advice">微心情加载中，请您稍后...</span>
-    </div>
+                <span style="margin-left: 8px;margin-bottom: 10px;"
+                      id="content-loading-advice">微心情加载中，请您稍后...</span>
+            </div>
+        </div>
 </div>
+
+
+
 
 
 <script>

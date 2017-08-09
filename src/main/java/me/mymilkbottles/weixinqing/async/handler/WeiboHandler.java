@@ -38,7 +38,7 @@ public class WeiboHandler implements Event {
 
         int weiboId = eventModel.getEventId();
 
-        Date time = (Date) eventModel.getExt("time");
+        Date time = new Date(Long.valueOf(eventModel.getExt("time").toString()));
 
         Feed feed = new Feed();
         feed.setUserId(userId);

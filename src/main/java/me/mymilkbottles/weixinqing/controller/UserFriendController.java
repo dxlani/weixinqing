@@ -5,6 +5,7 @@ import me.mymilkbottles.weixinqing.model.*;
 import me.mymilkbottles.weixinqing.service.*;
 import me.mymilkbottles.weixinqing.util.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,9 @@ public class UserFriendController {
     @Autowired
     FeedService feedService;
 
+    @Autowired
+    FocusService focusService;
+
     @RequestMapping("/user/friend")
     public String friend(Model model) {
         User localUser = hostHolder.getUser();
@@ -50,11 +54,17 @@ public class UserFriendController {
         }
 
 
-        List<ViewObject> vos = feedService.getFeedDetail(feeds);
+        int userId = hostHolder.getUser().getId();
+        List<Integer> masterUsers = focusService.getMasterUser(userId);
 
+
+        ViewObject vo = new ViewObject();
+        vo.add("vo", feedService.getFeedDetail(feeds));
+        vo.add("luser", userService.getUserById(userId));
+        vo.add("focusd", focusService.isFocus(userId, hostHolder.getUser().getId()));
+        model.addAttribute("v", vo);
         model.addAttribute("PageType", "myfriends");
-        model.addAttribute("vos", vos);
-
-        return "user_friend";
+        return "focus_dynamic";
     }
+
 }

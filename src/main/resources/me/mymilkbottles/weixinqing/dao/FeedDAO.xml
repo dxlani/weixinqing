@@ -5,6 +5,21 @@
 
     <sql id="table_name"> feed </sql>
 
+    <select id="getUserFeedsByList" resultType="me.mymilkbottles.weixinqing.model.Feed">
+        select *
+        from
+        <include refid="table_name"/>
+        where (is_delete is null or is_delete != 1) and id &lt; #{maxId}
+        <if test="userIds != null and userIds.size > 0">
+            and user_id in
+            <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+                #{userId}
+            </foreach>
+        </if>
+        order by f_time desc
+        limit #{pageSize}
+    </select>
+
     <select id="getFeeds" resultType="me.mymilkbottles.weixinqing.model.Feed">
         select *
         from

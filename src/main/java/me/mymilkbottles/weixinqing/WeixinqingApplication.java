@@ -12,6 +12,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 public class WeixinqingApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(WeixinqingApplication.class, args);
 	}
 }

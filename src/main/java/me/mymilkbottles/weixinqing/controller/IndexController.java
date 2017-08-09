@@ -1,14 +1,18 @@
 package me.mymilkbottles.weixinqing.controller;
 
+import com.sun.glass.ui.View;
 import me.mymilkbottles.weixinqing.intercepter.LoginIntercepter;
 import me.mymilkbottles.weixinqing.model.HostHolder;
 import me.mymilkbottles.weixinqing.model.User;
 import me.mymilkbottles.weixinqing.model.ViewObject;
 import me.mymilkbottles.weixinqing.model.Weibo;
+import me.mymilkbottles.weixinqing.service.IndexService;
+import me.mymilkbottles.weixinqing.service.SearchService;
 import me.mymilkbottles.weixinqing.service.UserService;
 import me.mymilkbottles.weixinqing.service.WeiboService;
 import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.solr.client.solrj.SolrServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +56,9 @@ public class IndexController {
     @Value("${weixinqing.img.weibo-directory}")
     String weiboImgDirectory;
 
+    @Autowired
+    SearchService searchService;
+
 
     @RequestMapping(value = {"/", "/index"})
     public String index(Model model) {
@@ -59,6 +66,37 @@ public class IndexController {
         List<ViewObject> vos = weiboService.addWeiboDetail(weiboList, PAGE_COUNT);
         model.addAttribute("vos", vos);
         return "index";
+    }
+
+    @RequestMapping("/search")
+    public String search(Model model , @RequestParam("keyword") String keyword) throws IOException, SolrServerException {
+        ViewObject viewObject = searchService.searchWeibo(keyword, 0, PAGE_COUNT);
+        List<ViewObject> vos = weiboService.addWeiboDetail(viewObject, PAGE_COUNT);
+
+
+        List<User> userList = searchService.searchUsername(keyword, 0, PAGE_COUNT);
+
+
+        model.addAttribute("vos", vos);
+        model.addAttribute("users", userList);
+        model.addAttribute("keyword", keyword);
+        return "result";
+    }
+
+    @RequestMapping("/searchjson")
+    @ResponseBody
+    public ViewObject searchJson(Model model , @RequestParam("keyword") String keyword) throws IOException, SolrServerException {
+        ViewObject viewObject = searchService.searchWeibo(keyword, 0, PAGE_COUNT);
+        List<ViewObject> vos = weiboService.addWeiboDetail(viewObject, PAGE_COUNT);
+
+        List<User> userList = searchService.searchUsername(keyword, 0, PAGE_COUNT);
+
+
+        ViewObject vo = new ViewObject();
+        vo.add("vos", vos);
+        vo.add("users", userList);
+        vo.add("keyword", keyword);
+        return vo;
     }
 
     @RequestMapping(value = {"/indexJson"})
