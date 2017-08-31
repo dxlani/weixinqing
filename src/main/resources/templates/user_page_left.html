@@ -7,9 +7,9 @@
     <li role="presentation"><a href="/index">微心情</a></li>
     <li role="presentation"><a
         <#if vo??>
-            href="/user/home/${vo.luser.id}"
+            href="/user/home/${vo.luser.id ? c}"
             <#else>
-                href="/user/home/${v.luser.id}"
+                href="/user/home/${v.luser.id ? c}"
         </#if>
         >
         <#if (v?? && v.self) || (vo?? && vo.self)>
@@ -20,9 +20,9 @@
     </a></li>
     <li role="presentation"><a
         <#if vo??>
-            href="/user/focus/${vo.luser.id}/1"
+            href="/user/focus/${vo.luser.id ? c}/1"
             <#else>
-                href="/user/focus/${v.luser.id}/1"
+                href="/user/focus/${v.luser.id ? c}/1"
         </#if>
         >
         <#if (v?? && v.self) || (vo?? && vo.self)>
@@ -33,9 +33,9 @@
     </a></li>
     <li role="presentation"><a
         <#if vo??>
-            href="/user/follow/${vo.luser.id}/1"
+            href="/user/follow/${vo.luser.id ? c}/1"
             <#else>
-                href="/user/follow/${v.luser.id}/1"
+                href="/user/follow/${v.luser.id ? c}/1"
         </#if>
         >
         <#if (v?? && v.self) || (vo?? && vo.self)>

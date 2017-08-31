@@ -35,15 +35,15 @@ public class RegisterHandler implements Event {
         String mail = (String) eventModelExts.get("activationMail");
         String key = (String) eventModelExts.get("activationKey");
 
-        Map<String, Object> exts = new HashMap<String, Object>();
+        Map<String, Object> exts = new HashMap<String, Object>(1);
         exts.put("url", eventModelExts.get("url"));
 
-//        if (mailUtil.sendMail(mail, "微心情激活邮件", MailTemplateType.REGISTER_MAIL, exts)) {
-//            if (activationService.updateExpireTime(new Date(new Date().getTime() + 24L * 60 * 60 * 1000), key) > 0) {
-//                return true;
-//            }
-//        }
-        return true;
+        if (mailUtil.sendMail(mail, "微心情激活邮件", MailTemplateType.REGISTER_MAIL, exts)) {
+            if (activationService.updateExpireTime(new Date(new Date().getTime() + 24L * 60 * 60 * 1000), key) > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

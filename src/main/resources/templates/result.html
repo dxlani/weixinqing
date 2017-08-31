@@ -22,13 +22,13 @@
 
         <div style="margin-top: 65px;width: 850px;height:auto;float: left;">
 
-
             <style>
                 em{
                     color: #ef4d58;
                     font-style: inherit;
                 }
             </style>
+
             <div class="panel panel-default" style="width:120.5px;height: auto;
 
             float: left;border-radius:5px;">
@@ -50,13 +50,18 @@
                     </#list>
                 </div>
             </div>
-            <#include "dynamic_state.html" parse=true encoding="utf-8"/>
+
+            <div>
+                <#include "dynamic_state.html" parse=true encoding="utf-8"/>
+            </div>
+
         </div>
 
 
     </div>
 </div>
 
+<input type="hidden" id="isSearch" value="true"/>
 
 <a href="javascript:scroll(0,0)"
    style=" background-color: #47a6d9;display: block;cursor: pointer;

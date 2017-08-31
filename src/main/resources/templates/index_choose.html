@@ -3,10 +3,9 @@
             display: block; position:relative;position:fixed;
             background-color: rgba(70,149,194,0.3);
             float: left;border-radius:5px;">
-    <li role="presentation"><a href="/index">热门动态</a></li>
-    <li role="presentation"><a href="/user/friend">好友圈</a></li>
-    <#if user??>
-        <li role="presentation"><a href="/user/home/${user.id}">个人主页</a></li>
-    </#if>
+    <li role="presentation"><a href="/index">首页</a></li>
     <li role="presentation"><a href="/user/myfocus">关注动态</a></li>
+    <#if user??>
+        <li role="presentation"><a href="/user/home/${user.id ? c}">个人主页</a></li>
+    </#if>
 </ul>

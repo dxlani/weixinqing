@@ -4,9 +4,12 @@ package me.mymilkbottles.weixinqing.dao;
 import me.mymilkbottles.weixinqing.model.Feed;
 import me.mymilkbottles.weixinqing.util.RedisKeyUtil;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Transaction;
 
 import java.util.ArrayList;
@@ -19,40 +22,38 @@ import java.util.Set;
 @Component
 public class JedisDAO {
 
-    //Redis服务器IP
-    private static String ADDRESS = "127.0.0.1";
+    @Value("${spring.redis.host}")
+    private String ADDRESS;
 
-    //Redis的端口号
-    private static int PORT = 6379;
 
-    private static JedisPool jedisPool = null;
+    @Value("${spring.redis.port}")
+    private int PORT;
+
+    private static JedisPool jedisPool;
 
     private static final Logger log = Logger.getLogger(JedisDAO.class);
 
-    static {
-        try {
-            jedisPool = new JedisPool(ADDRESS, PORT);
-        } catch (Exception e) {
-            log.error("初始化jedisPool失败" + e.getMessage());
-        }
-    }
-
-
     public synchronized Jedis getJedis() {
-        try {
-            if (jedisPool != null) {
-                return jedisPool.getResource();
-            }
-        } catch (Exception e) {
-            log.error("获取jedis失败" + e.getMessage());
+        if (jedisPool == null) {
+            JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+            jedisPoolConfig.setMaxTotal(10);
+            jedisPoolConfig.setMaxIdle(7);
+            jedisPoolConfig.setMinIdle(6);
+            jedisPool = new JedisPool(jedisPoolConfig, ADDRESS, PORT);
         }
-        return null;
+        return jedisPool.getResource();
     }
 
     public Transaction getTransaction() {
         Jedis jedis = getJedis();
         if (jedis != null) {
-            return jedis.multi();
+            try {
+                return jedis.multi();
+            } finally {
+                if (jedis != null) {
+                    jedis.close();
+                }
+            }
         }
         return null;
     }
@@ -360,19 +361,25 @@ public class JedisDAO {
     }
 
 
+
 //    public static void main(String[] args) {
 //        new JedisDAO().getJedis().incr("hello world test");
 //    }
 //    public static void main(String[] args) {
-//        set("redis-key", "redis-value", 3000L);
-//        String value = get("redis-key");
+//        JedisDAO jedisDAO = new JedisDAO();
+//        jedisDAO.PORT=6379;
+//        jedisDAO.ADDRESS="127.0.0.1";
+//
+//
+//        jedisDAO.set("redis-key", "redis-value", 3000L);
+//        String value = jedisDAO.get("redis-key");
 //        System.out.println(value);
 //
 //        try {
 //            Thread.sleep(2500);
 //        } catch (InterruptedException e) {
 //        }
-//        System.out.println(JedisAdapter.get("redis-key"));
+//        System.out.println(jedisDAO.get("redis-key"));
 //    }
 
 

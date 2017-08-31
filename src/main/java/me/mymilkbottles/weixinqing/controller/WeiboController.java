@@ -60,6 +60,13 @@ public class WeiboController {
         return WeixinqingUtil.getJsonResponse(0);
     }
 
+    @RequestMapping("/user/comment/{entityType}/{entityId}")
+    @ResponseBody
+    public String comment(String comment, @PathVariable("entityType") int entityType, @PathVariable("entityId") int entityId) {
+
+        return WeixinqingUtil.getJsonResponse(0);
+    }
+
     @RequestMapping("/user/upvote/{weiboIds}")
     @ResponseBody
     public String upvote(@PathVariable("weiboIds") String weiboIds) {

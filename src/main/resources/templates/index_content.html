@@ -1,38 +1,6 @@
-<style>
-    .glyphicon {
-        /*height: 20px;*/
-        /*width: 20px;*/
-    }
-
-     img {
-         max-width: 100%;max-height: 100%;
-     }
-
-
-
-</style>
-
 <div id="weibosDiv">
 
-    <#assign vosSize=vos?size>
-        <#if vosSize == 0>
-            <div class="panel panel-default weibo"
-                 style="width: 84%;height: auto;float: right;margin-left: 1%;">
-                <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;text-align: center;">
-                    暂无结果显示...
-                </div>
-            </div>
-        <#else>
-
     <#list vos as vo>
-
-        <#if vo ? is_first>
-            <input type="hidden" value="${vo.weibo.id ? c}" id="firstDataId">
-        </#if>
-
-        <#if vo ? is_last>
-            <input type="hidden" value="${vo.weibo.id ? c}" id="lastDataId">
-        </#if>
 
         <div class="panel panel-default weibo weibo${vo.user.id ? c }"
              style="width: 84%;height: auto;float: right;margin-left: 1%;">
@@ -57,13 +25,16 @@
                 <p style="display:block;width:87%;height:auto;margin-top: 5px;float: right;
                           overflow:hidden; text-overflow:ellipsis;" class="weibo_content">${vo.weibo.content}</p>
 
-
                 <div style="width:87%;height:auto;margin-top: 5px;float: right;" class="weibo_imgs">
                     <#list vo.imgs as weiboImg>
-                        <div style="height:140px;width:140px;margin:2px;float: left;">
+                        <div style="height:140px;width:140px;margin:2px;margin-right: 0px;margin-left: 0px;">
                             <img src="/img/${weiboImg}"
-                                 class="img-rounded"/>
+                                 alt="..."
+                                 style="
+                              max-width: 100%;max-height: 100%;"
+                                 class="img-rounded">
                         </div>
+
                     </#list>
                 </div>
             </div>
@@ -143,8 +114,7 @@
                         <span class="collchar${vo.weibo.id ? c}">
                     <#if vo.coll>
                         已收藏
-                        <#else>
-                            收藏
+                        <#else>收藏
                     </#if>
                     </span>
                     </div>
@@ -268,6 +238,10 @@
 
 <script>
 
+    $('.weibo').click(function () {
+
+    });
+
     function loading_news() {
         isLoadingNews = true;
         $.ajax({
@@ -282,6 +256,7 @@
                     console.log('weiboDivObj = ');
                     console.log(weiboDivObj);
                     var weiboDiv = $(weiboDivObj[0].outerHTML);
+
 
                     console.log('weiboDiv = ');
                     console.log(weiboDiv);
@@ -298,8 +273,9 @@
 
                     var imgsHtml = '';
                     for (var j = 0; j < imgs.length; ++j) {
-                        var addImg = '<div style="height:140px;width:140px;margin:2px;float: left;"><img src="/img/' + imgs[j] + '"' +
-                            'class="img-rounded"/></div>';
+                        var addImg = '<img src="/img/' + imgs[j] + '" ' +
+                            'style="height:140px;width:140px;margin:2px;margin-right: 0px;margin-left: 0px;" ' +
+                            'class="img-rounded">';
                         imgsHtml = imgsHtml + addImg;
                     }
                     weiboDiv.find('.weibo_imgs').html(imgsHtml);

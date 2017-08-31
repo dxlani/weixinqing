@@ -1,9 +1,7 @@
 <html lang="zh-CN">
 <head>
 
-
     <#include "import_file.html" parse=false encoding="utf-8"/>
-
 
     <title>欢迎您来到微心情网</title>
 
@@ -130,6 +128,7 @@
                          align="center">
 
                         <#if v.focusd>
+
                             <button tabindex="2" style="margin-left: 0px;float: left;margin-top: -1px;"
                                     class="btn focusTriggerBtn${v.luser.id ? c } focusTriggerBtn"
                                     data-placement="bottom"
@@ -137,9 +136,11 @@
                                     data-container="body"
                                     data-trigger="manual" data-html="true"
                                     data-content="收藏成功！">
-                            <span style="" class="indexTop2 unfocusU focusBtn focusBtnCss${v.luser.id ? c}"
-                                  uid="${v.luser.id ? c }" align="center">关注</span>
+                            <span style="" class="indexTop2 focusU focusBtn focusBtnCss${v.luser.id ? c}"
+                                  uid="${v.luser.id ? c }" align="center">取消关注</span>
                             </button>
+
+
                             <#else>
                                 <button tabindex="2" style="margin-left: 0px;float: left;margin-top: -1px;"
                                         class="btn focusTriggerBtn${v.luser.id ? c } focusTriggerBtn"
@@ -148,12 +149,14 @@
                                         data-container="body"
                                         data-trigger="manual" data-html="true"
                                         data-content="收藏成功！">
-                            <span style="" class="indexTop2 focusU focusBtn focusBtnCss${v.luser.id ? c}"
-                                  uid="${v.luser.id ? c }" align="center">取消关注</span>
+                            <span style="" class="indexTop2 unfocusU focusBtn focusBtnCss${v.luser.id ? c}"
+                                  uid="${v.luser.id ? c }" align="center">关注</span>
                                 </button>
+
                         </#if>
 
                         <span style="margin-left: 15px;" class="indexTop2 pri-msg pmsg" uid="${v.luser.id ? c }"
+                              uname="${v.luser.username}"
                               align="center">私信</span>
                     </div>
                 </#if>
@@ -266,7 +269,7 @@ text-decoration: none;font-size: 12px;" class="datetime">${vo.comments.fTime?dat
                             <div style="width:87%;height:auto;margin-top: 5px;float: right;background-color: #f2f2f5;"
                                  class="weibo_imgs">
                                 <#list vo.imgs as weiboImg>
-                                    <img src="/weixinqing/img/${weiboImg}"
+                                    <img src="/img/${weiboImg}"
                                          alt="..."
                                          style="height:140px;width:140px;margin:2px;margin-right: 0px;margin-left: 0px;"
                                          class="img-rounded">
@@ -417,7 +420,7 @@ text-decoration: none;font-size: 12px;" class="datetime">${vo.comments.fTime?dat
                             </div>
                         </li>
                         <li>
-                            <a href="/comment/detail/${vo.weibo.id ? c}" style="color: #696e78;" target="_blank">
+                            <a href="javascript:;" style="color: #696e78;" target="_blank">
                                 <div style="text-align:center;" class="comm" weiboid="${vo.weibo.id ? c}">
 
 

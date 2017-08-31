@@ -51,7 +51,7 @@ public class SearchService implements InitializingBean{
         query.set("df", WEIBO_CONTENT_FIELD);
         query.set("hl.fl", WEIBO_CONTENT_FIELD);
         query.set("hl.preserveMulti", true);
-//        query.set("hl.fragsize", 0);
+        query.set("hl.fragsize", 0);
 
         QueryResponse response = client.query(query);
 
@@ -59,16 +59,20 @@ public class SearchService implements InitializingBean{
         List<Weibo> weiboList = new ArrayList<>(count);
         List<User> userList = new ArrayList<>(count);
 
-        for (Map.Entry<String, Map<String, List<String>>> entry : response.getHighlighting().entrySet()) {
-            int weiboId = Integer.parseInt(entry.getKey());
-            Weibo weibo = weiboService.getWeiboById(weiboId);
+        if (response != null && response.getHighlighting() != null) {
+            for (Map.Entry<String, Map<String, List<String>>> entry : response.getHighlighting().entrySet()) {
+                int weiboId = Integer.parseInt(entry.getKey());
+                Weibo weibo = weiboService.getWeiboById(weiboId);
 
-            User user = new User();
-            user.setId(weibo.getMasterId());
-            user.setUsername(entry.getValue().get(WEIBO_CONTENT_FIELD).get(1));
-            weibo.setContent(entry.getValue().get(WEIBO_CONTENT_FIELD).get(0));
-            weiboList.add(weibo);
-            userList.add(user);
+                User user = new User();
+                user.setId(weibo.getMasterId());
+                user.setUsername(entry.getValue().get(WEIBO_CONTENT_FIELD).get(1));
+
+                weibo.setContent(entry.getValue().get(WEIBO_CONTENT_FIELD).get(0));
+
+                weiboList.add(weibo);
+                userList.add(user);
+            }
         }
         viewObject.add("weibos", weiboList);
         viewObject.add("users", userList);

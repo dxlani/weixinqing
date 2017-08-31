@@ -54,7 +54,6 @@ public class RegisterController {
 
     @RequestMapping("/register")
     public String register(HttpSession session, Model model) {
-        log.info("/register");
         Object result = session.getAttribute("result");
         if (result != null) {
             model.addAttribute("result", result);
@@ -70,30 +69,35 @@ public class RegisterController {
 
     @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
     public String registerAccount(String mail, String pwd, String name, String code,
-                                  @CookieValue("JSESSIONID") String sessionId, Model model,
                                   HttpSession session,
-                                  HttpServletRequest request,
-                                  HttpServletResponse response) {
-        String result = registerService.checkRegisterInfo(mail, pwd, name, code, sessionId);
+                                  HttpServletRequest request) {
+        String result = registerService.checkRegisterInfo(mail, pwd, name, code, session.getId());
         if (result == null) {
             int returnUserId = registerService.registerNewUser(mail, pwd, name);
             if (returnUserId > 0) {
                 String activationKey = UUID.randomUUID().toString().replace("-", "");
 
-                activationService.insertActivationInfo(activationKey, mail, returnUserId);
+                String sendKey = UUID.randomUUID().toString().replace("-", "");
+
+                activationService.insertActivationInfo(activationKey, mail, returnUserId, sendKey);
 
                 String servletPath = request.getServletPath();
 
-                StringBuffer url = request.getRequestURL().append("activation/").append(activationKey);
+                StringBuffer activationUrl = request.getRequestURL().append("activation/").append(activationKey);
 
-                String activationLink = url.toString().replace(servletPath, "/");
+                String activationLink = activationUrl.toString().replace(servletPath, "/");
 
                 EventModel eventModel = new EventModel(EntityType.REGISTER, WeixinqingUtil.ADMIN_ID);
-                eventModel.putExt("activationMail", mail).putExt("activationKey", activationKey)
-                        .putExt("userId", returnUserId).putExt("url", activationLink);
+                eventModel.addExt("activationMail", mail).addExt("activationKey", activationKey)
+                        .addExt("url", activationLink);
 
                 handlerProducer.produceHandler(eventModel);
-                session.setAttribute("url", activationLink);
+
+                StringBuffer sendUrl = request.getRequestURL().append("resend/").append(sendKey);
+
+                String sendLink = sendUrl.toString().replace(servletPath, "/");
+
+                session.setAttribute("url", sendLink);
 
             } else {
                 session.setAttribute("result", "系统出现故障，请您稍后重试！");
@@ -101,18 +105,17 @@ public class RegisterController {
         } else {
             session.setAttribute("result", result);
         }
-        log.info("redirect:/register");
         return "redirect:/register";
     }
 
     @RequestMapping("/resend/{key}")
     @ResponseBody
-    public String sendActivationMail(@PathVariable("key") String key, HttpServletRequest request) {
+    public String sendActivationMail(@PathVariable("key") String sendKey, HttpServletRequest request) {
 
-        Activation activation = activationService.getActivation(key);
+        Activation activation = activationService.getActivationBySendKey(sendKey);
 
         if (activation == null) {
-            return "链接不合法！";
+            return "发送失败！";
         }
 
         String servletPath = request.getServletPath();
@@ -122,26 +125,28 @@ public class RegisterController {
         String activationLink = url.toString().replace(servletPath, "/");
 
         EventModel eventModel = new EventModel(EntityType.REGISTER, WeixinqingUtil.ADMIN_ID);
-        eventModel.putExt("activationMail", activation.getMail())
-                .putExt("activationKey", activation.getActivationKey()).putExt("url", activationLink);
+        eventModel.addExt("activationMail", activation.getMail()).addExt("activationKey", activation.getActivationKey())
+                .addExt("url", activationLink);
 
         handlerProducer.produceHandler(eventModel);
 
-        return "邮件已发送，请您到收件箱中查收！";
+        String resultString = "邮件已发送，请您到收件箱中查收！还没收到？<a href='/resend/" + sendKey + "'>重新发送</a>";
+
+        return resultString;
     }
 
     @RequestMapping("/activation/{key}")
     @ResponseBody
-    public String activation(@PathVariable("key") String key, HttpServletRequest request,
+    public String activation(@PathVariable("key") String activeKey, HttpServletRequest request,
                              HttpServletResponse response) {
-        Activation activation = activationService.getActivation(key);
+        Activation activation = activationService.getActivationByActivationKey(activeKey);
         if (activation == null) {
-            return "链接不合法！";
+            return "激活失败！";
         }
 
         String servletPath = request.getServletPath();
 
-        if (activationService.getExpireTime(key).after(new Date())) {
+        if (activationService.getExpireTime(activeKey).after(new Date())) {
             int userId = activation.getUserId();
             if (userService.active(userId) > 0) {
 
@@ -160,14 +165,15 @@ public class RegisterController {
 
                 return "恭喜您！邮件激活成功！点击链接进入首页<a href=" + indexLink + ">" + indexLink + "</a>";
             } else {
-                StringBuffer url = request.getRequestURL().append("resend/").append(activation.getActivationKey());
+                StringBuffer url = request.getRequestURL().append("resend/").append(activation.getSendKey());
 
                 String reSendLink = url.toString().replace(servletPath, "/");
+
                 return "激活失败！点击链接重新发送邮件:" + "<a href='" + reSendLink + "'>" + reSendLink + "</a>";
             }
         }
 
-        StringBuffer url = request.getRequestURL().append("resend/").append(activation.getActivationKey());
+        StringBuffer url = request.getRequestURL().append("resend/").append(activation.getSendKey());
 
         String reSendLink = url.toString().replace(servletPath, "/");
 

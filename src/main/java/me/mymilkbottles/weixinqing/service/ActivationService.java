@@ -16,7 +16,11 @@ public class ActivationService {
     @Autowired
     ActivationDAO activationMapper;
 
-    public int insertActivationInfo(String key, String mail, int userId) {
+    public String getSendKey(String activationKey) {
+        return activationMapper.getSendKey(activationKey);
+    }
+
+    public int insertActivationInfo(String key, String mail, int userId, String sendKey) {
         Activation activation = new Activation();
         Date expireTime = new Date(new Date().getTime() + 24L * 60 * 60 * 1000);
         activation.setExpireTime(expireTime);
@@ -24,6 +28,7 @@ public class ActivationService {
         activation.setMail(mail);
         activation.setUserId(userId);
         activation.setActive(0);
+        activation.setSendKey(sendKey);
         return activationMapper.insertActivationInfo(activation);
     }
 
@@ -43,7 +48,12 @@ public class ActivationService {
         return activationMapper.getUserId(key);
     }
 
-    public Activation getActivation(String key) {
-        return activationMapper.getActivation(key);
+    public Activation getActivationByActivationKey(String key) {
+        return activationMapper.getActivationByActivationKey(key);
     }
+
+    public Activation getActivationBySendKey(String key) {
+        return activationMapper.getActivationBySendKey(key);
+    }
+
 }

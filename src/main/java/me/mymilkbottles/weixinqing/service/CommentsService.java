@@ -14,34 +14,39 @@ import java.util.Date;
 public class CommentsService {
 
     @Autowired
-    CommentsDAO commentsMapper;
+    CommentsDAO commentsDAO;
 
     public int insertComments(Comments comments) {
-        return commentsMapper.insertComments(comments);
+        return commentsDAO.insertComments(comments);
     }
 
-    public int insertComments(int weiboId, int masterId, String content, Date fTime) {
+    public int insertComments(int entityId, int entityType, int masterId, String content, Date fTime) {
         Comments comments = new Comments();
-        comments.setWeiboId(weiboId);
+        comments.setEntityId(entityId);
+        comments.setEntityType(entityType);
         comments.setMasterId(masterId);
         comments.setContent(content);
         comments.setfTime(fTime);
-        return commentsMapper.insertComments(comments);
+        return commentsDAO.insertComments(comments);
     }
 
     public int deleteComments(int id) {
-        return commentsMapper.deleteComments(id);
+        return commentsDAO.deleteComments(id);
     }
 
     public int getUserCommentsCountAfterDate(int userId, Date date) {
-        return commentsMapper.getUserCommentsCountAfterDate(userId, date);
+        return commentsDAO.getUserCommentsCountAfterDate(userId, date);
     }
 
     public Comments getCommentsById(int id) {
-        return commentsMapper.getCommentsById(id);
+        return commentsDAO.getCommentsById(id);
     }
 
+//    public Integer getWeiboCommentCount(int type, int id) {
+//        return commentsDAO.getWeiboCommentCount(type, id);
+//    }
+
     public Integer getWeiboCommentCount(int id) {
-        return commentsMapper.getWeiboCommentCount(id);
+        return commentsDAO.getWeiboCommentCount(id);
     }
 }

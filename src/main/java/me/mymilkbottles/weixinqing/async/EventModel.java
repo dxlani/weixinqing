@@ -97,11 +97,6 @@ public class EventModel {
         return this;
     }
 
-    public EventModel putExt(String activationMail, Object mail) {
-        this.exts = exts;
-        return this;
-    }
-
     @Override
     public String toString() {
         return "EventModel{" +

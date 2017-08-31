@@ -17,6 +17,15 @@ public class Activation {
 
     private int userId;
 
+    private String sendKey;
+
+    public String getSendKey() {
+        return sendKey;
+    }
+
+    public void setSendKey(String sendKey) {
+        this.sendKey = sendKey;
+    }
 
     public Date getExpireTime() {
         return expireTime;

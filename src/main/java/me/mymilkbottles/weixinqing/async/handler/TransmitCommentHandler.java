@@ -53,7 +53,9 @@ public class TransmitCommentHandler implements Event {
 
         int userId = eventModel.getProducer();
 
-        int weiboId = eventModel.getEventId();
+        int entityId = eventModel.getEventId();
+
+        int entityType = Integer.valueOf((String) (eventModel.getExt("entityType")));
 
         Object comment = eventModel.getExt("comment");
 
@@ -61,14 +63,15 @@ public class TransmitCommentHandler implements Event {
 
         Feed feed = new Feed();
         feed.setUserId(userId);
-        feed.setWeiboId(weiboId);
+        feed.setWeiboId(entityId);
 
         if (comment == null) {
             feed.setType(EntityType.TRANSMIT.getValue());
         } else {
             feed.setType(EntityType.TRANSMIT_COMMENT.getValue());
             Comments comments = new Comments();
-            comments.setWeiboId(weiboId);
+            comments.setEntityType(entityType);
+            comments.setEntityId(entityId);
             comments.setfTime(time);
             comments.setContent((String) comment);
             comments.setMasterId(userId);
@@ -82,7 +85,7 @@ public class TransmitCommentHandler implements Event {
             return Boolean.FALSE;
         }
 
-        if (messageService.insertTransmitCommentMessage(userId, weiboId, time) <= 0) {
+        if (messageService.insertTransmitCommentMessage(userId, entityId, time) <= 0) {
             log.error("增加TransmitCommentMessage失败");
             return Boolean.FALSE;
         }

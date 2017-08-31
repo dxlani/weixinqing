@@ -20,9 +20,14 @@
     <div class="container">
 
 
+        <div style="height:553px;width:527px;float: left;margin-top: 100px;margin-left: 100px;">
+            <img src="/images/login-banner.png"/>
+        </div>
+
         <div class="panel panel-default"
-             style="margin-left: 300px;width:300px;height:auto;
-             margin-top: 200px;">
+             style="margin-left: 50px;width:300px;height:auto;float: left;
+             margin-top: 150px;">
+
             <div class="panel-heading" style="font-size: 16px;">欢迎您来到微心情网</div>
             <div class="panel-body">
                 <ul class="nav nav-tabs">
@@ -34,7 +39,6 @@
             <div class="alert alert-danger alert-dismissible" role="alert"
                  style="display: none;margin-top: 8px;margin-left: 18px;margin-right: 10px;margin-bottom: 5px;">
                 <span id="alert-danger-span"></span>
-
             </div>
 
 
@@ -53,17 +57,6 @@
 
             <div style="margin-top: 8px;margin-left: 8px;padding-left: 10px;padding-right: 10px;">
 
-                <#if result??>
-                    <div class="alert alert-danger alert-dismissible alert-error-msg" role="alert"
-                         style="margin-top: 8px;margin-bottom: 10px;">
-                        <span class="errorSpan">${result}</span>
-                    </div>
-                    <#else>
-                        <div class="alert alert-danger alert-dismissible alert-error-msg" role="alert"
-                             style="margin-top: 8px;display:none;margin-left: 18px;margin-right: 10px;margin-bottom: 5px;">
-                            <span class="errorSpan"></span>
-                        </div>
-                </#if>
 
                 <form action="/registerUser" method="post">
                     <div class="input-group">

@@ -5,12 +5,12 @@ import me.mymilkbottles.weixinqing.async.HandlerProducer;
 import me.mymilkbottles.weixinqing.dao.JedisDAO;
 import me.mymilkbottles.weixinqing.dao.WeiboDAO;
 import me.mymilkbottles.weixinqing.model.*;
-import me.mymilkbottles.weixinqing.util.ContentFilter;
-import me.mymilkbottles.weixinqing.util.EntityType;
-import me.mymilkbottles.weixinqing.util.SensitiveWordFilterUtil;
+import me.mymilkbottles.weixinqing.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import sun.security.provider.MD5;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +21,9 @@ import java.util.List;
  */
 @Service
 public class WeiboService {
+
+    @Value("${weixinqing.img.salt}")
+    String imgSalt;
 
     @Autowired
     WeiboDAO weiboMapper;
@@ -64,7 +67,6 @@ public class WeiboService {
         return weiboMapper.getWeibo(start, end);
     }
 
-
     public List<Weibo> getWeiboBeforeId(int id, int count) {
         return weiboMapper.getWeiboBeforeId(id, count);
     }
@@ -94,6 +96,7 @@ public class WeiboService {
             viewObject.add("weibo", weibo);
 
             weibo.setContent(weibo.getContent().replace("width:1em;height:1em;", "width:22px;height:22px;"));
+
             int userId = weibo.getMasterId();
             User user = userService.getUserById(userId);
             viewObject.add("user", users.get(index));
@@ -107,8 +110,6 @@ public class WeiboService {
             viewObject.add("trd", jedisAdapter.isUserTransmited(weiboId, loginUserId));
             viewObject.add("trs", jedisAdapter.getTransmitCount(weiboId));
 
-            weibo.setContent(
-                    weibo.getContent().replace("style=\"width:1em;height:1em;\"", "style=\"width:22px;height:22px;\""));
 
             viewObject.add("imgs", getWeiboImgs(weibo.getImg()));
             viewObjectList.add(viewObject);
@@ -143,9 +144,6 @@ public class WeiboService {
             viewObject.add("trd", jedisAdapter.isUserTransmited(weiboId, loginUserId));
             viewObject.add("trs", jedisAdapter.getTransmitCount(weiboId));
 
-            weibo.setContent(
-                    weibo.getContent().replace("style=\"width:1em;height:1em;\"", "style=\"width:22px;height:22px;\""));
-
             viewObject.add("imgs", getWeiboImgs(weibo.getImg()));
             viewObjectList.add(viewObject);
         }
@@ -163,7 +161,8 @@ public class WeiboService {
 
             for (String weiboImg : weiboImgStrings) {
                 if (StringUtils.isNotBlank(weiboImg)) {
-                    weiboImgs.add(weiboImg);
+                    weiboImgs.add(weiboImg );
+//                    weiboImgs.add(Md5Util.getMD5(weiboImg + imgSalt));
                 }
             }
         }
@@ -195,6 +194,7 @@ public class WeiboService {
         return jedisAdapter.collection(userId, entityType, entityId);
     }
 
+
     public int transmit(int weiboId, String comment) {
         comment = ContentFilter.filter(comment);
         int loginUserId = hostHolder.getUser().getId();
@@ -216,5 +216,27 @@ public class WeiboService {
 
         return 1;
     }
+
+//    public int transmit(int entityType, int entityId, String comment) {
+//        comment = ContentFilter.filter(comment);
+//        int loginUserId = hostHolder.getUser().getId();
+//        if (jedisDAO.transmit(weiboId, loginUserId) == 0) {
+//            return 0;
+//        }
+//
+//        EventModel eventModel = new EventModel();
+//        eventModel.setEventId(weiboId).setProducer(loginUserId)
+//                .addExt("time", new Date());
+//
+//        if (StringUtils.isNotBlank(comment)) {
+//            eventModel.setEntityType(EntityType.TRANSMIT_COMMENT).addExt("comment", comment);
+//        } else {
+//            eventModel.setEntityType(EntityType.TRANSMIT);
+//        }
+//
+//        handlerProducer.produceHandler(eventModel);
+//
+//        return 1;
+//    }
 
 }

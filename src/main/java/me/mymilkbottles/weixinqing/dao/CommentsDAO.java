@@ -14,11 +14,11 @@ public interface CommentsDAO {
 
     public static final String TABLE_NAME = " comments ";
 
-    public static final String FIELDS = " f_time, content, master_id, weibo_id ";
+    public static final String FIELDS = " f_time, content, master_id, entity_id, entity_type ";
 
-    public static final String ALL_FIELD = "  id, f_time, content, master_id, weibo_id ";
+    public static final String ALL_FIELD = "  id, f_time, content, master_id, entity_id, entity_type ";
 
-    @Insert({"insert into" + TABLE_NAME + "(" + FIELDS + ") values(#{fTime}, #{content}, #{masterId}, #{weiboId})"})
+    @Insert({"insert into" + TABLE_NAME + "(" + FIELDS + ") values(#{fTime}, #{content}, #{masterId}, #{entityId}, #{entityType})"})
     public int insertComments(Comments comments);
 
     @Update({"update " + TABLE_NAME + " set is_delete = 1 where id = #{id}"})
@@ -30,6 +30,7 @@ public interface CommentsDAO {
     @Select({"select * from " + TABLE_NAME + " where id = #{id}"})
     public Comments getCommentsById(int id);
 
-    @Select({"select count(id) from " + TABLE_NAME + " where weibo_id = #{id} and (is_delete != 1 or is_delete is null)"})
+    //and entity_type = #{entityType}
+    @Select({"select count(id) from " + TABLE_NAME + " where entity_id = #{entityId}  and (is_delete != 1 or is_delete is null)"})
     Integer getWeiboCommentCount(int id);
 }

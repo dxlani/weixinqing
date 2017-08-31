@@ -1,5 +1,6 @@
 package me.mymilkbottles.weixinqing.controller;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.sun.glass.ui.View;
 import me.mymilkbottles.weixinqing.intercepter.LoginIntercepter;
 import me.mymilkbottles.weixinqing.model.HostHolder;
@@ -70,14 +71,22 @@ public class IndexController {
 
     @RequestMapping("/search")
     public String search(Model model , @RequestParam("keyword") String keyword) throws IOException, SolrServerException {
-        ViewObject viewObject = searchService.searchWeibo(keyword, 0, PAGE_COUNT);
+
+        ViewObject viewObject;
+        List<User> userList;
+        try {
+            Long.parseLong(keyword);
+            viewObject = searchService.searchWeibo("", 0, PAGE_COUNT);
+            userList = new ArrayList<>(1);
+        } catch (Exception e) {
+            viewObject = searchService.searchWeibo(keyword, 0, PAGE_COUNT);
+            userList = searchService.searchUsername(keyword, 0, PAGE_COUNT);
+        }
+
         List<ViewObject> vos = weiboService.addWeiboDetail(viewObject, PAGE_COUNT);
 
-
-        List<User> userList = searchService.searchUsername(keyword, 0, PAGE_COUNT);
-
-
         model.addAttribute("vos", vos);
+
         model.addAttribute("users", userList);
         model.addAttribute("keyword", keyword);
         return "result";
@@ -119,7 +128,7 @@ public class IndexController {
         return null;
     }
 
-    @RequestMapping("/weixinqing/img/{name}")
+    @RequestMapping("/img/{name}")
     public void weiboImg(@PathVariable("name") String name, HttpServletResponse response) {
 
         File headImg = null;

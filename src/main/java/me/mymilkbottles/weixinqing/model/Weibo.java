@@ -56,4 +56,16 @@ public class Weibo {
     public void setImg(String img) {
         this.img = img;
     }
+
+
+    @Override
+    public String toString() {
+        return "Weibo{" +
+                "id=" + id +
+                ", fTime=" + fTime +
+                ", content='" + content + '\'' +
+                ", masterId=" + masterId +
+                ", img='" + img + '\'' +
+                '}';
+    }
 }

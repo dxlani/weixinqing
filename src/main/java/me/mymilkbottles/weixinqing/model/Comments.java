@@ -15,7 +15,9 @@ public class Comments {
 
     private int masterId;
 
-    private int weiboId;
+    private int entityId;
+
+    private int entityType;
 
     public long getId() {
         return id;
@@ -49,11 +51,19 @@ public class Comments {
         this.masterId = masterId;
     }
 
-    public int getWeiboId() {
-        return weiboId;
+    public int getEntityId() {
+        return entityId;
     }
 
-    public void setWeiboId(int weiboId) {
-        this.weiboId = weiboId;
+    public void setEntityId(int entityId) {
+        this.entityId = entityId;
+    }
+
+    public int getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(int entityType) {
+        this.entityType = entityType;
     }
 }

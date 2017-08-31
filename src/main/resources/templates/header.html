@@ -117,7 +117,7 @@
 
             <ul class="nav navbar-nav" style="">
                 <#if user??>
-                    <li><a href="/user/home/${user.id}">${user.username}</a></li>
+                    <li><a href="/user/home/${user.id ? c}">${user.username}</a></li>
                     <#else>
                         <li><a href="/login">登录 / 注册</a></li>
                 </#if>
