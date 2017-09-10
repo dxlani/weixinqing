@@ -1,10 +1,9 @@
 package me.mymilkbottles.weixinqing;
 
-import me.mymilkbottles.weixinqing.dao.FeedDAO;
-import me.mymilkbottles.weixinqing.dao.UserDAO;
-import me.mymilkbottles.weixinqing.model.Feed;
-import me.mymilkbottles.weixinqing.service.FocusService;
-import me.mymilkbottles.weixinqing.service.UserService;
+import me.mymilkbottles.weixinqing.alone.dao.FeedDAO;
+import me.mymilkbottles.weixinqing.alone.model.Feed;
+import me.mymilkbottles.weixinqing.alone.service.FocusService;
+import me.mymilkbottles.weixinqing.alone.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

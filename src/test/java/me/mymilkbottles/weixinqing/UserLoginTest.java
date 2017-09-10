@@ -1,9 +1,8 @@
 package me.mymilkbottles.weixinqing;
 
-import me.mymilkbottles.weixinqing.service.FocusService;
-import me.mymilkbottles.weixinqing.service.LoginService;
-import me.mymilkbottles.weixinqing.service.UserService;
-import org.junit.Assert;
+import me.mymilkbottles.weixinqing.alone.service.FocusService;
+import me.mymilkbottles.weixinqing.alone.service.LoginService;
+import me.mymilkbottles.weixinqing.alone.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by Administrator on 2017/07/05 10:48.

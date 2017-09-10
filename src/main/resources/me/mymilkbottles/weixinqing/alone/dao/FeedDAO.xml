@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.mymilkbottles.weixinqing.alone.dao.FeedDAO">
+
+    <sql id="table_name"> feed </sql>
+
+    <select id="getUserFeedsByList" resultType="me.mymilkbottles.weixinqing.alone.model.Feed">
+        select *
+        from
+        <include refid="table_name"/>
+        where (is_delete is null or is_delete != 1) and id &lt; #{maxId}
+        <if test="userIds != null and userIds.size > 0">
+            and user_id in
+            <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+                #{userId}
+            </foreach>
+        </if>
+        order by f_time desc
+        limit #{pageSize}
+    </select>
+
+    <select id="getFeeds" resultType="me.mymilkbottles.weixinqing.alone.model.Feed">
+        select *
+        from
+        <include refid="table_name"/>
+        where is_delete = 0
+        <if test="userIds != null and userIds.size > 0">
+            and user_id in
+            <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+                #{userId}
+            </foreach>
+        </if>
+        order by f_time desc
+        limit #{start},#{end}
+    </select>
+
+    <update id="deleteFeeds">
+        update
+        <include refid="table_name"/>
+        set is_delete = 1
+        where user_id = #{user_id} and type = #{type} and weibo_id = #{weibo_id}
+        <if test="exts_id != null">
+            and exts_id = #{exts_id}
+        </if>
+    </update>
+</mapper>
