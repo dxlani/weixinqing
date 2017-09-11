@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="me.mymilkbottles.weixinqing.dao.FocusDAO">
+
+    <sql id="table_name"> focus </sql>
+
+    <select id="getActiveSlaveUser" resultType="int">
+        select slave_id
+        from
+        <include refid="table_name"/>
+        where master_id = #{userId}
+        and slave_id in
+        <if test="activers != null and activers.size > 0">
+            <foreach collection="activers" item="activer" open="(" close=")" separator=",">
+                #{activer}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

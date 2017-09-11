@@ -1,8 +1,8 @@
 package me.mymilkbottles.weixinqing;
 
-import me.mymilkbottles.weixinqing.alone.service.FocusService;
-import me.mymilkbottles.weixinqing.alone.service.LoginService;
-import me.mymilkbottles.weixinqing.alone.service.UserService;
+import me.mymilkbottles.weixinqing.service.FocusService;
+import me.mymilkbottles.weixinqing.service.LoginService;
+import me.mymilkbottles.weixinqing.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

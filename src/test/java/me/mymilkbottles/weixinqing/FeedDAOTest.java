@@ -1,9 +1,9 @@
 package me.mymilkbottles.weixinqing;
 
-import me.mymilkbottles.weixinqing.alone.dao.FeedDAO;
-import me.mymilkbottles.weixinqing.alone.model.Feed;
-import me.mymilkbottles.weixinqing.alone.service.FocusService;
-import me.mymilkbottles.weixinqing.alone.service.UserService;
+import me.mymilkbottles.weixinqing.dao.FeedDAO;
+import me.mymilkbottles.weixinqing.model.Feed;
+import me.mymilkbottles.weixinqing.service.FocusService;
+import me.mymilkbottles.weixinqing.service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

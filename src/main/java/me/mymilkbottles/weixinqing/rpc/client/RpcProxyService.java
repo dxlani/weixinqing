@@ -1,0 +1,97 @@
+package me.mymilkbottles.weixinqing.rpc.client;
+
+import me.mymilkbottles.weixinqing.rpc.util.RpcRequest;
+import me.mymilkbottles.weixinqing.rpc.util.RpcResponse;
+import me.mymilkbottles.weixinqing.rpc.zookeeper.ServiceDiscovery;
+import me.mymilkbottles.weixinqing.service.impl.AsyncEventServiceImpl;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import sun.rmi.runtime.Log;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.UUID;
+
+
+
+/**
+ * RPC 代理（用于创建 RPC 服务代理）
+ *
+ */
+@Service
+public class RpcProxyService {
+
+	Logger logger = Logger.getLogger(RpcProxyService.class);
+
+	@Autowired
+	ServiceDiscovery serviceDiscovery;
+
+//	public RpcProxy(String serverAddress) {
+//		this.serverAddress = serverAddress;
+//	}
+
+//	public RpcProxy(ServiceDiscovery serviceDiscovery) {
+//		this.serviceDiscovery = serviceDiscovery;
+//	}
+
+	/**
+	 * 创建代理
+	 * 
+	 * @param interfaceClass
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T create(Class<T> interfaceClass) {
+		return (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(),
+				new Class<?>[] { interfaceClass }, new InvocationHandler() {
+					public Object invoke(Object proxy, Method method,
+							Object[] args) throws Throwable {
+
+						//创建RpcRequest，封装被代理类的属性
+						RpcRequest request = new RpcRequest();
+						request.setRequestId(UUID.randomUUID().toString());
+
+						//拿到声明这个方法的业务接口名称
+						request.setClassName(interfaceClass.getName());
+						request.setMethodName(method.getName());
+						request.setParameterTypes(method.getParameterTypes());
+						request.setParameters(args);
+
+						//查找服务
+						String serverAddress = null;
+
+						if (serviceDiscovery != null) {
+							serverAddress = serviceDiscovery.discover();
+						}
+
+						logger.info("serviceDiscovery = " + serviceDiscovery);
+						logger.info("serverAddress = " + serverAddress);
+
+						//随机获取服务的地址
+						String[] array = serverAddress.split(":");
+						String host = array[0];
+						int port = Integer.parseInt(array[1]);
+
+						//创建Netty实现的RpcClient，链接服务端
+						RpcClient client = new RpcClient(host, port);
+
+						logger.info("RpcClient = " + client);
+
+						logger.info("request = " + request);
+						//通过netty向服务端发送请求
+						RpcResponse response = client.send(request);
+
+						logger.info("RpcResponse = " + response);
+						//返回信息
+						if (response.isError()) {
+							logger.info("is error response");
+							throw response.getError();
+						} else {
+							return response.getResult();
+						}
+					}
+				});
+	}
+}
