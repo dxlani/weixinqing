@@ -23,6 +23,12 @@ public class AuthorityIntercepter implements HandlerInterceptor {
         if (hostHolder.getUser() == null) {
             response.sendRedirect("/login?from=" + request.getRequestURI());
             return false;
+        } else if (request.getRequestURI().contains("admin")) {
+            if (hostHolder.getUser().getId() != 0) {
+                response.setHeader("Content-Type", "text/html;charset=UTF-8");
+                response.getWriter().write("您无权访问该网页！");
+                return false;
+            }
         }
         return true;
     }

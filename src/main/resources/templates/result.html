@@ -36,18 +36,22 @@
                     <h3 class="panel-title">相关用户</h3>
                 </div>
                 <div class="panel-body">
-                    <#list users as u>
-                        <div style="float: left;width: 100%;border-bottom: 1px solid #f2f2f5;margin-bottom: 10px;">
-                            <a href="/user/home/${u.id ? c }">
-                                <img src="/headimg/${u.id ? c }" alt="..." class="img-circle weiboHeadImg"
-                                     style="width: 90px;height: 90px;"></a>
-                            <a href="/user/home/${u.id ? c }" style="">
-                                <strong style="font-size: 15px;float: left;margin-top: 10px;width: 100%;text-align: center;" class="username">
-                                    ${u.username}
-                                </strong>
-                            </a>
-                        </div>
-                    </#list>
+                    <#if users??>
+                        <#list users as u>
+                            <div style="float: left;width: 100%;border-bottom: 1px solid #f2f2f5;margin-bottom: 10px;">
+                                <a href="/user/home/${u.id ? c }">
+                                    <img src="/headimg/${u.id ? c }" alt="..." class="img-circle weiboHeadImg"
+                                         style="width: 90px;height: 90px;"></a>
+                                <a href="/user/home/${u.id ? c }" style="">
+                                    <strong style="font-size: 15px;float: left;margin-top: 10px;width: 100%;text-align: center;" class="username">
+                                        ${u.username}
+                                    </strong>
+                                </a>
+                            </div>
+                        </#list>
+                    <#else>
+                        暂未找到！
+                    </#if>
                 </div>
             </div>
 

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
+	<property name="LOG_HOME" value="/home/ubuntu/weixinqing-log-home/" />
+
+	<!-- 基本按时间滚动的策略 -->
+	<appender name="defaultLogFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/weixinqing-%d{yyyy-MM-dd}.%i.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_HOME}/weixinqing-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<!-- 保留90天数据，默认无限 -->
+			<maxHistory>90</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10GB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+		</layout>
+
+		<!--日志文件最大的大小-->
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<MaxFileSize>10240MB</MaxFileSize>
+		</triggeringPolicy>
+	</appender>
+
+	<!-- 控制台输出 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+		</layout>
+	</appender>
+
+	<appender name="kafkaAppender" class="me.mymilkbottles.weixinqing.log.kafka.producer.KafkaAppender">
+
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread]  %-5level %logger{80}[%L] - %msg%n</Pattern>
+		</layout>
+
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+		</layout>
+
+		<bootstrap_severs>mini01:9092</bootstrap_severs>
+		<group_id>0</group_id>
+		<topic>weixinqing-logs</topic>
+		<retries>1</retries>
+		<batch_size>16384</batch_size>
+		<linger_ms>1</linger_ms>
+		<buffer_memory>33554432</buffer_memory>
+		<autoFlush>true</autoFlush>
+		<error_producer_warn_num>5</error_producer_warn_num>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="kafkaAppender" />
+		<appender-ref ref="defaultLogFileAppender"/>
+		<appender-ref ref="STDOUT"/>
+	</root>
+
+	<logger name="me.mymilkbottles.weixinqing.aop.logAnalysis" level="INFO" additivity="false">
+		<appender-ref ref="kafkaAppender" />
+	</logger>
+
+</configuration>

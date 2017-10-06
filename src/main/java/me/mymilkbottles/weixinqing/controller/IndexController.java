@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Source;
 import java.io.*;
 import java.util.*;
 
@@ -33,13 +35,11 @@ import java.util.*;
 @Controller
 public class IndexController {
 
-    private static final Logger log = LoggerFactory.getLogger(LoginIntercepter.class);
+    private static final Logger log = LoggerFactory.getLogger(IndexController.class);
 
     private static final int PAGE_COUNT = 10;
 
-    private static final int SIZE = 1024;
-
-    private static byte[] bytes = new byte[SIZE];
+    private static final int SIZE = 1024 * 30;
 
     @Autowired
     HostHolder hostHolder;
@@ -56,17 +56,18 @@ public class IndexController {
     @Autowired
     SearchService searchService;
 
-
     @RequestMapping(value = {"/", "/index"})
-    public String index(Model model) {
+    public String index(HttpServletRequest request, Model model ) {
         List<Weibo> weiboList = weiboService.getWeibo(0, PAGE_COUNT);
         List<ViewObject> vos = weiboService.addWeiboDetail(weiboList, PAGE_COUNT);
         model.addAttribute("vos", vos);
         return "index";
     }
 
+
     @RequestMapping("/search")
-    public String search(Model model , @RequestParam("keyword") String keyword) throws IOException, SolrServerException {
+    public String search(Model model , @RequestParam("keyword") String keyword)
+            throws IOException, SolrServerException {
 
         ViewObject viewObject;
         List<User> userList;
@@ -81,14 +82,17 @@ public class IndexController {
 
         List<ViewObject> vos = weiboService.addWeiboDetail(viewObject, PAGE_COUNT);
 
+
         model.addAttribute("vos", vos);
 
         model.addAttribute("users", userList);
+
+        log.info("keyword = " + keyword);
         model.addAttribute("keyword", keyword);
         return "result";
     }
 
-    @RequestMapping("/searchjson")
+    @RequestMapping("/searchJson")
     @ResponseBody
     public ViewObject searchJson(Model model , @RequestParam("keyword") String keyword) throws IOException, SolrServerException {
         ViewObject viewObject = searchService.searchWeibo(keyword, 0, PAGE_COUNT);
@@ -141,6 +145,7 @@ public class IndexController {
             responseOutputStream = response.getOutputStream();
             userHeadimgStream = new BufferedInputStream(new FileInputStream(headImg), SIZE);
             int length = -1;
+            byte[] bytes = new byte[SIZE];
             while ((length = userHeadimgStream.read(bytes)) != -1) {
                 responseOutputStream.write(bytes, 0, length);
             }

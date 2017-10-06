@@ -14,146 +14,148 @@
 
 <div id="weibosDiv">
 
-    <#assign vosSize=vos?size>
-        <#if vosSize == 0>
-            <div class="panel panel-default weibo"
-                 style="width: 84%;height: auto;float: right;margin-left: 1%;">
-                <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;text-align: center;">
-                    暂无结果显示...
-                </div>
-            </div>
-        <#else>
+    <#if vos??>
+        <#assign vosSize=vos?size>
 
-    <#list vos as vo>
-
-        <#if vo ? is_first>
-            <input type="hidden" value="${vo.weibo.id ? c}" id="firstDataId">
-        </#if>
-
-        <#if vo ? is_last>
-            <input type="hidden" value="${vo.weibo.id ? c}" id="lastDataId">
-        </#if>
-
-        <div class="panel panel-default weibo weibo${vo.user.id ? c }"
-             style="width: 84%;height: auto;float: right;margin-left: 1%;">
-            <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;">
-
-                <div style="float: left;width: 13%;height: auto;">
-                    <a href="/user/home/${vo.user.id ? c }">
-                        <img src="/headimg/${vo.user.id ? c }" alt="..." class="img-circle weiboHeadImg"
-                                                                  style="width: 70px;height: 70px;"></a>
-                </div>
-
-                <div style="float: right;width: 87%;margin: 0px;padding: 0px;">
-                    <div style="float: left;width: 100%;">
-                        <a href="/user/home/${vo.user.id ? c }"><strong style="font-size: 15px;float: left;"
-                                   class="username">
-                            ${vo.user.username}</strong></a>
+            <#if vosSize == 0>
+                <div class="panel panel-default weibo"
+                     style="width: 84%;height: auto;float: right;margin-left: 1%;">
+                    <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;text-align: center;">
+                        暂无结果显示...
                     </div>
-                    <span style="color: #808080;float: left; margin-top: 5px;
-        text-decoration: none;font-size: 12px;" class="datetime">${vo.weibo.fTime?datetime}</span>
                 </div>
+                <#else>
 
-                <p style="display:block;width:87%;height:auto;margin-top: 5px;float: right;
+                    <#list vos as vo>
+
+                        <#if vo ? is_first>
+                            <input type="hidden" value="${vo.weibo.id ? c}" id="firstDataId">
+                        </#if>
+
+                        <#if vo ? is_last>
+                            <input type="hidden" value="${vo.weibo.id ? c}" id="lastDataId">
+                        </#if>
+
+                        <div class="panel panel-default weibo weibo${vo.user.id ? c }"
+                             style="width: 84%;height: auto;float: right;margin-left: 1%;">
+                            <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;">
+
+                                <div style="float: left;width: 13%;height: auto;">
+                                    <a href="/user/home/${vo.user.id ? c }">
+                                        <img src="/headimg/${vo.user.id ? c }" alt="..." class="img-circle weiboHeadImg"
+                                             style="width: 70px;height: 70px;"></a>
+                                </div>
+
+                                <div style="float: right;width: 87%;margin: 0px;padding: 0px;">
+                                    <div style="float: left;width: 100%;">
+                                        <a href="/user/home/${vo.user.id ? c }"><strong style="font-size: 15px;float: left;"
+                                                                                        class="username">
+                                            ${vo.user.username}</strong></a>
+                                    </div>
+                                    <span style="color: #808080;float: left; margin-top: 5px;
+        text-decoration: none;font-size: 12px;" class="datetime">${vo.weibo.fTime?datetime}</span>
+                                </div>
+
+                                <p style="display:block;width:87%;height:auto;margin-top: 5px;float: right;
                           overflow:hidden; text-overflow:ellipsis;" class="weibo_content">${vo.weibo.content}</p>
 
 
-                <div style="width:87%;height:auto;margin-top: 5px;float: right;" class="weibo_imgs">
-                    <#list vo.imgs as weiboImg>
-                        <div style="height:140px;width:140px;margin:2px;float: left;">
-                            <img src="/img/${weiboImg}"
-                                 class="img-rounded"/>
-                        </div>
-                    </#list>
-                </div>
-            </div>
+                                <div style="width:87%;height:auto;margin-top: 5px;float: right;" class="weibo_imgs">
+                                    <#list vo.imgs as weiboImg>
+                                        <div style="height:140px;width:140px;margin:2px;float: left;">
+                                            <img src="/img/${weiboImg}"
+                                                 class="img-rounded"/>
+                                        </div>
+                                    </#list>
+                                </div>
+                            </div>
 
 
-            <style>
-                ul li {
-                    border: none;
-                }
+                            <style>
+                                ul li {
+                                    border: none;
+                                }
 
-                * {
-                    outline: none;
-                }
+                                * {
+                                    outline: none;
+                                }
 
-                .op-ul li {
-                    margin-top: 4px;
-                }
+                                .op-ul li {
+                                    margin-top: 4px;
+                                }
 
-                .op-ul li div:hover, .op-ul li div:focus {
-                    cursor: pointer;
-                }
+                                .op-ul li div:hover, .op-ul li div:focus {
+                                    cursor: pointer;
+                                }
 
-                .btn {
-                    vertical-align: baseline;
-                    padding: 0;
-                }
+                                .btn {
+                                    vertical-align: baseline;
+                                    padding: 0;
+                                }
 
-                .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
-                    outline: none;
-                    outline-offset: 0;
-                }
+                                .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
+                                    outline: none;
+                                    outline-offset: 0;
+                                }
 
-                .btn.active, .btn:active {
-                    background-image: none;
-                    outline: 0;
-                    -webkit-box-shadow: none;
-                }
+                                .btn.active, .btn:active {
+                                    background-image: none;
+                                    outline: 0;
+                                    -webkit-box-shadow: none;
+                                }
 
-                input[type="button"], input[type="submit"], input[type="reset"], input[type="file"]::-webkit-file-upload-button, button {
-                    background: none;
-                }
+                                input[type="button"], input[type="submit"], input[type="reset"], input[type="file"]::-webkit-file-upload-button, button {
+                                    background: none;
+                                }
 
-                popover {
-                    z-index: 99999;
-                }
+                                popover {
+                                    z-index: 99999;
+                                }
 
-                a, a:hover, a:visited, a:active {
-                    text-decoration: none;
-                }
+                                a, a:hover, a:visited, a:active {
+                                    text-decoration: none;
+                                }
 
-                .upd {
-                    color: #eb7350;
-                }
-            </style>
-            <ul class="op-ul"
-                style="float: left;width:100%;margin-bottom:0px;padding-bottom:0px;padding-left: 0px;padding-top:7px;">
-                <li>
-                    <div style="text-align:center;" tabindex="1" class="save star user_action_advice"
-                         weiboid="${vo.weibo.id ? c}">
+                                .upd {
+                                    color: #eb7350;
+                                }
+                            </style>
+                            <ul class="op-ul"
+                                style="float: left;width:100%;margin-bottom:0px;padding-bottom:0px;padding-left: 0px;padding-top:7px;">
+                                <li>
+                                    <div style="text-align:center;" tabindex="1" class="save star user_action_advice"
+                                         weiboid="${vo.weibo.id ? c}">
 
-                        <button tabindex="2"
-                                class="btn starAdvice${vo.weibo.id ? c} "
-                                data-placement="bottom"
-                                data-toggle="popover"
-                                data-container="body"
-                                data-trigger="manual" data-html="true"
-                                data-content="收藏成功！">
-                            <#if vo.coll>
+                                        <button tabindex="2"
+                                                class="btn starAdvice${vo.weibo.id ? c} "
+                                                data-placement="bottom"
+                                                data-toggle="popover"
+                                                data-container="body"
+                                                data-trigger="manual" data-html="true"
+                                                data-content="收藏成功！">
+                                            <#if vo.coll>
                             <span class="glyphicon glyphicon-star starspan${vo.weibo.id ? c} colld" aria-hidden="true"
                                   weiboid="${vo.weibo.id ? c}"></span>
-                                <#else>
+                                                <#else>
                                 <span class="glyphicon glyphicon-star-empty starspan${vo.weibo.id ? c}"
                                       aria-hidden="true" weiboid="${vo.weibo.id ? c}"></span>
-                            </#if>
-                        </button>
+                                            </#if>
+                                        </button>
 
-                        <span class="collchar${vo.weibo.id ? c}">
+                                        <span class="collchar${vo.weibo.id ? c}">
                     <#if vo.coll>
                         已收藏
                         <#else>
                             收藏
                     </#if>
                     </span>
-                    </div>
-                </li>
-                <li>
-                    <div style="text-align:center;" tabindex="7" class="share user_action_advice"
-                         weiboid="${vo.weibo.id ? c}" uname="${vo.user.username}">
+                                    </div>
+                                </li>
+                                <li>
+                                    <div style="text-align:center;" tabindex="7" class="share user_action_advice"
+                                         weiboid="${vo.weibo.id ? c}" uname="${vo.user.username}">
 
-                        <input type="hidden" value='<div style="height: auto;width: 250px;padding-bottom:5px;">
+                                        <input type="hidden" value='<div style="height: auto;width: 250px;padding-bottom:5px;">
                     <span style="font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
     font-size: 14px;float:left;margin-bottom:5px;">转发${vo.user.username}的微心情</span>
     <a aria-hidden="true" class="trClose"  href="javascript:void(0)" onclick="trCloseA(${vo.weibo.id ? c})" weiboid="${vo.weibo.id ? c}" style="float:right;font-size: 18px;padding-top:0px;margin-top:-10px;cursor:pointer;
@@ -179,87 +181,95 @@
 
                     </button>
         </div>'
-                               id="trContent${vo.weibo.id ? c}">
+                                               id="trContent${vo.weibo.id ? c}">
 
 
-                        <button weiboid="${vo.weibo.id ? c}" style="z-index: 9999"
-                                class="btn trAdvice${vo.weibo.id ? c}"
-                                data-container="body" tabindex="3"
-                                data-toggle="popover" data-placement="bottom"
-                                data-trigger="manual" data-html="true"
-                                data-content=''>
-                            <#if vo.trd?? && vo.trd>
+                                        <button weiboid="${vo.weibo.id ? c}" style="z-index: 9999"
+                                                class="btn trAdvice${vo.weibo.id ? c}"
+                                                data-container="body" tabindex="3"
+                                                data-toggle="popover" data-placement="bottom"
+                                                data-trigger="manual" data-html="true"
+                                                data-content=''>
+                                            <#if vo.trd?? && vo.trd>
                             <span class="glyphicon glyphicon-share transmit trspan${vo.weibo.id ? c} trd"
                                   aria-hidden="true"
                                   weiboid="${vo.weibo.id ? c}"></span>
-                                <#else>
+                                                <#else>
                                 <span class="glyphicon glyphicon-share transmit trspan${vo.weibo.id ? c}"
                                       aria-hidden="true"
                                       weiboid="${vo.weibo.id ? c}"></span>
-                            </#if>
+                                            </#if>
 
-                        </button>
+                                        </button>
 
 
-                        <span class="trsCount${vo.weibo.id ? c}">${vo.trs ? c}</span>
-                    </div>
-                </li>
-                <li>
-                    <!-- href="/comment/detail/${vo.weibo.id ? c}" -->
-                    <a  href="javascript:;" target="_blank">
-                        <div style="text-align:center;" class="comm" weiboid="${vo.weibo.id ? c}">
+                                        <span class="trsCount${vo.weibo.id ? c}">${vo.trs ? c}</span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <!-- href="/comment/detail/${vo.weibo.id ? c}" -->
+                                    <a  href="javascript:;" target="_blank">
+                                        <div style="text-align:center;" class="comm" weiboid="${vo.weibo.id ? c}">
 
 
                         <span class="glyphicon glyphicon-comment" aria-hidden="true" weiboid="${vo.weibo.id ? c}"
                         ></span>
 
-                            <span class="commCntSpan${vo.weibo.id ? c}">${vo.comms ? c}</span>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <div style="text-align:center;" tabindex="10" class="up user_action_advice"
-                         weiboid="${vo.weibo.id ? c}">
+                                            <span class="commCntSpan${vo.weibo.id ? c}">${vo.comms ? c}</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <div style="text-align:center;" tabindex="10" class="up user_action_advice"
+                                         weiboid="${vo.weibo.id ? c}">
 
-                        <button weiboid="${vo.weibo.id ? c}" tabindex="11"
-                                class="btn upAdvice${vo.weibo.id ? c} "
-                                data-placement="bottom"
-                                data-trigger="manual" data-container="body"
-                                data-content="">
+                                        <button weiboid="${vo.weibo.id ? c}" tabindex="11"
+                                                class="btn upAdvice${vo.weibo.id ? c} "
+                                                data-placement="bottom"
+                                                data-trigger="manual" data-container="body"
+                                                data-content="">
 
-                            <#if vo.upd>
+                                            <#if vo.upd>
                             <span class="glyphicon glyphicon-thumbs-up upd upspan${vo.weibo.id ? c}" aria-hidden="true"
                                   weiboid="${vo.weibo.id ? c}"/>
-                                <#else>
+                                                <#else>
                                 <span class="glyphicon glyphicon-thumbs-up upspan${vo.weibo.id ? c}" aria-hidden="true"
                                       weiboid="${vo.weibo.id ? c}"/>
-                            </#if>
-                        </button>
+                                            </#if>
+                                        </button>
 
 
-                        <span class="upCount${vo.weibo.id ? c}" weiboid="${vo.weibo.id ? c}">${vo.ups ? c}</span>
-                    </div>
-                </li>
-            </ul>
+                                        <span class="upCount${vo.weibo.id ? c}" weiboid="${vo.weibo.id ? c}">${vo.ups ? c}</span>
+                                    </div>
+                                </li>
+                            </ul>
 
-            <input type="hidden" id="unameHid${vo.weibo.id ? c}" value="${vo.user.username}">
-        </div>
+                            <input type="hidden" id="unameHid${vo.weibo.id ? c}" value="${vo.user.username}">
+                        </div>
 
-    </#list>
-        </#if>
-        <div id="addContentFlagEnd" style="display: none;"></div>
+                    </#list>
+            </#if>
+            <div id="addContentFlagEnd" style="display: none;"></div>
 
-        <div class="panel panel-default" id="weixinqing_loading_end"
-             style="width: 84%;float: right;display: none;">
-            <div class="panel-body" align="center">
+            <div class="panel panel-default" id="weixinqing_loading_end"
+                 style="width: 84%;float: right;display: none;">
+                <div class="panel-body" align="center">
             <span class="glyphicon glyphicon-refresh" id="msg-loading-icon"
                   style="margin-left: 15px;font-size: 17px;margin-top: 6px;"
                   aria-hidden="true">
             </span>
-                <span style="margin-left: 8px;margin-bottom: 10px;"
-                      id="content-loading-advice">微心情加载中，请您稍后...</span>
+                    <span style="margin-left: 8px;margin-bottom: 10px;"
+                          id="content-loading-advice">微心情加载中，请您稍后...</span>
+                </div>
             </div>
-        </div>
+        <#else>
+            <div class="panel panel-default weibo"
+                 style="width: 84%;height: auto;float: right;margin-left: 1%;">
+                <div class="panel-body" style="margin-bottom: 0px;padding-bottom: 3px;text-align: center;">
+                    暂无结果显示...
+                </div>
+            </div>
+    </#if>
 </div>
 
 

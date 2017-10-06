@@ -11,6 +11,7 @@ import me.mymilkbottles.weixinqing.util.EntityType;
 import me.mymilkbottles.weixinqing.util.WeixinqingUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,9 @@ public class RegisterController {
     @Autowired
     ActivationService activationService;
 
+    @Value("${weixinqing.domain}")
+    String weixinqingDomain;
+
     @RequestMapping("/register")
     public String register(HttpSession session, Model model) {
         Object result = session.getAttribute("result");
@@ -64,8 +68,7 @@ public class RegisterController {
 
     @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
     public String registerAccount(String mail, String pwd, String name, String code,
-                                  HttpSession session,
-                                  HttpServletRequest request) {
+                                  HttpSession session) {
         String result = registerService.checkRegisterInfo(mail, pwd, name, code, session.getId());
         if (result == null) {
             int returnUserId = registerService.registerNewUser(mail, pwd, name);
@@ -76,11 +79,9 @@ public class RegisterController {
 
                 activationService.insertActivationInfo(activationKey, mail, returnUserId, sendKey);
 
-                String servletPath = request.getServletPath();
+                StringBuilder activationLink = new StringBuilder(weixinqingDomain).append("/activation/").append(activationKey);
 
-                StringBuffer activationUrl = request.getRequestURL().append("activation/").append(activationKey);
-
-                String activationLink = activationUrl.toString().replace(servletPath, "/");
+                log.info("registerUser activationLink = " + activationLink);
 
                 EventModel eventModel = new EventModel(EntityType.REGISTER, WeixinqingUtil.ADMIN_ID);
                 eventModel.addExt("activationMail", mail).addExt("activationKey", activationKey)
@@ -88,11 +89,9 @@ public class RegisterController {
 
                 asyncEventService.sendEvent(eventModel);
 
-                StringBuffer sendUrl = request.getRequestURL().append("resend/").append(sendKey);
+                StringBuilder sendUrl = new StringBuilder(weixinqingDomain).append("/resend/").append(sendKey);
 
-                String sendLink = sendUrl.toString().replace(servletPath, "/");
-
-                session.setAttribute("url", sendLink);
+                session.setAttribute("url", sendUrl.toString());
 
             } else {
                 session.setAttribute("result", "系统出现故障，请您稍后重试！");
@@ -105,27 +104,24 @@ public class RegisterController {
 
     @RequestMapping("/resend/{key}")
     @ResponseBody
-    public String sendActivationMail(@PathVariable("key") String sendKey, HttpServletRequest request) {
+    public String resendActivationMail(@PathVariable("key") String sendKey ) {
 
         Activation activation = activationService.getActivationBySendKey(sendKey);
 
         if (activation == null) {
-            return "发送失败！";
+            return "发送失败！该激活码不存在！";
         }
 
-        String servletPath = request.getServletPath();
+        StringBuilder activationLink = new StringBuilder(weixinqingDomain).append("/activation/").append(activation.getActivationKey());
 
-        StringBuffer url = request.getRequestURL().append("activation/").append(activation.getActivationKey());
-
-        String activationLink = url.toString().replace(servletPath, "/");
-
+        log.info("resend activationLink = " + activationLink);
         EventModel eventModel = new EventModel(EntityType.REGISTER, WeixinqingUtil.ADMIN_ID);
         eventModel.addExt("activationMail", activation.getMail()).addExt("activationKey", activation.getActivationKey())
-                .addExt("url", activationLink);
+                .addExt("url", activationLink.toString());
 
         asyncEventService.sendEvent(eventModel);
 
-        String resultString = "邮件已发送，请您到收件箱中查收！还没收到？<a href='/resend/" + sendKey + "'>重新发送</a>";
+        String resultString = "邮件已发送，请您到收件箱中查收！还没收到？<a href='" + weixinqingDomain + "/resend/" + sendKey + "'>重新发送</a>";
 
         return resultString;
     }
@@ -136,18 +132,12 @@ public class RegisterController {
                              HttpServletResponse response) {
         Activation activation = activationService.getActivationByActivationKey(activeKey);
         if (activation == null) {
-            return "激活失败！";
+            return "激活失败！该激活码不存在！";
         }
-
-        String servletPath = request.getServletPath();
-
         if (activationService.getExpireTime(activeKey).after(new Date())) {
             int userId = activation.getUserId();
             if (userService.active(userId) > 0) {
 
-                StringBuffer url = request.getRequestURL().append("index");
-
-                String indexLink = url.toString().replace(servletPath, "/");
 
                 Cookie cookie = new Cookie("weixinqing_ticket", UUID.randomUUID().toString().replaceAll("-", ""));
                 cookie.setPath("/");
@@ -158,20 +148,13 @@ public class RegisterController {
 
                 loginService.insertLoginInfo(cookie.getValue(), userId, request);
 
-                return "恭喜您！邮件激活成功！点击链接进入首页<a href=" + indexLink + ">" + indexLink + "</a>";
+                return "恭喜您！邮件激活成功！点击链接进入首页<a href=" + weixinqingDomain + ">" + weixinqingDomain + "</a>";
             } else {
-                StringBuffer url = request.getRequestURL().append("resend/").append(activation.getSendKey());
-
-                String reSendLink = url.toString().replace(servletPath, "/");
-
+                String reSendLink = new StringBuilder(weixinqingDomain).append("/resend/").append(activation.getSendKey()).toString();
                 return "激活失败！点击链接重新发送邮件:" + "<a href='" + reSendLink + "'>" + reSendLink + "</a>";
             }
         }
-
-        StringBuffer url = request.getRequestURL().append("resend/").append(activation.getSendKey());
-
-        String reSendLink = url.toString().replace(servletPath, "/");
-
+        String reSendLink = new StringBuilder(weixinqingDomain).append("/resend/").append(activation.getSendKey()).toString();
         return "链接已过期！点击链接重新发送邮件:" + "<a href='" + reSendLink + "'>" + reSendLink + "</a>";
     }
 }

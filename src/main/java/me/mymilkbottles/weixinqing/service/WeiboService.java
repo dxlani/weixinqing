@@ -22,9 +22,6 @@ import java.util.List;
 @Service
 public class WeiboService {
 
-    @Value("${weixinqing.img.salt}")
-    String imgSalt;
-
     @Autowired
     WeiboDAO weiboMapper;
 

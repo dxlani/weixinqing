@@ -28,7 +28,7 @@ public class WeiboController {
 
     @RequestMapping("/user/fireweibo")
     @ResponseBody
-    public String fireWeibo(@ModelAttribute("content") String content, HttpServletRequest request,
+    public String fireWeibo(HttpServletRequest request, @ModelAttribute("content") String content,
                             Model model) {
         Weibo weibo = new Weibo();
         weibo.setContent(ContentFilter.filter(content));
@@ -40,9 +40,9 @@ public class WeiboController {
 
     @RequestMapping("/user/transmit/{weiboIds}")
     @ResponseBody
-    public String transmit(@ModelAttribute(value = "comment") String comment,
+    public String transmit(HttpServletRequest request, @ModelAttribute(value = "comment") String comment,
                            @PathVariable("weiboIds") String weiboIds,
-                           HttpServletRequest request,
+
                            Model model) {
         int weiboId = WeixinqingUtil.parseWeiboId(weiboIds);
         if (weiboId != -1) {
@@ -59,14 +59,15 @@ public class WeiboController {
 
     @RequestMapping("/user/comment/{entityType}/{entityId}")
     @ResponseBody
-    public String comment(String comment, @PathVariable("entityType") int entityType, @PathVariable("entityId") int entityId) {
+    public String comment(HttpServletRequest request, String comment, @PathVariable("entityType") int entityType,
+                          @PathVariable("entityId") int entityId) {
 
         return WeixinqingUtil.getJsonResponse(0);
     }
 
     @RequestMapping("/user/upvote/{weiboIds}")
     @ResponseBody
-    public String upvote(@PathVariable("weiboIds") String weiboIds) {
+    public String upvote(HttpServletRequest request,@PathVariable("weiboIds") String weiboIds) {
         int weiboId = WeixinqingUtil.parseWeiboId(weiboIds);
         if (weiboId != -1) {
             int code = weiboService.upvote(hostHolder.getUser().getId(), EntityType.UPVOTE, weiboId);
@@ -77,7 +78,7 @@ public class WeiboController {
 
     @RequestMapping("/user/collection/{weiboIds}")
     @ResponseBody
-    public String collection(@PathVariable("weiboIds") String weiboIds) {
+    public String collection(HttpServletRequest request,@PathVariable("weiboIds") String weiboIds) {
         int weiboId = WeixinqingUtil.parseWeiboId(weiboIds);
         if (weiboId != -1) {
             int code = weiboService.collection(hostHolder.getUser().getId(), EntityType.COLLECTION.getValue(), weiboId) == 1 ? 200 : 0;

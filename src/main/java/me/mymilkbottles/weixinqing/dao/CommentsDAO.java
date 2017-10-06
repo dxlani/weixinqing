@@ -31,5 +31,5 @@ public interface CommentsDAO {
 
     //and entity_type = #{entityType}
     @Select({"select count(id) from " + TABLE_NAME + " where entity_id = #{entityId}  and (is_delete != 1 or is_delete is null)"})
-    Integer getWeiboCommentCount(int id);
+    int getWeiboCommentCount(int id);
 }

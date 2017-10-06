@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Administrator on 2017/07/04 22:32.
- */
 @Controller
 public class FocusController {
 
@@ -65,9 +62,7 @@ public class FocusController {
         int end = PAGE_SIZE * page;
         List<User> users = focusService.getSlaveUser(userId, start, end);
 
-
         List<ViewObject> vos = new ArrayList<>(users.size());
-
 
         int localUserId = hostHolder.getUser().getId();
         for (User user : users) {
@@ -84,12 +79,12 @@ public class FocusController {
         if (!isSelf) {
             vo.add("focusd", focusService.isFocus(localUserId, userId));
         }
+
         vo.add("luser", userService.getUserById(userId));
         vo.add("vos", vos);
         model.addAttribute("vo", vo);
         return "user_focus";
     }
-
 
     @RequestMapping("/user/focus/action/{uids}")
     @ResponseBody
@@ -150,4 +145,7 @@ public class FocusController {
         model.addAttribute("vo", vo);
         return "user_focus";
     }
+
+
+
 }
